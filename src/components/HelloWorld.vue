@@ -1,19 +1,10 @@
-<script setup>
-import { ref } from 'vue'
-import { useProp } from '@/composables/useProp.js'
-
-defineProps({
-  msg: useProp(String)
-})
-
-const count = ref(0)
-</script>
-
 <template>
   <div class="text-center flex-1 border-dotted border border-blue-50 max-w-sm mx-auto p-8 text-base leading-snug">
     <h1 class="font-bold text-lg">
       {{ msg }}
     </h1>
+
+    {{ t('welcome') }}
 
     <stormy-icon
       name="brand-vue"
@@ -67,3 +58,17 @@ const count = ref(0)
     </p>
   </div>
 </template>
+
+<script setup>
+import { ref } from 'vue'
+import { useProp } from '@/composables/useProp.js'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n({ useScope: 'global' })
+
+defineProps({
+  msg: useProp(String)
+})
+
+const count = ref(0)
+</script>

@@ -1,0 +1,29 @@
+{
+  "user-menu": {
+    "profile-change": "Profil bearbeiten",
+    "pined-toots": "Angepinnte Tröts",
+    "follower-request": "Folgeanfragen",
+    "muted-profiles": "Stummgeschaltete Profile",
+    "blocked-profiles": "Geblockte Profile",
+    "hidden-domains": "Versteckte Domains",
+    "muted-words": "Stummgeschaltete Wörter",
+    "settings": "Einstellungen",
+    "sign-out": "Abmelden"
+  },
+  "sidebar": {
+    "nav": {
+      "timeline": "Startseite",
+      "favs": "Favoriten",
+      "bookmarks": "Lesezeichen",
+      "lists": "Listen",
+      "tags": "Hashtags",
+      "discover": "Entdecken",
+      "local": "Lokal",
+      "federation": "Förderation"
+    },
+    "placeholder": {
+      "search": "Suchen..."
+    }
+  },
+  "welcome": "Willkommen"
+}

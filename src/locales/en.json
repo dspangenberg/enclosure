@@ -1,0 +1,29 @@
+{
+  "welcome": "Welcome",
+  "user-menu": {
+    "profile-change": "Edit Profile",
+    "pined-toots": "Pined Toots",
+    "follower-request": "Followerrequests",
+    "muted-profiles": "Muted Profiles",
+    "blocked-profiles": "Blocked Profiles",
+    "hidden-domains": "Hidden Domains",
+    "muted-words": "Muted Words",
+    "settings": "Settings",
+    "sign-out": "Sign out"
+  },
+  "sidebar": {
+    "placeholder": {
+      "search": "Search"
+    },
+    "nav": {
+      "timeline": "Homepage",
+      "favs": "Likes",
+      "bookmarks": "Bookmarks",
+      "lists": "Lists",
+      "tags": "Hash Tags",
+      "discover": "Discover",
+      "local": "Local",
+      "federation": ""
+    }
+  }
+}

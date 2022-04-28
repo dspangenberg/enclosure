@@ -1,0 +1,44 @@
+<template>
+  <div>
+    <a
+      :class="[disabled ? 'text-gray-300 !cursor-not-allowed' : active ? 'font-regular' : 'text-gray-500 hover:underline', 'rounded focus:border-blue-400 focus:ring-1 focus:ring-blue-200 focus:outline-none cursor-pointer group flex items-center px-4 py-2rounded-md']"
+      :aria-current="active ? 'page' : undefined"
+      :href="href"
+    >
+      <span class="truncate hover:underline">
+        {{ label }}
+      </span>
+      <span
+        v-if="!disabled && badge"
+        class="ml-auto text-right font-normal text-sm"
+      >
+        {{ badge }}
+      </span>
+    </a>
+    <div :class="[withSep ? 'space-y-1 border-b border-gray-100 pb-2 ml-3' : '']" />
+  </div>
+</template>
+
+<script setup>
+import { computed } from 'vue'
+import { useProp } from '@/composables/useProp.js'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n({ useScope: 'global' })
+
+const props = defineProps({
+  href: useProp(String, '#'),
+  name: useProp(String),
+  badgeColor: useProp(String, 'red'),
+  disabled: useProp(Boolean),
+  active: useProp(Boolean),
+  i18n: useProp(Boolean),
+  badgeAnimate: useProp(Boolean),
+  badge: useProp(Number || String || Boolean),
+  strokeWidth: useProp(Boolean),
+  small: useProp(Boolean),
+  withSep: useProp(Boolean)
+})
+
+const label = computed(() => props.i18n ? $t(props.name) : props.name)
+</script>

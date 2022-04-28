@@ -5,6 +5,16 @@ import 'virtual:svg-icons-register'
 import { createApp, defineAsyncComponent } from 'vue'
 import App from './App.vue'
 import { toSnakeCaseWithHyphens } from '@/utils/StringHelper.js'
+import { createI18n } from 'vue-i18n'
+import messages from '@intlify/vite-plugin-vue-i18n/messages'
+import router from '@/routes'
+
+const i18n = createI18n({
+  locale: 'en',
+  fallbackLocale: 'de',
+  fallbackFormat: true,
+  messages
+})
 
 const app = createApp(App)
 const components = import.meta.glob('./components/stormy/*.vue')
@@ -16,4 +26,7 @@ Object.entries(components).forEach(([path, component]) => {
   }
 })
 
-app.mount('#app')
+app
+  .use(i18n)
+  .use(router)
+  .mount('#app')

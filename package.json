@@ -5,15 +5,30 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "vue-i18n-extract": "vue-i18n-extract report --add --vueFiles './src/**/*.?(js|vue)' --languageFiles './src/locales/*.json'"
   },
   "dependencies": {
     "@fontsource/clear-sans": "^4.5.3",
+    "@headlessui/vue": "^1.6.0",
     "@tabler/icons": "^1.67.1",
+    "@vuelidate/core": "^2.0.0-alpha.40",
+    "@vuelidate/validators": "^2.0.0-alpha.28",
+    "@vueuse/core": "^8.3.1",
     "luxon": "^2.3.2",
-    "vue": "^3.2.25"
+    "megalodon": "^4.0.1",
+    "numbro": "^2.3.6",
+    "pinia": "^2.0.13",
+    "splitpanes": "^3.1.1",
+    "vue": "^3.2.25",
+    "vue-advanced-cropper": "^1.10.1",
+    "vue-i18n": "9",
+    "vue-router": "4",
+    "vue-use-infinite-scroll": "^0.0.3",
+    "vue3-click-away": "^1.2.4"
   },
   "devDependencies": {
+    "@intlify/vite-plugin-vue-i18n": "^3.4.0",
     "@tailwindcss/aspect-ratio": "^0.4.0",
     "@tailwindcss/forms": "^0.5.0",
     "@vitejs/plugin-vue": "^2.3.1",
@@ -28,6 +43,7 @@
     "tailwindcss": "^3.0.24",
     "vite": "^2.9.5",
     "vite-plugin-pwa": "^0.12.0",
-    "vite-plugin-svg-icons": "^2.0.1"
+    "vite-plugin-svg-icons": "^2.0.1",
+    "vue-i18n-extract": "^2.0.5"
   }
 }
