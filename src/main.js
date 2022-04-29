@@ -8,10 +8,11 @@ import { toSnakeCaseWithHyphens } from '@/utils/StringHelper.js'
 import { createI18n } from 'vue-i18n'
 import messages from '@intlify/vite-plugin-vue-i18n/messages'
 import router from '@/routes'
+import { createPinia } from 'pinia'
 
 const i18n = createI18n({
-  locale: 'en',
-  fallbackLocale: 'de',
+  locale: 'de',
+  fallbackLocale: ['de', 'en'],
   fallbackFormat: true,
   messages
 })
@@ -28,5 +29,6 @@ Object.entries(components).forEach(([path, component]) => {
 
 app
   .use(i18n)
+  .use(createPinia())
   .use(router)
   .mount('#app')

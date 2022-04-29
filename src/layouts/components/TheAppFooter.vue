@@ -4,7 +4,8 @@
       <span class="font-medium">
         enclosure
       </span>
-      &mdash; Copyright © 2022-{{ currentYear }} by Danny Spangenberg
+      &mdash; Copyright © 2022
+      <span v-if="currentYear !== 2022">{{ currentYear }}</span> by Danny Spangenberg
     </div>
     <div class="hidden">
       <span class="bg-red-500" />

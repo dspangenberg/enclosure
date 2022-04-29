@@ -5,7 +5,7 @@
       <span class="rounded-full border border-gray-100">
         <img
           class="h-8 w-8 rounded-full border-white border-2"
-          src="https://files.mastodon.social/accounts/avatars/108/198/176/038/891/079/original/def37f17c2e29141.jpg"
+          :src="user.avatar"
           alt=""
         >
       </span>
@@ -13,14 +13,16 @@
     <div class="px-3 py-3 bg-gray-50 -mt-0.5 rounded-t-l-md rounded-t-r-md hover:bg-gray-100">
       <div class="text-sm text-gray-900 truncate pt-0.5 font-semibold flex items-center">
         <div class="truncate flex-1">
-          daspbn
-          <div class="text-xxs font-normal pt-0.5 leading-snug">
-            @mastodon.social
+          {{ user.username }}
+          <div class="text-xs font-normal pt-0.5 leading-snug">
+            @{{ user.domain }}
           </div>
         </div>
         <stormy-icon
+          v-if="isSupported"
           name="copy"
-          class="h-4 w-4 text-gray-400 cursor-pointer"
+          class="h-5 w-5 text-gray-400 cursor-pointer hover:text-blue-500 active:text-blue-600"
+          @click="copy()"
         />
       </div>
     </div>
@@ -86,7 +88,6 @@
     </div>
 
     <!--
-      Da vue-i18n-extract keine dynamischen Keys unterstüzt und ich zu faul bin, ständige zwischen den Tabs zu wechseln ...
       // $t('user-menu.profile-change')
       // $t('user-menu.pined-toots')
       // $t('user-menu.follower-request')
@@ -99,3 +100,13 @@
     -->
   </stormy-menu>
 </template>
+<script setup>
+import { useStore } from '@/stores/global'
+import { storeToRefs } from 'pinia'
+import { useClipboard } from '@vueuse/core'
+
+const store = useStore()
+const { user } = storeToRefs(store)
+const { copy, isSupported } = useClipboard({ source: store.getMastodonHandle })
+
+</script>

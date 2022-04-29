@@ -18,39 +18,24 @@
 </template>
 <script setup>
 import { ref, onMounted } from 'vue'
-import generator, { detector } from 'megalodon'
 import { LowSync, LocalStorage } from 'lowdb'
+import { useMegalodon } from '@/composables/useMegalodon.js'
+
+const megalodon = ref()
+
+onMounted(async () => {
+  const { registerApp, sns, baseURL, domain } = await useMegalodon()
+  megalodon.value = { registerApp, sns, baseURL, domain }
+})
 
 const db = new LowSync(new LocalStorage('enclosureAccounts'))
-
 db.read()
 db.data ||= { accounts: [] }
 
-onMounted(async () => {
-
-})
-
 const confirm = async () => {
-  console.log(form.value.domainName)
-  const protocol = 'https'
-  const appName = 'enclosure'
-  const appUrl = 'https://github.com/dspangenberg/enclosure'
-  const domain = form.value.domainName.trim()
-  const sns = await detector(`https://${domain}`)
-  const baseUrl = `${protocol}://${domain}`
-  const client = generator(sns, baseUrl, null, 'enclosure')
-  console.log(client)
-  console.log(sns)
+  const data = await megalodon.value.registerApp(form.value.domainName)
 
-  const res = await client.registerApp(appName, {
-    website: appUrl,
-    redirect_uris: 'http://localhost:3000/auth/autorize',
-    scopes: ['read', 'write', 'follow', 'push']
-  })
-
-  const { clientId, clientSecret, session_token: sessionToken, url } = res
-  console.log(clientId, clientSecret, sessionToken, url)
-
+  const { clientId, clientSecret, url } = data
   const { accounts } = db.data
   const account = accounts[0] || {
     baseURL: null,
@@ -67,9 +52,9 @@ const confirm = async () => {
     avatar: null
   }
 
-  account.sns = sns
-  account.baseURL = baseUrl
-  account.domain = domain
+  account.sns = megalodon.value.sns
+  account.baseURL = megalodon.value.baseURL
+  account.domain = megalodon.value.domain
   account.clientId = clientId
   account.clientSecret = clientSecret
 
