@@ -1,11 +1,14 @@
 <template>
-  <stormy-menu :button="false">
+  <stormy-menu
+    v-if="account"
+    :button="false"
+  >
     <template #button>
       <span class="sr-only">Open user menu</span>
       <span class="rounded-full border border-gray-100">
         <img
           class="h-8 w-8 rounded-full border-white border-2"
-          :src="user.avatar"
+          :src="account.avatar"
           alt=""
         >
       </span>
@@ -13,9 +16,9 @@
     <div class="px-3 py-3 bg-gray-50 -mt-0.5 rounded-t-l-md rounded-t-r-md hover:bg-gray-100">
       <div class="text-sm text-gray-900 truncate pt-0.5 font-semibold flex items-center">
         <div class="truncate flex-1">
-          {{ user.username }}
+          {{ account.username }}
           <div class="text-xs font-normal pt-0.5 leading-snug">
-            @{{ user.domain }}
+            @{{ account.domain }}
           </div>
         </div>
         <stormy-icon
@@ -106,7 +109,7 @@ import { storeToRefs } from 'pinia'
 import { useClipboard } from '@vueuse/core'
 
 const store = useStore()
-const { user } = storeToRefs(store)
+const { account } = storeToRefs(store)
 const { copy, isSupported } = useClipboard({ source: store.getMastodonHandle })
 
 </script>

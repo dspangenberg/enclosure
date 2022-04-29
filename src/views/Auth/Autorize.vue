@@ -1,44 +1,74 @@
 <template>
-  Lv6HuenEdlNPUist2woVaBaxCuansPVn5ln2pXUegJo
+  <div class="flex flex-col">
+    <div
+      v-if="error"
+      class="mb-6"
+    >
+      <stormy-error
+        :title="error"
+      >
+        {{ errorDescription }}
+      </stormy-error>
+    </div>
+    <div
+      v-if="errorObj"
+    >
+      <stormy-http-error :error="errorObj" />
+    </div>
+    <a
+      class="text-center w-full flex-1 font-semibold pr-3 text-sm text-red-600 hover:underline"
+      href="/auth/login"
+    >
+      Zurück zum Login
+    </a>
+  </div>
 </template>
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useRouteQuery } from '@vueuse/router'
-import { LowSync, LocalStorage } from 'lowdb'
 import { useRouter } from 'vue-router'
-import { useStore } from '@/stores/global'
 import { useMegalodon } from '@/composables/useMegalodon.js'
+import { useStore } from '@/stores/global'
+import { accountById, upsertAccount } from '@/utils/db.js'
 
 const store = useStore()
-
 const router = useRouter()
-const db = new LowSync(new LocalStorage('enclosureAccounts'))
-
-db.read()
-db.data ||= { accounts: [] }
 
 const code = useRouteQuery('code')
+const error = useRouteQuery('error')
+const errorDescription = useRouteQuery('error_description')
+
+const errorObj = ref(null)
 
 onMounted(async () => {
   const { fetchAccessToken, verifyAccountCredentials, client } = await useMegalodon()
 
-  const account = db.data.accounts[0]
+  const account = accountById(store.getAccountId())
 
-  const data = await fetchAccessToken(code.value, account)
-  const res = await verifyAccountCredentials()
+  let token = null
+  let acc = null
 
-  db.data.accounts[0].username = res.data.username
-  db.data.accounts[0].accountId = res.data.id
-  db.data.accounts[0].avatar = res.data.avatar
-  db.data.accounts[0].accessToken = data.accessToken
-  db.data.accounts[0].refreshToken = data.refreshToken
-  db.data.accounts[0].url = res.data.url
-  db.write()
+  if (code?.value) {
+    try {
+      token = await fetchAccessToken(account, code.value)
+      acc = await verifyAccountCredentials()
+      account.username = acc.username
+      account.accountId = acc.id
+      account.avatar = acc.avatar
+      account.url = acc.url
+      account.accessToken = token.accessToken
+      account.refreshToken = token.refreshToken || ''
 
-  store.setClient(client)
-  store.setUser(db.data.accounts[0])
+      const updatedAccount = upsertAccount(account)
 
-  router.push('/app/home')
+      store.setAccount(updatedAccount)
+      store.setClient(client)
+    } catch (error) {
+      errorObj.value = error.response
+      return Promise.reject(error)
+    }
+    router.push('/app/home')
+  }
 })
 
 </script>

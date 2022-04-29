@@ -1,11 +1,13 @@
 import { LowSync, LocalStorage } from 'lowdb'
-import { ref, computed } from 'vue'
+import { ref, computed, unref, toRaw } from 'vue'
+import lodash from 'lodash'
 
 export function useLowDb () {
-  const db = new LowSync(new LocalStorage('enclosure.lowDb'))
+  const db = new LowSync(new LocalStorage('enclosure.low'))
 
   const data = ref(null)
   const dataAccounts = ref(null)
+  const dataAccount = ref(null)
 
   const isOpen = ref(false)
 
@@ -24,9 +26,19 @@ export function useLowDb () {
   const accountsCol = () => {
     if (!isOpen.value) readDb()
 
-    const all = () => dataAccounts
-    const first = () => dataAccounts.value[0]
-    return { all, first }
+    const accounts = toRaw(dataAccounts.value).value
+    const all = () => accounts
+    const first = () => {
+      dataAccount.value = accounts[0]
+      return accounts[0]
+    }
+
+    const update = (data) => {
+      data.value.accounts[0].username = data.username + 'x'
+      writeDb()
+    }
+
+    return { all, first, update }
   }
 
   return { readDb, writeDb, accountsCol }

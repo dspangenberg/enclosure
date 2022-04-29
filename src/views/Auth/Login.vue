@@ -1,5 +1,23 @@
 <template>
-  <div class="space-y-2">
+  <div>
+    <div
+      v-if="networkError"
+      class="mb-6"
+    >
+      <stormy-error
+        title="Netzwerkfehler"
+      >
+        Es konnte keine Verbindung zum angegebenen Server hergestellt werden.
+      </stormy-error>
+    </div>
+  </div>
+  <div
+    v-if="errorObj"
+    class="flex flex-col"
+  >
+    <stormy-http-error :error="errorObj" />
+  </div>
+  <div class="space-y-2 max-w-xs mx-auto">
     <div>
       <stormy-input
         v-model="form.domainName"
@@ -17,51 +35,51 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue'
-import { LowSync, LocalStorage } from 'lowdb'
 import { useMegalodon } from '@/composables/useMegalodon.js'
+import { ref } from 'vue'
+import { upsertAccount, firstAccount } from '@/utils/db.js'
+import { useStore } from '@/stores/global'
 
-const megalodon = ref()
+const store = useStore()
+const errorObj = ref(null)
+const networkError = ref('')
 
-onMounted(async () => {
-  const { registerApp, sns, baseURL, domain } = await useMegalodon()
-  megalodon.value = { registerApp, sns, baseURL, domain }
-})
-
-const db = new LowSync(new LocalStorage('enclosureAccounts'))
-db.read()
-db.data ||= { accounts: [] }
+const { registerApp, sns, baseUrl, domain } = useMegalodon()
 
 const confirm = async () => {
-  const data = await megalodon.value.registerApp(form.value.domainName)
+  let mastdonServerUrl = null
 
-  const { clientId, clientSecret, url } = data
-  const { accounts } = db.data
-  const account = accounts[0] || {
-    baseURL: null,
-    domain: null,
-    sns: null,
-    clientId: null,
-    clientSecret: null,
-    accessToken: null,
-    refreshToken: null,
-    username: null,
-    accountId: null,
-    acct: null,
-    url: null,
-    avatar: null
+  try {
+    const data = await registerApp(form.value.domainName)
+    const { clientId, clientSecret, url } = data
+    mastdonServerUrl = url
+
+    const account = firstAccount() || {}
+
+    account.sns = sns.value
+    account.baseUrl = baseUrl.value
+    account.domain = domain.value
+    account.sns = sns.value
+    account.clientId = clientId
+    account.clientSecret = clientSecret
+
+    const createdAccount = upsertAccount(account)
+    store.setAccountId(createdAccount.id)
+  } catch (error) {
+    if (error.response) {
+      // errorObj.value = error.response
+    } else {
+      const json = error.toJSON()
+      if (json.message === 'Network Error') {
+        networkError.value = true
+      }
+    }
+    Promise.reject(error)
   }
 
-  account.sns = megalodon.value.sns
-  account.baseURL = megalodon.value.baseURL
-  account.domain = megalodon.value.domain
-  account.clientId = clientId
-  account.clientSecret = clientSecret
-
-  accounts[0] = account
-  db.write()
-
-  window.location = url
+  if (mastdonServerUrl) {
+    window.location = mastdonServerUrl
+  }
 }
 
 const form = ref({

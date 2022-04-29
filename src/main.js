@@ -7,7 +7,7 @@ import App from './App.vue'
 import { toSnakeCaseWithHyphens } from '@/utils/StringHelper.js'
 import { createI18n } from 'vue-i18n'
 import messages from '@intlify/vite-plugin-vue-i18n/messages'
-import router from '@/routes'
+import router from '@/router'
 import { createPinia } from 'pinia'
 
 const i18n = createI18n({
