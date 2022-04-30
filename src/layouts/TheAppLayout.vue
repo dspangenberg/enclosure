@@ -38,7 +38,7 @@
         </template>
       </TheAppSidebar>
       <div class="flex-1 flex flex-col print:flex-shrink-0">
-        <div class="flex-shrink-1 bg-stone-50 py-1.5 px-2 print:hidden">
+        <div class="flex-shrink-1 bg-white py-1.5 px-2 print:hidden">
           <TheAppHeader />
         </div>
         <div class="flex-1 overflow-hidden border-gray-100 border-b bg-white flex flex-col justify-between">

@@ -37,7 +37,7 @@ export default defineConfig({
           dns: true,
           buffer: true,
           fs: null,
-          net: true,
+          net: true
         }),
         NodeModulesPolyfillPlugin()
       ]

@@ -14,7 +14,7 @@ const createDefaults = (type) => {
     case Boolean: return false
     case Object: return () => { return {} }
     case Array: return () => { return [] }
-    case Date: return DateTime.now()
+    case Date: return DateTime().now()
     case Number: return 0
     default: return ''
   }

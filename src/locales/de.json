@@ -10,6 +10,13 @@
     "settings": "Einstellungen",
     "sign-out": "Abmelden"
   },
+  "toots": {
+    "toot": {
+      "actions": {
+        "boost": "Geteilt von"
+      }
+    }
+  },
   "sidebar": {
     "nav": {
       "timeline": "Startseite",

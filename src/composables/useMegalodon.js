@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import generator, { detector } from 'megalodon'
+import { useStore } from '@/stores/global'
 
 export function useMegalodon () {
   const protocol = 'https'
@@ -17,6 +18,18 @@ export function useMegalodon () {
   const setDomain = (value) => {
     domain.value = value.trim()
     baseUrl.value = `${protocol}://${domain.value}`
+  }
+
+  const getHomeTimeline = async () => {
+    const store = useStore()
+    await ensureClient(store.getAccount())
+    try {
+      const res = await client.value.getHomeTimeline()
+      console.log(res.data)
+      return Promise.resolve(res.data)
+    } catch (error) {
+      return Promise.reject(error)
+    }
   }
 
   const detectSns = async () => {
@@ -97,5 +110,5 @@ export function useMegalodon () {
     }
   }
 
-  return { setDomain, generateClient, registerApp, fetchAccessToken, sns, verifyAccountCredentials, baseUrl, client, domain, getAccount }
+  return { setDomain, generateClient, registerApp, fetchAccessToken, sns, verifyAccountCredentials, baseUrl, client, domain, getAccount, getHomeTimeline }
 }

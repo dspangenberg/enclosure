@@ -3,6 +3,7 @@
     <stormy-nav-item
       name="sidebar.nav.timeline"
       i18n
+      active
       exact
       icon="home"
       color="green"

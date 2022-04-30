@@ -7,10 +7,12 @@
             class="w-full"
             href="/"
           >
-            <stormy-icon
-              name="fence"
-              class="text-blue-600 h-10 w-10 drop-shadow-lg mx-auto"
-            />
+            <img
+              class="h-8 w-auto sm:h-10 mx-auto my-3"
+              src="https://tailwindui.com/img/logos/workflow-mark-blue-600.svg"
+              alt=""
+            >
+
           </a>
         </div>
         <div class="mx-auto w-full px-2 py-4">

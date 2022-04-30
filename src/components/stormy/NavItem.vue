@@ -58,7 +58,5 @@ const props = defineProps({
 
 const label = computed(() => props.i18n ? $t(props.name) : props.name)
 
-const isActive = computed(() => {
-  return false
-})
+const isActive = computed(() => props.active)
 </script>

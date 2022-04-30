@@ -10,6 +10,9 @@ import messages from '@intlify/vite-plugin-vue-i18n/messages'
 import router from '@/router'
 import { createPinia } from 'pinia'
 
+import directives from '@/directives'
+import Tooltip from '@/components/Tooltip.vue'
+
 const i18n = createI18n({
   locale: 'de',
   fallbackLocale: ['de', 'en'],
@@ -18,17 +21,24 @@ const i18n = createI18n({
 })
 
 const app = createApp(App)
-const components = import.meta.glob('./components/stormy/*.vue')
+const components = import.meta.glob('./components/**/*.vue')
 
 Object.entries(components).forEach(([path, component]) => {
   if (path.includes('stormy')) {
     const name = toSnakeCaseWithHyphens(('stormy' + path.split('/').slice(-1)[0].replace('.vue', '')))
     app.component(name, defineAsyncComponent(component))
   }
+  if (path.includes('enclosure')) {
+    const name = toSnakeCaseWithHyphens(('enclosure' + path.split('/').slice(-1)[0].replace('.vue', '')))
+    app.component(name, defineAsyncComponent(component))
+  }
 })
+
+directives(app)
 
 app
   .use(i18n)
   .use(createPinia())
+  .component('Tooltip', Tooltip)
   .use(router)
   .mount('#app')
