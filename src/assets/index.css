@@ -131,23 +131,36 @@
 }
 
 .toot-content a {
-  @apply text-blue-600 hover:underline truncate font-normal overflow-ellipsis;
+  @apply text-blue-600 hover:underline font-normal relative;
+}
+
+.toot-content a span.invisible {
+  @apply hidden;
+}
+
+.toot-content a:not(.hastag):not(.mention) {
+  @apply inline-block text-gray-500 underline hover:text-blue-500;
+}
+
+.toot-content a:not(.hastag):not(.mention):before {
+  @apply text-gray-500 relative top-0.5 mr-1;
+  content: url('data:image/svg+xml; utf8, <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-external-link" width="14" height="14" viewBox="0 0 24 24" stroke-width="2" stroke="RGB(107, 114, 128)" fill="none" stroke-linecap="round" stroke-linejoin="round"><desc>Download more icon variants from https://tabler-icons.io/i/external-link</desc><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M11 7h-5a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-5"></path><line x1="10" y1="14" x2="20" y2="4"></line><polyline points="15 4 20 4 20 9"></polyline></svg>');
+}
+
+.toot-content a span.ellipsis:after {
+  content: ' …'
 }
 
 .toot-content a.hashtag {
-  @apply text-blue-600 hover:underline truncate font-semibold
+  @apply text-blue-600 hover:underline truncate
 }
 
 .toot-content a.mention {
-  @apply text-blue-600 hover:underline truncate font-semibold mt-3
+  @apply text-blue-600 hover:underline truncate
 }
 
-.toot-content p:first-child {
-  margin-top: 0;
-}
-
-.toot-content p {
-  margin-top: 0.75rem;
+.toot-content p:not(:last) {
+  padding-bottom: 0.75rem;
 }
 
 

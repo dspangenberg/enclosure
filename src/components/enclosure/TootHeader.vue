@@ -1,6 +1,6 @@
 <template>
-  <div class="border-gray-100 flex flex-1 border-b flex-col">
-    <div class="flex flex-1 px-2 items-center py-1">
+  <enclosure-toot-container class="flex-1 flex border-b flex-col border-gray-100">
+    <div class="flex flex-1 items-center">
       <div class="flex-shrink-0">
         <enclosure-toot-avatar
           :account="account"
@@ -16,7 +16,7 @@
           >
             <span class="flex-1 font-semibold mr-1 truncate flex">
 
-              {{ account.display_name }}
+              {{ account.display_name || account.username }}
             </span>
 
           </a>
@@ -40,7 +40,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </enclosure-toot-container>
 </template>
 <script setup>
 import { useProp } from '@/composables/useProp.js'

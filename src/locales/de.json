@@ -19,6 +19,7 @@
   },
   "sidebar": {
     "nav": {
+      "my-profile": "Mein Profil",
       "timeline": "Startseite",
       "favs": "Favoriten",
       "bookmarks": "Lesezeichen",

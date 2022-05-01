@@ -1,18 +1,24 @@
 <template>
   <div class="text-base text-gray-700 overflow-x-clip">
-    <div
-      v-if="formatedText"
-      class="leading-normal text-gray-700 toot-content font-semibold mx-3 py-2.5 overflow-x-hidden"
-      v-html="formatedText"
-    />
-    <enclosure-toot-content-card
-      v-if="toot.card"
-      :toot="toot"
-    />
-    <enclosure-toot-content-media
-      v-if="images && images.length"
-      :images="images"
-    />
+    <enclosure-toot-container>
+      <div
+        v-if="toot.content"
+        class="leading-normal text-gray-900 toot-content overflow-x-hidden"
+        v-html="toot.content"
+      />
+    </enclosure-toot-container>
+    <enclosure-toot-container>
+      <enclosure-toot-content-card
+        v-if="toot.card"
+        :toot="toot"
+      />
+    </enclosure-toot-container>
+    <enclosure-toot-container>
+      <enclosure-toot-content-media
+        v-if="images && images.length"
+        :images="images"
+      />
+    </enclosure-toot-container>
   </div>
 </template>
 <script setup>

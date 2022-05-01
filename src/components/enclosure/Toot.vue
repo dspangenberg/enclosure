@@ -13,19 +13,17 @@
         class="min-w-0 flex-1 text-base shadow-sm rounded-md border border-gray-200"
       >
         <div class="min-w-0 flex-1">
-          <div class="">
-            <enclosure-toot-header
-              :account="account"
-              :created-at="createdAt"
-              :other-account="otherAccount"
-              :icon="isReblog ? 'message-2-share' : 'message'"
-              :type="isReblog ? 'reblog' : 'toot'"
-              action="toots.toot.actions.boost"
-            />
-            <enclosure-toot-content :toot="toot" />
-          </div>
+          <enclosure-toot-header
+            :account="account"
+            :created-at="createdAt"
+            :other-account="otherAccount"
+            :icon="isReblog ? 'message-2-share' : 'message'"
+            :type="isReblog ? 'reblog' : 'toot'"
+            action="toots.toot.actions.boost"
+          />
+          <enclosure-toot-content :toot="toot" />
           <enclosure-toot-sys-info
-            class="border-t p-2"
+            class="border-t"
             :account="account"
             :toot="toot"
           />

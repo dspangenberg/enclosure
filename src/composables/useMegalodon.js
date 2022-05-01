@@ -32,6 +32,23 @@ export function useMegalodon () {
     }
   }
 
+  const getAccountStatuses = async (accountId = null) => {
+    const store = useStore()
+    const { account } = store
+    console.log(accountId, account)
+    if (!accountId && account?.accountId) {
+      accountId = account.accountId
+    }
+    await ensureClient(account)
+    try {
+      const res = await client.value.getAccountStatuses(accountId)
+      console.log(res.data)
+      return Promise.resolve(res.data)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
   const getFavourites = async () => {
     const store = useStore()
     await ensureClient(store.getAccount())
@@ -146,6 +163,7 @@ export function useMegalodon () {
     client,
     domain,
     getAccount,
+    getAccountStatuses,
     getBookmarks,
     getHomeTimeline
   }

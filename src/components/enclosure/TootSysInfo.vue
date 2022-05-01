@@ -1,7 +1,7 @@
 <template>
-  <div class="text-xs flex items-center text-gray-600 flex-1 px-3 border-gray-100">
-    <div class="flex items-center flex-1">
-      <div class="flex-1 flex items-center">
+  <enclosure-toot-container inner-class="!py-0">
+    <div class="flex border-gray-100 flex-1 text-xs items-center">
+      <div class="flex items-center flex-1">
         <stormy-icon
           :name="visibilityIcon"
           class="w-4 h-4  mr-1 text-gray-300 flex-shrink-0"
@@ -9,8 +9,6 @@
         />
         <span class="text-gray-600 mr-0.5 flex-shrink-0">{{ visibilityText }}</span>
       </div>
-    </div>
-    <div>
       <div
         v-if="toot.application"
         class="flex items-center"
@@ -20,17 +18,15 @@
           class="w-4 h-4  mr-1 text-gray-300 flex-shrink-0"
           :stroke-width="2"
         />
-        <a
-
-          :href="toot.application.website || '#'"
-          class="hover:underline"
-          target="_blank"
-        >
-          <span class="text-gray-600">{{ toot.application.name }}</span>
-        </a>
+        <stormy-link
+          class="text-gray-600 mr-0.5 flex-shrink-0"
+          :label="toot.application.name"
+          :link="toot.application.url"
+          as="span"
+        />
       </div>
     </div>
-  </div>
+  </enclosure-toot-container>
 </template>
 <script setup>
 import { useProp } from '@/composables/useProp.js'

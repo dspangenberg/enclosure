@@ -31,6 +31,12 @@
   <stormy-nav-group>
     <stormy-nav-item
       i18n
+      href="/app/my-profile"
+      name="sidebar.nav.my-profile"
+      icon="user-circle"
+    />
+    <stormy-nav-item
+      i18n
       href="/app/favorites"
       name="sidebar.nav.favs"
       icon="heart"

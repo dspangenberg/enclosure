@@ -1,6 +1,6 @@
 <template>
   <ul
-    class="grid gap-x-4 gap-y-8 mx-auto mx-2 relative"
+    class="grid gap-x-4 gap-y-8 mx-auto relative"
     :class="gridCols"
   >
     <li
@@ -10,7 +10,7 @@
     >
       <img
         :src="medium.url"
-        class="object-cover border rounded-md border-white"
+        class="object-cover border rounded-md border-white w-full"
       >
     </li>
   </ul>

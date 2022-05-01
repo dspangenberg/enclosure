@@ -30,6 +30,11 @@ const routes = [
       component: () => import(/* webpackChunkName: "home" */ '@/views/App/Home.vue')
     },
     {
+      path: 'my-profile',
+      name: 'my-profile',
+      component: () => import(/* webpackChunkName: "my-profile" */ '@/views/App/Profile.vue')
+    },
+    {
       path: 'favorites',
       name: 'favorites',
       component: () => import(/* webpackChunkName: "favourites" */ '@/views/App/Favourites.vue')

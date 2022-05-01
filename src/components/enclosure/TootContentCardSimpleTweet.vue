@@ -1,15 +1,18 @@
 <template>
   <div>
-    <div class="flex flex-1 flex-col border rounded-md">
-      <div v-if="card.image">
-        <img
-          :src="card.image"
-          class="object-cover w-full rounded-tl-md rounded-tr-md"
+    <div class=" border rounded-md">
+      <div class="flex flex-1 items-top">
+        <div
+          v-if="card.image"
+          class="flex-shrink-0 flex items-top pt-3 pl-4 pr-0"
         >
-      </div>
-      <div class="flex-1 overflow-hidden p-4 my-auto">
-        <div class="mb-2">
-          <h1 class="text-base font-bold truncate text-blue-700">
+          <img
+            :src="card.image"
+            class="object-cover rounded-full border-r h-10 w-10"
+          >
+        </div>
+        <div class="p-4">
+          <h1 class="text-base font-bold truncate text-blue-700 mb-1">
             <a
               :href="card.url"
               class="hover:underline"
@@ -18,31 +21,22 @@
               {{ card.title }}
             </a>
           </h1>
-          <stormy-link
-            class="text-xs text-gray-700 mt-1"
-            :label="card.author_name"
-            :link="card.author_url"
-            link-class=""
-            prefix="von"
-            prefix-class="text-gray-500"
-            as="div"
-          />
-        </div>
-        <div class="text-sm text-gray-600 text-normal line-clamp-3">
-          {{ card.description }}
+          <div class="text-sm text-gray-600 text-normal">
+            {{ card.description }}
+          </div>
         </div>
       </div>
     </div>
-    <stormy-link
-      class="p-1 text-xs text-gray-700 mt-1"
-      :label="card.provider_name"
-      :link="card.provider_url"
-      link-class=""
-      prefix="via"
-      prefix-class="text-gray-500"
-      as="div"
-    />
   </div>
+  <stormy-link
+    class="p-1 text-xs text-gray-700 mt-1"
+    :label="card.provider_name"
+    :link="card.provider_url"
+    link-class=""
+    prefix="via"
+    prefix-class="text-gray-500"
+    as="div"
+  />
 </template>
 <script setup>
 import { useProp } from '@/composables/useProp.js'

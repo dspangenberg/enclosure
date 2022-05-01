@@ -1,5 +1,5 @@
 <template>
-  <div class="m-2">
+  <div class="my-2">
     <component
       :is="getComponent"
       :card="toot.card"
@@ -14,7 +14,14 @@ const props = defineProps({
 })
 
 const getComponent = computed(() => {
-  switch (props.toot.card) {
+  if (props.toot.card.type && props.toot.card.url.includes('twitter')) {
+    if (props.toot.card.height === props.toot.card.width) {
+      console.log('twitter')
+      return 'enclosure-toot-content-card-simple-tweet'
+    }
+  }
+
+  switch (props.toot.card.type) {
     case 'link':
     default:
       return 'enclosure-toot-content-card-link'
