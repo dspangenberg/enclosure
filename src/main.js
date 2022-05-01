@@ -9,6 +9,7 @@ import { createI18n } from 'vue-i18n'
 import messages from '@intlify/vite-plugin-vue-i18n/messages'
 import router from '@/router'
 import { createPinia } from 'pinia'
+import Vue3Sanitize from 'vue-3-sanitize'
 
 import directives from '@/directives'
 import Tooltip from '@/components/Tooltip.vue'
@@ -41,4 +42,7 @@ app
   .use(createPinia())
   .component('Tooltip', Tooltip)
   .use(router)
+  .use(Vue3Sanitize, {
+    allowedTags: ['a', 'p', 'ul', 'li', 'ol', 'img']
+  })
   .mount('#app')

@@ -1,6 +1,7 @@
 import de from 'numbro/languages/de-DE'
 import numbro from 'numbro'
 import { DateTime } from 'luxon'
+import { marked } from 'marked'
 
 numbro.registerLanguage(de, true)
 numbro.setLanguage('de-DE')
@@ -24,10 +25,8 @@ export function useTemplateFilter () {
     return DateTime.fromISO(value).toFormat('dd.MM.yyyy HH:mm')
   }
 
-  const formatRelDate = (value) => {
-    if (!value) return ''
-    const relative = DateTime.fromISO(value).toRelative({ string: 'narrow', round: true })
-    return relative
+  const formatMarkdown = (value) => {
+    return marked(value)
   }
 
   const formatCurrency = (value) => {
@@ -54,5 +53,5 @@ export function useTemplateFilter () {
     })
   }
 
-  return { formatAccounId, formatCurrency, formatDate, getImageUrl, formatFloat, formatBytes, formatRelDate }
+  return { formatAccounId, formatCurrency, formatDate, getImageUrl, formatFloat, formatBytes, formatMarkdown }
 }

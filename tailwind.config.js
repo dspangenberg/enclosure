@@ -53,7 +53,7 @@ module.exports = {
         xxs: ['0.67rem', '0.6rem'],
         xs: ['0.74rem', '0.9rem'],
         sm: ['0.8rem', '1.0rem'],
-        base: ['0.90rem', '1.10rem'],
+        base: ['0.82rem', '1.06rem'],
         lg: ['1.0rem', '1.20rem'],
         xl: ['24px', '32px']
       },
@@ -72,6 +72,7 @@ module.exports = {
   plugins: [
     require('@tailwindcss/forms'),
     require('@tailwindcss/aspect-ratio'),
+    require('@tailwindcss/line-clamp'),
     plugin(function ({ addVariant, e }) {
       addVariant('not-first', ({ modifySelectors, separator }) => {
         modifySelectors(({ className }) => {

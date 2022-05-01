@@ -32,6 +32,30 @@ export function useMegalodon () {
     }
   }
 
+  const getFavourites = async () => {
+    const store = useStore()
+    await ensureClient(store.getAccount())
+    try {
+      const res = await client.value.getFavourites()
+      console.log(res.data)
+      return Promise.resolve(res.data)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
+  const getBookmarks = async () => {
+    const store = useStore()
+    await ensureClient(store.getAccount())
+    try {
+      const res = await client.value.getBookmarks()
+      console.log(res.data)
+      return Promise.resolve(res.data)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
   const detectSns = async () => {
     try {
       sns.value = await detector(`${protocol}://${domain.value}`)
@@ -110,5 +134,19 @@ export function useMegalodon () {
     }
   }
 
-  return { setDomain, generateClient, registerApp, fetchAccessToken, sns, verifyAccountCredentials, baseUrl, client, domain, getAccount, getHomeTimeline }
+  return {
+    setDomain,
+    generateClient,
+    registerApp,
+    fetchAccessToken,
+    getFavourites,
+    sns,
+    verifyAccountCredentials,
+    baseUrl,
+    client,
+    domain,
+    getAccount,
+    getBookmarks,
+    getHomeTimeline
+  }
 }

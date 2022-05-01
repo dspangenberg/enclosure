@@ -1,14 +1,14 @@
 <template>
-  <div class="flex items-center mr-3 mt-1.5">
-    <div class="relative">
+  <div class="flex items-center mr-3">
+    <div class="relative mx-auto">
       <img
-        class="h-10 w-10 rounded-full bg-gray-400 flex items-center justify-center ring-8 ring-white"
+        class="h-10 w-10 rounded-full bg-gray-400 flex items-center justify-center shadow-sm border border-gray-100 cursor-pointer"
         :src="account.avatar"
         alt=""
       >
       <span
         v-if="otherAccount"
-        class="absolute -bottom-0.5 -right-1  px-0.5 py-px"
+        class="absolute bottom-5 right- px-0.5 py-px hidden"
       >
         <img
           class="h-5 w-5 rounded-full bg-gray-400 flex items-center justify-center border border-white"

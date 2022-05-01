@@ -1,41 +1,42 @@
 <template>
-  <div class=" pb-1.5  pt-1.5  px-0.5 border-gray-100 flex flex-1 ">
-    <div class="flex flex-1 ">
-      <div class="flex-shrink-1  flex items-center">
+  <div class="border-gray-100 flex flex-1 border-b flex-col">
+    <div class="flex flex-1 px-2 items-center py-1">
+      <div class="flex-shrink-0">
         <enclosure-toot-avatar
           :account="account"
           :other-account="otherAccount"
         />
       </div>
-      <div class="flex flex-1 flex-col">
-        <div class="text-base flex-1 items-center  flex">
+      <div class="flex flex-1 flex-col text-xs">
+        <div class="text-sm flex-1 items-center  flex">
           <a
             :href="account.url"
             target="_blank"
-            class="text-text-600 flex-1 flex items-center"
+            class="text-text-600 flex-1 flex items-center hover:underline"
           >
             <span class="flex-1 font-semibold mr-1 truncate flex">
 
               {{ account.display_name }}
             </span>
-            <span
-              v-tooltip.tooltip="createdAtFormated"
-              class="text-gray-400 text-sm font-semibold"
-            >
-              <stormy-time-ago :date="createdAt" />
-            </span>
+
           </a>
         </div>
         <div class="flex items-center mt-0.5">
-          <span class="flex-1 text-gray-400 text-sm font-semibold">
-            @{{ account.acct }}
+          <a
+            :href="account.url"
+            target="_blank"
+            class="text-text-600 flex-1 flex items-center  hover:underline"
+          >
+            <span class="flex-1 text-gray-400 text-sm font-semibold">
+              @{{ account.acct }}
+            </span>
+          </a>
+          <span
+            v-tooltip.tooltip="createdAtFormated"
+            class="text-gray-400 text-sm font-semibold"
+          >
+            <stormy-time-ago :date="createdAt" />
           </span>
-          <enclosure-toot-action-header
-            v-if="otherAccount"
-            :account="otherAccount"
-            :icon="icon"
-            :action="action"
-          />
         </div>
       </div>
     </div>
@@ -45,6 +46,10 @@
 import { useProp } from '@/composables/useProp.js'
 import { useTemplateFilter } from '@/composables/useTemplateFilter'
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n({ useScope: 'global' })
+const actionText = computed(() => $t(props.action))
 
 const { formatDate } = useTemplateFilter()
 
@@ -53,7 +58,7 @@ const props = defineProps({
   otherAccount: useProp(Object),
   createdAt: useProp(String),
   icon: useProp(String, 'message'),
-  action: useProp(String)
+  action: useProp(String, 'toots.toot.actions.boost')
 })
 
 const createdAtFormated = computed(() => formatDate(props.createdAt))

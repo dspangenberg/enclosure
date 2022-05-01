@@ -28,6 +28,16 @@ const routes = [
       path: 'home',
       name: 'home',
       component: () => import(/* webpackChunkName: "home" */ '@/views/App/Home.vue')
+    },
+    {
+      path: 'favorites',
+      name: 'favorites',
+      component: () => import(/* webpackChunkName: "favourites" */ '@/views/App/Favourites.vue')
+    },
+    {
+      path: 'bookmarks',
+      name: 'bookmarks',
+      component: () => import(/* webpackChunkName: "bookmarks" */ '@/views/App/Bookmarks.vue')
     }]
   },
   {

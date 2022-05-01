@@ -131,8 +131,23 @@
 }
 
 .toot-content a {
-  @apply text-blue-600 hover:underline
+  @apply text-blue-600 hover:underline truncate font-normal overflow-ellipsis;
 }
 
+.toot-content a.hashtag {
+  @apply text-blue-600 hover:underline truncate font-semibold
+}
+
+.toot-content a.mention {
+  @apply text-blue-600 hover:underline truncate font-semibold mt-3
+}
+
+.toot-content p:first-child {
+  margin-top: 0;
+}
+
+.toot-content p {
+  margin-top: 0.75rem;
+}
 
 

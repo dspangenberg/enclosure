@@ -8,7 +8,7 @@
       icon="home"
       color="green"
       count="2"
-      href="/"
+      href="/app/home"
     />
   </stormy-nav-group>
 
@@ -30,16 +30,14 @@
 
   <stormy-nav-group>
     <stormy-nav-item
-      disabled
       i18n
-      href="/app/my/hearts"
+      href="/app/favorites"
       name="sidebar.nav.favs"
       icon="heart"
     />
     <stormy-nav-item
-      disabled
       i18n
-      href="/app/my/bookmarks"
+      href="/app/bookmarks"
       name="sidebar.nav.bookmarks"
       icon="bookmark"
     />
