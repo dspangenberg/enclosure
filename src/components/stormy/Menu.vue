@@ -27,7 +27,7 @@
       leave-from-class="transform opacity-100 scale-100"
       leave-to-class="transform opacity-0 scale-95"
     >
-      <MenuItems class="origin-top-right absolute right-0 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5  focus:outline-none">
+      <MenuItems class="origin-bottom-left absolute bottom-12 left-12 z-50 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5  focus:outline-none">
         <div class="my-0.5 divide-y divide-gray-100 ">
           <slot />
         </div>

@@ -8,10 +8,10 @@
 import { onMounted, ref } from 'vue'
 import { useMegalodon } from '@/composables/useMegalodon.js'
 
-const { getBookmarks } = useMegalodon()
+const { getTimeline } = useMegalodon()
 const timeline = ref(null)
 
 onMounted(async () => {
-  timeline.value = await getBookmarks()
+  timeline.value = await getTimeline('bookmarks')
 })
 </script>

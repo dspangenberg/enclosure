@@ -2,7 +2,7 @@
   <div class="flex items-center mr-3">
     <div class="relative mx-auto">
       <img
-        class="h-10 w-10 rounded-full bg-gray-400 flex items-center justify-center shadow-sm border border-gray-100 cursor-pointer"
+        class="h-10 w-10 rounded-full bg-gray-400 flex items-center justify-center border border-gray-100 cursor-pointer"
         :src="account.avatar"
         alt=""
       >

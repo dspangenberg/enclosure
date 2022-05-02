@@ -2,7 +2,7 @@
   <div>
     <router-link
       :to="href"
-      :class="[disabled ? 'text-gray-300 cursor-not-allowed' : isActive ? 'bg-stone-200 hover:bg-blue-50 text-gray-600' : 'text-gray-500 hover:bg-stone-200/50 hover:text-gray-600', 'cursor-pointer group flex items-center px-2 py-1.5 text-sm font-semibold  rounded-md']"
+      :class="[disabled ? 'text-gray-300 cursor-not-allowed' : isActive ? 'bg-stone-100 hover:bg-blue-50 text-gray-600' : 'text-gray-500 hover:bg-stone-200/50 hover:text-gray-600', 'cursor-pointer group flex items-center px-2 py-1.5 text-sm font-semibold  rounded-md']"
     >
       <stormy-icon
         :name="icon"

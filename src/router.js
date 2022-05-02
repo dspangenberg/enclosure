@@ -58,16 +58,18 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const store = useStore()
-  const { user, client } = store
 
-  if (to.meta.requiresAuth === false) next()
-  if (!client) {
-    await store.reconnect()
+  if (to.meta.requiresAuth === false) {
+    next()
+  } else {
+    try {
+      await store.reconnect()
+      next()
+    } catch (error) {
+      console.log(error)
+      next({ name: 'login' })
+    }
   }
-
-  if (!user === false && to.meta.requiresAuth === true) {
-    next({ name: 'login' })
-  } else next()
 })
 
 export default router

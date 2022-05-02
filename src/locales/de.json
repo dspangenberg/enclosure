@@ -27,7 +27,10 @@
       "tags": "Hashtags",
       "discover": "Entdecken",
       "local": "Lokal",
-      "federation": "Förderation"
+      "federation": "Förderation",
+      "conversations": "Unterhaltungen",
+      "notifications": "Benachrichtigungen",
+      "bubble": "Meine Bubble"
     },
     "placeholder": {
       "search": "Suchen..."

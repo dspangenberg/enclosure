@@ -1,11 +1,11 @@
 <template>
-  <div class="flex">
+  <div class="flex pl-2">
     <div
       v-if="otherAccount"
       class="flex text-xs items-center flex-1"
     >
       <div
-        class="flex items-center mb-1 py-1 px-2 flex-1 border-gray-200"
+        class="flex items-center pt-2 pb-0 mb-0 px-2 flex-1 border-gray-200"
       >
         <stormy-icon
           :name="icon"
@@ -15,10 +15,10 @@
         <span class="text-gray-500 mr-0.5">{{ actionText }}</span>
         <a
           :href="otherAccount.url"
-          class="hover:underline text-gray-800 font-semibold flex items-center"
+          class="hover:underline text-gray-500 flex items-center"
         >
           <img
-            class="h-6 w-6 rounded-full bg-gray-400 flex items-center justify-center border border-white mx-0.5"
+            class="h-5 w-5 rounded-full bg-gray-400 flex items-center justify-center border border-white mx-0.5"
             :src="otherAccount.avatar"
             alt=""
           >

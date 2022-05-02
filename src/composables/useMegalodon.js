@@ -12,6 +12,7 @@ export function useMegalodon () {
   const domain = ref(null)
   const accessToken = ref(null)
   const client = ref(null)
+  const apiLoading = ref(false)
 
   const baseUrl = ref(null)
 
@@ -20,14 +21,69 @@ export function useMegalodon () {
     baseUrl.value = `${protocol}://${domain.value}`
   }
 
-  const getHomeTimeline = async () => {
+  const setLoading = (value = false) => {
     const store = useStore()
-    await ensureClient(store.getAccount())
+    store.setIsLoading(value)
+  }
+
+  const favouriteStatus = async (id) => {
+    await ensureClient()
     try {
-      const res = await client.value.getHomeTimeline()
-      console.log(res.data)
+      const res = await client.value.favouriteStatus(id)
       return Promise.resolve(res.data)
     } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
+  const unfavouriteStatus = async (id) => {
+    await ensureClient()
+    try {
+      const res = await client.value.unfavouriteStatus(id)
+      return Promise.resolve(res.data)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
+  const getTimeline = async (type = 'home', options = {}, id = null) => {
+    setLoading()
+    const account = await ensureClient()
+    if (id === null) {
+      id = account.accountId
+    }
+    try {
+      let res
+      switch (type) {
+        case 'home':
+          res = await client.value.getHomeTimeline(options)
+          break
+        case 'favorites':
+          res = await client.value.getFavourites(options)
+          break
+        case 'bookmarks':
+          res = await client.value.getBookmarks(options)
+          break
+        case 'statuses':
+          res = await client.value.getAccountStatuses(id, options)
+          break
+      }
+      setLoading()
+      return Promise.resolve(res.data)
+    } catch (error) {
+      setLoading()
+      return Promise.reject(error)
+    }
+  }
+
+  const getHomeTimeline = async () => {
+    await ensureClient()
+    try {
+      const res = await client.value.getHomeTimeline({ limit: 40 })
+      setLoading()
+      return Promise.resolve(res.data)
+    } catch (error) {
+      setLoading()
       return Promise.reject(error)
     }
   }
@@ -35,16 +91,16 @@ export function useMegalodon () {
   const getAccountStatuses = async (accountId = null) => {
     const store = useStore()
     const { account } = store
-    console.log(accountId, account)
     if (!accountId && account?.accountId) {
       accountId = account.accountId
     }
     await ensureClient(account)
     try {
       const res = await client.value.getAccountStatuses(accountId)
-      console.log(res.data)
+      setLoading(false)
       return Promise.resolve(res.data)
     } catch (error) {
+      setLoading(false)
       return Promise.reject(error)
     }
   }
@@ -54,7 +110,6 @@ export function useMegalodon () {
     await ensureClient(store.getAccount())
     try {
       const res = await client.value.getFavourites()
-      console.log(res.data)
       return Promise.resolve(res.data)
     } catch (error) {
       return Promise.reject(error)
@@ -66,7 +121,6 @@ export function useMegalodon () {
     await ensureClient(store.getAccount())
     try {
       const res = await client.value.getBookmarks()
-      console.log(res.data)
       return Promise.resolve(res.data)
     } catch (error) {
       return Promise.reject(error)
@@ -96,9 +150,16 @@ export function useMegalodon () {
     }
   }
 
-  const ensureClient = async (account) => {
+  const ensureClient = async (account = null) => {
+    const store = useStore()
+    if (account === null) account = store.ensureAccount()
     if (!client.value) {
-      await generateClient(account)
+      try {
+        await generateClient(account)
+        return account
+      } catch (error) {
+        return Promise.reject(error)
+      }
     }
   }
 
@@ -126,7 +187,7 @@ export function useMegalodon () {
     }
   }
 
-  const verifyAccountCredentials = async (account = null) => {
+  const verifyAccountCredentials = async (account) => {
     await ensureClient(account)
     try {
       const res = await client.value.verifyAccountCredentials()
@@ -152,19 +213,23 @@ export function useMegalodon () {
   }
 
   return {
-    setDomain,
-    generateClient,
-    registerApp,
-    fetchAccessToken,
-    getFavourites,
-    sns,
-    verifyAccountCredentials,
+    apiLoading,
     baseUrl,
+    sns,
     client,
     domain,
+    favouriteStatus,
+    fetchAccessToken,
     getAccount,
     getAccountStatuses,
     getBookmarks,
-    getHomeTimeline
+    getFavourites,
+    getHomeTimeline,
+    getTimeline,
+    generateClient,
+    registerApp,
+    setDomain,
+    unfavouriteStatus,
+    verifyAccountCredentials
   }
 }

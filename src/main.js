@@ -10,7 +10,6 @@ import messages from '@intlify/vite-plugin-vue-i18n/messages'
 import router from '@/router'
 import { createPinia } from 'pinia'
 import Vue3Sanitize from 'vue-3-sanitize'
-
 import directives from '@/directives'
 import Tooltip from '@/components/Tooltip.vue'
 
@@ -37,9 +36,10 @@ Object.entries(components).forEach(([path, component]) => {
 
 directives(app)
 
+app.use(createPinia())
+
 app
   .use(i18n)
-  .use(createPinia())
   .component('Tooltip', Tooltip)
   .use(router)
   .use(Vue3Sanitize, {

@@ -1,6 +1,6 @@
 <template>
-  <enclosure-toot-container inner-class="!py-0">
-    <div class="flex border-gray-100 flex-1 text-xs items-center">
+  <enclosure-toot-container>
+    <div class="flex border-0 flex-1 text-xs items-center">
       <div class="flex items-center flex-1">
         <stormy-icon
           :name="visibilityIcon"

@@ -23,7 +23,10 @@
       "tags": "Hash Tags",
       "discover": "Discover",
       "local": "Local",
-      "federation": ""
+      "federation": "",
+      "my-profile": "",
+      "conversations": "",
+      "bubble": ""
     }
   }
 }

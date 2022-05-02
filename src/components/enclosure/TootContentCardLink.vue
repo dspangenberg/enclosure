@@ -4,7 +4,7 @@
       <div v-if="card.image">
         <img
           :src="card.image"
-          class="object-cover w-full rounded-tl-md rounded-tr-md"
+          class="object-cover w-full rounded-tl-md rounded-tr-md border-b"
         >
       </div>
       <div class="flex-1 overflow-hidden p-4 my-auto">

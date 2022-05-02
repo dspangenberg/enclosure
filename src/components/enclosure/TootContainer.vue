@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="my-4 mx-4 space-y-3 space-x-4"
+      class="my-2.5 mx-4 space-y-3 space-x-4"
       :class="innerClass"
     >
       <slot />

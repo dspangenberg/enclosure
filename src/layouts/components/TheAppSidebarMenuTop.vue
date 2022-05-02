@@ -12,22 +12,6 @@
     />
   </stormy-nav-group>
 
-  <!--
-    Mehr als 7, nix gut => besser in Header
-  <stormy-nav-group>
-    <stormy-nav-item
-      href="/contacts"
-      name="Mitteilungen"
-      icon="notification"
-    />
-    <stormy-nav-item
-      href="/projects"
-      name="Nachrichten"
-      icon="mail"
-    />
-  </stormy-nav-group>
-  -->
-
   <stormy-nav-group>
     <stormy-nav-item
       i18n
@@ -35,6 +19,27 @@
       name="sidebar.nav.my-profile"
       icon="user-circle"
     />
+    <stormy-nav-item
+      i18n
+      href="/app/notification"
+      name="sidebar.nav.notifications"
+      icon="notification"
+    />
+    <stormy-nav-item
+      i18n
+      href="/app/bubble"
+      name="sidebar.nav.bubble"
+      icon="chart-bubble"
+    />
+    <stormy-nav-item
+      i18n
+      href="/app/conversations"
+      name="sidebar.nav.conversations"
+      icon="at"
+    />
+  </stormy-nav-group>
+
+  <stormy-nav-group>
     <stormy-nav-item
       i18n
       href="/app/favorites"
@@ -67,19 +72,5 @@
         name="Klatsch"
       />
     </stormy-nav-item>
-    <stormy-nav-item
-      disabled
-      i18n
-      href="/app/my/hashs"
-      name="sidebar.nav.tags"
-      icon="hash"
-    />
   </stormy-nav-group>
-  <!--
-      // $t('sidebar.nav.timeline')
-      // $t('sidebar.nav.favs')
-      // $t('sidebar.nav.bookmarks')
-      // $t('sidebar.nav.lists')
-      // $t('sidebar.nav.tags')
-    -->
 </template>

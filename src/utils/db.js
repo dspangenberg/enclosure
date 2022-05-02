@@ -49,6 +49,7 @@ const searchAccount = (search) => {
 }
 
 const accountById = (id) => {
+  if (!id) return null
   const accounts = db()
     .defaults({ accounts: [] })
     .get('accounts')

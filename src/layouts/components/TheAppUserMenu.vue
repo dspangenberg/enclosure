@@ -7,10 +7,14 @@
       <span class="sr-only">Open user menu</span>
       <span class="rounded-full border border-gray-100">
         <img
-          class="h-8 w-8 rounded-full border-white border-2"
+          class="h-8 w-8 rounded-full border-white border-2 "
           :src="account.avatar"
           alt=""
         >
+      </span>
+      <span class="text-sm text-gray-600 ml-2 truncate font-semibold">
+        {{ account.username }}@{{ account.domain }}
+
       </span>
     </template>
     <div class="px-3 py-3 bg-gray-50 -mt-0.5 rounded-t-l-md rounded-t-r-md hover:bg-gray-100">
@@ -76,12 +80,6 @@
       />
     </div>
     <div class="flex flex-col">
-      <stormy-menu-item
-        disabled
-        i18n
-        icon="settings"
-        label="user-menu.settings"
-      />
       <stormy-menu-item
         disabled
         i18n

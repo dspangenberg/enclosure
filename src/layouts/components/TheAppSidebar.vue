@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-col w-64 select-none border-r border-gray-100">
-    <div class="flex flex-col h-0 flex-1 bg-stone-100 bg-opacity-75">
+  <div class="flex flex-col w-64 select-none ">
+    <div class="flex flex-col h-0 flex-1">
       <div class="flex-1 flex flex-col overflow-y-auto ">
         <div class="flex-shrink-0 flex  pt-6 pb-2.5">
           <a
@@ -8,8 +8,8 @@
             href="/"
           >
             <img
-              class="h-8 w-auto sm:h-10 mx-auto my-3"
-              src="https://tailwindui.com/img/logos/workflow-mark-blue-600.svg"
+              class="h-12 w-auto mx-auto my-3"
+              src="https://raw.githubusercontent.com/mastodon/mastodon/main/app/javascript/images/logo.svg "
               alt=""
             >
 
@@ -33,7 +33,7 @@
         </div>
         <div class="">
           <nav
-            class="divide-stone-200/50 border-stone-200/50 divide-y space-y border-b"
+            class="divide-stone-200/50 border-stone-200/50 space-y-6"
             aria-label="Sidebar"
           >
             <slot />
@@ -42,17 +42,20 @@
       </div>
       <div class="flex-shrink-0">
         <nav
-          class="divide-stone-200/50 border-stone-200/50 divide-y space-y pt-1 border-t"
+          class="divide-stone-200/50 border-stone-200/50 space-y-6"
           aria-label="Sidebar"
         >
           <slot name="bottom" />
         </nav>
+        <div class="ml-1 mt-6">
+          <TheAppUserMenu />
+        </div>
       </div>
     </div>
   </div>
 </template>
-
 <script setup>
+import TheAppUserMenu from './TheAppUserMenu.vue'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n({ useScope: 'global' })
 </script>
