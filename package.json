@@ -36,6 +36,7 @@
     "vue": "^3.2.33",
     "vue-3-sanitize": "^0.1.4",
     "vue-advanced-cropper": "^1.10.1",
+    "vue-easy-lightbox": "^1.4.1",
     "vue-i18n": "9.1.9",
     "vue-router": "4.0.14"
   },

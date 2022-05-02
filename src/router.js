@@ -26,7 +26,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "appLayout" */ '@/layouts/TheAppLayout.vue'),
     children: [
       {
-        path: 'timeline/:type?',
+        path: 'timeline/:type/:tag?',
         name: 'bookmarks',
         component: () => import(/* webpackChunkName: "timeline-view" */ '@/views/App/TimelineView.vue')
       }

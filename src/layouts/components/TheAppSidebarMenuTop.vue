@@ -35,8 +35,7 @@
     />
     <stormy-nav-item
       i18n
-      disabled
-      href="/app/conversations"
+      href="/app/timeline/conversations"
       name="sidebar.nav.conversations"
       icon="at"
     />

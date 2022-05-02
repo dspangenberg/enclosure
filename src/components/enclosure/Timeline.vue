@@ -16,18 +16,34 @@
         leave-from-class="transform opacity-100 scale-100"
         leave-to-class="transform opacity-0 scale-95"
       >
-        <div class="flex-1 z-10 pt-12  w-full -mt-1">
+        <div
+          v-if="filteredToots.length"
+          class="flex-1 z-10 pt-12  w-full -mt-1"
+        >
           <ul
             role="list"
             class="divide-y divide-gray-200/75"
           >
             <enclosure-toot
-              v-for="(toot, index) in store.toots"
+              v-for="(toot, index) in filteredToots"
               :key="toot.id"
               :index="index"
               :toot="toot"
             />
           </ul>
+        </div>
+        <div
+          v-else
+          class="w-xl flex-1 w-xl items-center"
+        >
+          <div class="relative p-8 text-center">
+            <h2 class="text-2xl font-medium">
+              There's nothing here...
+            </h2>
+            <p class="mt-4 text-sm text-gray-500">
+              Created posts will appear here, try creating one!
+            </p>
+          </div>
         </div>
       </transition>
     </template>
@@ -47,23 +63,21 @@
 <script setup>
 import { useProp } from '@/composables/useProp.js'
 import { useToots } from '@/stores/toots'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const store = useToots()
-const toots = ref([])
-
-watch(
-  store.toots,
-  (state) => {
-    console.log(state)
-    // persist the whole state to the local storage whenever it changes
-    toots.value = state.toots
-  },
-  { deep: true, immediate: true }
-)
 
 const { t: $t } = useI18n({ useScope: 'global' })
+
+const filteredToots = computed(() => {
+  if (['local', 'federation'].includes(props.type)) {
+    return store.toots.filter(item => ['de', 'en'].includes(item.language))
+  }
+  return store.toots
+})
 
 const props = defineProps({
   title: useProp(String, ''),
@@ -73,6 +87,12 @@ const props = defineProps({
 const getTitle = computed(() => {
   if (props.title) return props.title
   if (!props.type) return `Oops ${props.type}`
+
+  if (props.type === 'tags') {
+    const i18 = $t(`timelines.titles.${props.type}`)
+    return `${i18} #${route.params.tag}`
+  }
+
   return $t(`timelines.titles.${props.type}`)
 })
 

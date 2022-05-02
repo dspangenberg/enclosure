@@ -9,16 +9,7 @@
           </template>
         </TheAppSidebar>
       </div>
-      <div class="border-gray-100 bg-white flex flex-col w-[36rem] max-w-xl flex-1  justify-between border-l border-r">
-        <router-view v-slot="{ Component }">
-          <component :is="Component" />
-        </router-view>
-      </div>
-      <div class="flex-shrink-0 relative w-64 ml-2">
-        <div class="fixed">
-          xxx
-        </div>
-      </div>
+      <router-view />
     </div>
   </div>
 </template>

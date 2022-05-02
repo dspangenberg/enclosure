@@ -24,7 +24,9 @@
       "bookmarks": "Meine Lesezeichen",
       "local": "Lokal",
       "federation": "Förderation",
-      "profile": "Mein Profil"
+      "profile": "Mein Profil",
+      "conversations": "Unterhaltungen",
+      "tags": "Timeline für "
     }
   },
   "sidebar": {

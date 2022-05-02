@@ -1,7 +1,14 @@
 <template>
-  <enclosure-timeline
-    :type="timelineType"
-  />
+  <enclosure-container>
+    <template #default>
+      <enclosure-timeline
+        :type="timelineType"
+      />
+    </template>
+    <template #aside>
+      <enclosure-trends />
+    </template>
+  </enclosure-container>
 </template>
 <script setup>
 import { watch, computed } from 'vue'
@@ -17,7 +24,8 @@ defineProps({
 })
 
 watch(route, async (route) => {
-  await store.getTootsforTimeline(route?.params?.type || 'home')
+  console.log(route?.params?.tag)
+  await store.getTootsforTimeline(route?.params?.type || 'home', {}, null, route?.params?.tag || null)
 }, { immediate: true })
 
 const timelineType = computed(() => route?.params?.type || 'home')

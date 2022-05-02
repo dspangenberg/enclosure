@@ -15,8 +15,9 @@ export const useStore = defineStore({
     isLoadingStatus: false
   }),
   getters: {
-    getMastodonHandle: (state) => state.user ? `@${state.account.username}@${state.account.domain}` : '',
-    isLoading: (state) => state.isLoadingStatus
+    getMastodonHandle: (state) => state.account ? `@${state.account.username}@${state.account.domain}` : '',
+    isLoading: (state) => state.isLoadingStatus,
+    instance: (state) => state.account?.domain || 'Fick Dich!'
   },
   actions: {
     ensureAccount () {

@@ -35,11 +35,11 @@ export const useToots = defineStore({
     byId (id) {
       return this.toots.find(item => parseInt(item.id) === parseInt(id) || parseInt(item.reblog?.id) === parseInt(id))
     },
-    async getTootsforTimeline (timeline = 'home', options = {}, id = null) {
+    async getTootsforTimeline (timeline = 'home', options = {}, id = null, tag = null) {
       this.toots = []
       this.loadingStatus = true
       try {
-        this.toots = await getTimeline(timeline, options, id)
+        this.toots = await getTimeline(timeline, options, id, tag)
       } catch (error) {
         Promise.reject(error)
       }

@@ -26,7 +26,6 @@ export function useMegalodon () {
     store.setIsLoading(value)
   }
 
-
   const bookmarkStatus = async (id) => {
     await ensureClient()
     try {
@@ -87,7 +86,7 @@ export function useMegalodon () {
     }
   }
 
-  const getTimeline = async (type = 'home', options = {}, id = null) => {
+  const getTimeline = async (type = 'home', options = {}, id = null, tag = null) => {
     setLoading()
     const account = await ensureClient()
     if (id === null) {
@@ -114,6 +113,15 @@ export function useMegalodon () {
         case 'federation':
           res = await client.value.getPublicTimeline(options)
           break
+        case 'conversations':
+          res = await client.value.getConversationTimeline(options)
+          break
+        case 'tags':
+          console.log('tags', tag)
+          if (tag) {
+            res = await client.value.getTagTimeline(tag, options)
+          }
+          break
       }
       setLoading()
       return Promise.resolve(res.data)
@@ -123,10 +131,10 @@ export function useMegalodon () {
     }
   }
 
-  const getHomeTimeline = async () => {
+  const getInstanceTrends = async (limit = 10) => {
     await ensureClient()
     try {
-      const res = await client.value.getHomeTimeline({ limit: 40 })
+      const res = await client.value.getInstanceTrends(limit)
       setLoading()
       return Promise.resolve(res.data)
     } catch (error) {
@@ -273,7 +281,7 @@ export function useMegalodon () {
     getAccountStatuses,
     getBookmarks,
     getFavourites,
-    getHomeTimeline,
+    getInstanceTrends,
     getTimeline,
     generateClient,
     reblogStatus,
