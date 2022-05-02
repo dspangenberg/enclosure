@@ -36,7 +36,9 @@
 import { computed } from 'vue'
 import { useProp } from '@/composables/useProp.js'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const { t: $t } = useI18n({ useScope: 'global' })
 
 const props = defineProps({
@@ -58,5 +60,7 @@ const props = defineProps({
 
 const label = computed(() => props.i18n ? $t(props.name) : props.name)
 
-const isActive = computed(() => props.active)
+const isActive = computed(() => {
+  return (props.href === route.path)
+})
 </script>

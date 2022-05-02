@@ -7,7 +7,7 @@
       :account="account"
       :created-at="createdAt"
       :other-account="otherAccount"
-      :toot="toot"
+      :toot="item"
       :icon="isReblog ? 'message-2-share' : 'message'"
       :type="isReblog ? 'reblog' : 'toot'"
       action="toots.toot.actions.boost"
@@ -25,8 +25,8 @@
             :type="isReblog ? 'reblog' : 'toot'"
             action="toots.toot.actions.boost"
           />
-          <enclosure-toot-content :toot="toot" />
-          <enclosure-toot-footer :toot="toot" />
+          <enclosure-toot-content :toot="item" />
+          <enclosure-toot-footer :toot="item" />
         </div>
       </div>
     </div>
@@ -34,17 +34,18 @@
 </template>
 <script setup>
 import { useProp } from '@/composables/useProp.js'
-import { computed } from 'vue'
+import { computed, toRefs } from 'vue'
 
 const props = defineProps({
   toot: useProp(Object),
   index: useProp(Number)
 })
 
-const isReblog = computed(() => props.toot.reblog instanceof Object)
+const { toot } = toRefs(props)
 
-const toot = computed(() => isReblog.value ? props.toot.reblog : props.toot)
-const account = computed(() => isReblog.value ? props.toot.reblog.account : props.toot.account)
-const createdAt = computed(() => isReblog.value ? props.toot.reblog.created_at : props.toot.created_at)
-const otherAccount = computed(() => isReblog.value ? props.toot.account : null)
+const isReblog = computed(() => toot.value.reblog instanceof Object)
+const item = computed(() => isReblog.value ? toot.value.reblog : toot.value)
+const account = computed(() => isReblog.value ? toot.value.reblog.account : toot.value.account)
+const createdAt = computed(() => isReblog.value ? toot.value.reblog.created_at : toot.value.created_at)
+const otherAccount = computed(() => isReblog.value ? toot.value.account : null)
 </script>

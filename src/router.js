@@ -22,32 +22,19 @@ const routes = [
   {
     path: '/app',
     name: 'app',
-    meta: { requiresAuth: false },
+    meta: { requiresAuth: true },
     component: () => import(/* webpackChunkName: "appLayout" */ '@/layouts/TheAppLayout.vue'),
-    children: [{
-      path: 'home',
-      name: 'home',
-      component: () => import(/* webpackChunkName: "home" */ '@/views/App/Home.vue')
-    },
-    {
-      path: 'my-profile',
-      name: 'my-profile',
-      component: () => import(/* webpackChunkName: "my-profile" */ '@/views/App/Profile.vue')
-    },
-    {
-      path: 'favorites',
-      name: 'favorites',
-      component: () => import(/* webpackChunkName: "favourites" */ '@/views/App/Favourites.vue')
-    },
-    {
-      path: 'bookmarks',
-      name: 'bookmarks',
-      component: () => import(/* webpackChunkName: "bookmarks" */ '@/views/App/Bookmarks.vue')
-    }]
+    children: [
+      {
+        path: 'timeline/:type?',
+        name: 'bookmarks',
+        component: () => import(/* webpackChunkName: "timeline-view" */ '@/views/App/TimelineView.vue')
+      }
+    ]
   },
   {
     path: '/:pathMatch(.*)*',
-    redirect: '/app/home'
+    redirect: '/app/timeline'
   }
 ]
 

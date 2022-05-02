@@ -17,6 +17,16 @@
       }
     }
   },
+  "timelines": {
+    "titles": {
+      "home": "Startseite",
+      "favorites": "Meine Favoriten",
+      "bookmarks": "Meine Lesezeichen",
+      "local": "Lokal",
+      "federation": "Förderation",
+      "profile": "Mein Profil"
+    }
+  },
   "sidebar": {
     "nav": {
       "my-profile": "Mein Profil",

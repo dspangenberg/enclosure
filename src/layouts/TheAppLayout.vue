@@ -11,16 +11,7 @@
       </div>
       <div class="border-gray-100 bg-white flex flex-col w-[36rem] max-w-xl flex-1  justify-between border-l border-r">
         <router-view v-slot="{ Component }">
-          <transition
-            enter-active-class="transition ease-out duration-100"
-            enter-from-class="transform opacity-0 scale-95"
-            enter-to-class="transform opacity-100 scale-100"
-            leave-active-class="transition ease-in duration-75"
-            leave-from-class="transform opacity-100 scale-100"
-            leave-to-class="transform opacity-0 scale-95"
-          >
-            <component :is="Component" />
-          </transition>
+          <component :is="Component" />
         </router-view>
       </div>
       <div class="flex-shrink-0 relative w-64 ml-2">

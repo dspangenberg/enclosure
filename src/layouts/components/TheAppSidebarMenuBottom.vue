@@ -12,16 +12,14 @@
             -->
   <stormy-nav-group>
     <stormy-nav-item
-      disabled
       i18n
-      href="/app/local"
+      href="/app/timeline/local"
       name="sidebar.nav.local"
       icon="social"
     />
     <stormy-nav-item
-      disabled
       i18n
-      href="/app/federation"
+      href="/app/timeline/federation"
       name="sidebar.nav.federation"
       icon="rocket"
     />

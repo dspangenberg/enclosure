@@ -1,26 +1,35 @@
 <template>
   <div class="overflow-hidden flex flex-1 max-w-xl h-full items-center relative w-full">
-    <div class="fixed flex-shrink-0 top-0 max-w-xl bg-white z-50  w-[574px]">
-      <div class=" text-lg font-bold text-gray-900 flex items-center h-12 border-b border-gray-100">
+    <div class="fixed flex-shrink-0 top-0 max-w-xl bg-white z-20 w-[574px]">
+      <div class=" text-lg font-bold text-gray-900 flex items-center  border-b border-gray-100">
         <div class="flex-1 my-3 mx-4 ">
-          {{ label }}
+          {{ getTitle }}
         </div>
       </div>
     </div>
     <template v-if="!store.isLoading">
-      <div class="flex-1 z-10 pt-12  w-full ">
-        <ul
-          role="list"
-          class="divide-y divide-gray-200/75"
-        >
-          <enclosure-toot
-            v-for="(toot, index) in timeline"
-            :key="toot.id"
-            :index="index"
-            :toot="toot"
-          />
-        </ul>
-      </div>
+      <transition
+        enter-active-class="transition ease-out duration-100"
+        enter-from-class="transform opacity-0 scale-95"
+        enter-to-class="transform opacity-100 scale-100"
+        leave-active-class="transition ease-in duration-75"
+        leave-from-class="transform opacity-100 scale-100"
+        leave-to-class="transform opacity-0 scale-95"
+      >
+        <div class="flex-1 z-10 pt-12  w-full -mt-1">
+          <ul
+            role="list"
+            class="divide-y divide-gray-200/75"
+          >
+            <enclosure-toot
+              v-for="(toot, index) in store.toots"
+              :key="toot.id"
+              :index="index"
+              :toot="toot"
+            />
+          </ul>
+        </div>
+      </transition>
     </template>
     <template v-else>
       <div class="w-xl  flex-1 w-xl items-center">
@@ -37,12 +46,34 @@
 </template>
 <script setup>
 import { useProp } from '@/composables/useProp.js'
-import { useStore } from '@/stores/global'
-const store = useStore()
+import { useToots } from '@/stores/toots'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
-defineProps({
-  timeline: useProp(Array),
-  label: useProp(String, '')
+const store = useToots()
+const toots = ref([])
+
+watch(
+  store.toots,
+  (state) => {
+    console.log(state)
+    // persist the whole state to the local storage whenever it changes
+    toots.value = state.toots
+  },
+  { deep: true, immediate: true }
+)
+
+const { t: $t } = useI18n({ useScope: 'global' })
+
+const props = defineProps({
+  title: useProp(String, ''),
+  type: useProp(String, '')
+})
+
+const getTitle = computed(() => {
+  if (props.title) return props.title
+  if (!props.type) return `Oops ${props.type}`
+  return $t(`timelines.titles.${props.type}`)
 })
 
 </script>

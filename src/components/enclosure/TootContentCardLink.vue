@@ -1,10 +1,13 @@
 <template>
   <div>
     <div class="flex flex-1 flex-col border rounded-md">
-      <div v-if="card.image">
+      <div
+        v-if="card.image"
+        class="aspect-w-8 aspect-h-4 w-full block"
+      >
         <img
           :src="card.image"
-          class="object-cover w-full rounded-tl-md rounded-tr-md border-b"
+          class="object-cover absolute w-full rounded-tl-md rounded-tr-md border-b"
         >
       </div>
       <div class="flex-1 overflow-hidden p-4 my-auto">

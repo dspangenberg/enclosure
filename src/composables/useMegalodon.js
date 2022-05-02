@@ -26,6 +26,47 @@ export function useMegalodon () {
     store.setIsLoading(value)
   }
 
+
+  const bookmarkStatus = async (id) => {
+    await ensureClient()
+    try {
+      const res = await client.value.bookmarkStatus(id)
+      return Promise.resolve(res.data)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
+  const unbookmarkStatus = async (id) => {
+    await ensureClient()
+    try {
+      const res = await client.value.unbookmarkStatus(id)
+      return Promise.resolve(res.data)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
+  const reblogStatus = async (id) => {
+    await ensureClient()
+    try {
+      const res = await client.value.reblogStatus(id)
+      return Promise.resolve(res.data)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
+  const unreblogStatus = async (id) => {
+    await ensureClient()
+    try {
+      const res = await client.value.unreblogStatus(id)
+      return Promise.resolve(res.data)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
   const favouriteStatus = async (id) => {
     await ensureClient()
     try {
@@ -50,7 +91,7 @@ export function useMegalodon () {
     setLoading()
     const account = await ensureClient()
     if (id === null) {
-      id = account.accountId
+      id = account?.accountId
     }
     try {
       let res
@@ -64,8 +105,14 @@ export function useMegalodon () {
         case 'bookmarks':
           res = await client.value.getBookmarks(options)
           break
-        case 'statuses':
+        case 'profile':
           res = await client.value.getAccountStatuses(id, options)
+          break
+        case 'local':
+          res = await client.value.getLocalTimeline(options)
+          break
+        case 'federation':
+          res = await client.value.getPublicTimeline(options)
           break
       }
       setLoading()
@@ -161,6 +208,7 @@ export function useMegalodon () {
         return Promise.reject(error)
       }
     }
+    return account
   }
 
   const getAccount = async (id) => {
@@ -218,6 +266,7 @@ export function useMegalodon () {
     sns,
     client,
     domain,
+    bookmarkStatus,
     favouriteStatus,
     fetchAccessToken,
     getAccount,
@@ -227,9 +276,12 @@ export function useMegalodon () {
     getHomeTimeline,
     getTimeline,
     generateClient,
+    reblogStatus,
     registerApp,
     setDomain,
+    unbookmarkStatus,
     unfavouriteStatus,
+    unreblogStatus,
     verifyAccountCredentials
   }
 }

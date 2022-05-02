@@ -2,9 +2,9 @@ import { acceptHMRUpdate, defineStore } from 'pinia'
 import { useMegalodon } from '@/composables/useMegalodon.js'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { accountById, firstAccount } from '@/utils/db.js'
+import { useStorage } from '@vueuse/core'
 
 const { verifyAccountCredentials } = useMegalodon()
-const { get, set } = useCookies(['enclusure'], { doNotParse: false, autoUpdateDependencies: false })
 
 export const useStore = defineStore({
   id: 'global',
@@ -41,13 +41,13 @@ export const useStore = defineStore({
       return this.account
     },
     setAccountId (accountId) {
-      set('accountId', accountId, { path: '/' })
+      useStorage('current-account-id', accountId)
     },
     setIsLoading (value) {
       this.isLoadingStatus = value
     },
     getAccountId () {
-      return get('accountId')
+      return useStorage('current-account-id')
     },
     setClient (client) {
       this.client = client

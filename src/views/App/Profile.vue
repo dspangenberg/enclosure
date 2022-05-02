@@ -1,7 +1,7 @@
 <template>
   <enclosure-timeline
     :timeline="timeline"
-    label="Profil"
+    label="Profile"
   />
 </template>
 <script setup>
@@ -12,6 +12,6 @@ const { getTimeline } = useMegalodon()
 const timeline = ref(null)
 
 onMounted(async () => {
-  timeline.value = await getTimeline('statuses')
+  timeline.value = await getTimeline('state')
 })
 </script>

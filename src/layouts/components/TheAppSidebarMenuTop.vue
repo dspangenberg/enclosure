@@ -8,31 +8,34 @@
       icon="home"
       color="green"
       count="2"
-      href="/app/home"
+      href="/app/timeline/home"
     />
   </stormy-nav-group>
 
   <stormy-nav-group>
     <stormy-nav-item
       i18n
-      href="/app/my-profile"
+      href="/app/timeline/profile"
       name="sidebar.nav.my-profile"
       icon="user-circle"
     />
     <stormy-nav-item
       i18n
-      href="/app/notification"
+      disabled
+      href="/app/timeline/profile"
       name="sidebar.nav.notifications"
       icon="notification"
     />
     <stormy-nav-item
       i18n
+      disabled
       href="/app/bubble"
       name="sidebar.nav.bubble"
       icon="chart-bubble"
     />
     <stormy-nav-item
       i18n
+      disabled
       href="/app/conversations"
       name="sidebar.nav.conversations"
       icon="at"
@@ -42,19 +45,20 @@
   <stormy-nav-group>
     <stormy-nav-item
       i18n
-      href="/app/favorites"
+      href="/app/timeline/favorites"
       name="sidebar.nav.favs"
       icon="heart"
     />
     <stormy-nav-item
       i18n
-      href="/app/bookmarks"
+      href="/app/timeline/bookmarks"
       name="sidebar.nav.bookmarks"
       icon="bookmark"
     />
     <stormy-nav-item
       open
       i18n
+      disabled
       href="#"
       name="sidebar.nav.lists"
       icon="list"

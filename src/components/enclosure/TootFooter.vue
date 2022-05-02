@@ -7,7 +7,7 @@
       <div class="flex items-center mx-auto">
         <stormy-icon
           name="messages"
-          class="w-5 h-5 mr-2.5 text-gray-500"
+          class="w-5 h-5 mr-2.5 hover:text-blue-700 cursor-pointer"
           :stroke-width="1"
         />
         <div class="text-gray-600  text-xs">
@@ -17,9 +17,10 @@
       <div class="flex items-center mx-auto">
         <stormy-icon
           name="message-2-share"
-          class="w-5 h-5 mr-2.5 "
+          class="w-5 h-5 mr-2.5 hover:text-blue-900 cursor-pointer"
           :class="[toot.reblogged ? 'text-blue-500' : 'text-gray-500']"
           :stroke-width="toot.reblogged ? 2 : 1"
+          @click="store.reblog(toot.reblogged ? toot.reblog.id : toot.id)"
         />
         <div class="text-gray-600 text-xs">
           {{ toot.reblogs_count }}
@@ -28,10 +29,10 @@
       <div class="flex items-center mx-auto">
         <stormy-icon
           name="heart"
-          class="w-5 h-5 mr-2.5 cursor-pointer"
+          class="w-5 h-5 mr-2.5 hover:text-blue-900 cursor-pointer"
           :class="[toot.favourited ? 'text-red-500' : 'text-gray-500']"
           :stroke-width="toot.favourited ? 2 : 1"
-          @click="toogleFavorite"
+          @click="store.favorite(toot.id)"
         />
         <div class="text-gray-600 text-xs">
           {{ toot.favourites_count }}
@@ -40,9 +41,10 @@
       <div class="flex items-center mx-auto">
         <stormy-icon
           name="bookmark"
-          class="w-5 h-5 mr-2.5"
+          class="w-5 h-5 mr-2.5 hover:text-blue-900 cursor-pointer"
           :class="[toot.bookmarked ? 'text-blue-500' : 'text-gray-500']"
           :stroke-width="toot.bookmarked ? 2 : 1"
+          @click="store.bookmark(toot.id)"
         />
       </div>
     </div>
@@ -50,22 +52,12 @@
 </template>
 <script setup>
 import { useProp } from '@/composables/useProp.js'
-import { useMegalodon } from '@/composables/useMegalodon.js'
+import { useToots } from '@/stores/toots'
 
-const { favouriteStatus, unfavouriteStatus } = useMegalodon()
+const store = useToots()
 
-const props = defineProps({
+defineProps({
   toot: useProp(Object)
 })
-
-const toogleFavorite = async () => {
-  let result = null
-  if (props.toot.favourited) {
-    result = await unfavouriteStatus(props.toot.id)
-  } else {
-    result = await favouriteStatus(props.toot.id)
-  }
-  console.log(result)
-}
 
 </script>

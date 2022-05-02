@@ -2,17 +2,16 @@
   <div class="flex flex-col w-64 select-none ">
     <div class="flex flex-col h-0 flex-1">
       <div class="flex-1 flex flex-col overflow-y-auto ">
-        <div class="flex-shrink-0 flex  pt-6 pb-2.5">
+        <div class="flex-shrink-0 flex  pt-6 pb-2.5 w-full">
           <a
             class="w-full"
             href="/"
           >
             <img
-              class="h-12 w-auto mx-auto my-3"
+              class="h-12 w-auto mx-auto my-3 blur-sm rotate-180"
               src="https://raw.githubusercontent.com/mastodon/mastodon/main/app/javascript/images/logo.svg "
               alt=""
             >
-
           </a>
         </div>
         <div class="mx-auto w-full px-2 py-4">
