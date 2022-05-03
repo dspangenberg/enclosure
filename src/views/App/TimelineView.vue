@@ -7,6 +7,7 @@
     </template>
     <template #aside>
       <enclosure-trends />
+      <enclosure-suggestions />
     </template>
   </enclosure-container>
 </template>

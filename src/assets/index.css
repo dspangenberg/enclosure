@@ -271,3 +271,13 @@
         rgb(27, 136, 218) 0px 0px 0px;
       }
     }
+
+.lang-icon {
+    background-image: url(@textabledev/langs-flags-list/lang-flags.png);
+}
+
+@keyframes spin {
+   from {transform:rotate(0deg);}
+   to {transform:rotate(359deg);}
+}
+

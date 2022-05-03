@@ -25,7 +25,10 @@
             :type="isReblog ? 'reblog' : 'toot'"
             action="toots.toot.actions.boost"
           />
-          <enclosure-toot-content :toot="item" />
+          <enclosure-toot-content
+            :deep-limit="deepLimit"
+            :toot="item"
+          />
           <enclosure-toot-footer :toot="item" />
         </div>
       </div>
@@ -38,7 +41,8 @@ import { computed, toRefs } from 'vue'
 
 const props = defineProps({
   toot: useProp(Object),
-  index: useProp(Number)
+  index: useProp(Number),
+  deepLimit: useProp(Number, 0)
 })
 
 const { toot } = toRefs(props)

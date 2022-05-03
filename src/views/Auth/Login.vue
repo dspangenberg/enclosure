@@ -39,6 +39,9 @@ import { useMegalodon } from '@/composables/useMegalodon.js'
 import { ref } from 'vue'
 import { upsertAccount, firstAccount } from '@/utils/db.js'
 import { useStore } from '@/stores/global'
+import { useCookies } from '@vueuse/integrations/useCookies'
+
+const { set } = useCookies(['enclusure'], { doNotParse: false, autoUpdateDependencies: false })
 
 const store = useStore()
 const errorObj = ref(null)
@@ -64,7 +67,8 @@ const confirm = async () => {
     account.clientSecret = clientSecret
 
     const createdAccount = upsertAccount(account)
-    store.setAccountId(createdAccount.id)
+
+    set('accountId', createdAccount.id, { path: '/' })
   } catch (error) {
     if (error.response) {
       // errorObj.value = error.response

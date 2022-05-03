@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="py-2">
     <vue-easy-lightbox
       scroll-disabled
       move-disabled

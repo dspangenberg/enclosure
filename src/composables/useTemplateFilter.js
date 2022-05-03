@@ -38,7 +38,10 @@ export function useTemplateFilter () {
     if (!value) return
     return (numbro(value).format({ mantissa: 2, thousandSeparated: true }) + ' ' + unit).trim()
   }
-
+  const formatInt = (value, unit = '') => {
+    if (!value) return
+    return (numbro(value).format({ thousandSeparated: true }) + ' ' + unit).trim()
+  }
   function getImageUrl (name) {
     return new URL(`/${name}`, import.meta.env.VITE_APP_ASSETS).href
   }
@@ -53,5 +56,5 @@ export function useTemplateFilter () {
     })
   }
 
-  return { formatAccounId, formatCurrency, formatDate, getImageUrl, formatFloat, formatBytes, formatMarkdown }
+  return { formatAccounId, formatCurrency, formatDate, getImageUrl, formatFloat, formatBytes, formatMarkdown, formatInt }
 }

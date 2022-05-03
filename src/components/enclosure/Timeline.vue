@@ -27,6 +27,7 @@
             <enclosure-toot
               v-for="(toot, index) in filteredToots"
               :key="toot.id"
+              :deep-limit="deeplLimit"
               :index="index"
               :toot="toot"
             />
@@ -36,6 +37,10 @@
           v-else
           class="w-xl flex-1 w-xl items-center"
         >
+          <stormy-icon
+            name="mood-empty"
+            class="text-gray-300 mx-auto drop-shadow-xl w-20 h-20"
+          />
           <div class="relative p-8 text-center">
             <h2 class="text-2xl font-medium">
               There's nothing here...
@@ -63,17 +68,23 @@
 <script setup>
 import { useProp } from '@/composables/useProp.js'
 import { useToots } from '@/stores/toots'
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
+import { useTemplateFilter } from '@/composables/useTemplateFilter'
+import axios from 'axios'
+
+const { formatInt } = useTemplateFilter()
 
 const route = useRoute()
 const store = useToots()
 
+const deeplLimit = ref(0)
+
 const { t: $t } = useI18n({ useScope: 'global' })
 
 const filteredToots = computed(() => {
-  if (['local', 'federation'].includes(props.type)) {
+  if (['local'].includes(props.type)) {
     return store.toots.filter(item => ['de', 'en'].includes(item.language))
   }
   return store.toots
@@ -94,6 +105,25 @@ const getTitle = computed(() => {
   }
 
   return $t(`timelines.titles.${props.type}`)
+})
+
+onMounted(async () => {
+  const authKey = 'bfca006a-9a83-b5cd-786c-cbf877d89b26:fx' // Replace with your key
+  try {
+    const response2 = await axios
+      .get('https://api-free.deepl.com/v2/usage', {
+        params: {
+          auth_key: authKey
+        },
+        proxy: {
+          host: 'localhost',
+          port: 8080
+        }
+      })
+    deeplLimit.value = response2.data.character_limit - response2.data.character_count
+  } catch (error) {
+    console.log(error)
+  }
 })
 
 </script>

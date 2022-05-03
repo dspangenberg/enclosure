@@ -46,6 +46,10 @@ module.exports = {
         23: '23',
         24: '24'
       },
+      animation: {
+        'spin-slow': 'spin 5s linear infinite',
+        'ping-slow': 'ping 5s cubic-bezier(1, 1, 0.2, 1) infinite'
+      },
       zIndex: {
         100: '1000'
       },

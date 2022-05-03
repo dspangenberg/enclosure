@@ -36,6 +36,16 @@ export function useMegalodon () {
     }
   }
 
+  const getSuggestions = async (limit = 3) => {
+    await ensureClient()
+    try {
+      const res = await client.value.getSuggestions(limit)
+      return Promise.resolve(res.data)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
   const unbookmarkStatus = async (id) => {
     await ensureClient()
     try {
@@ -229,10 +239,12 @@ export function useMegalodon () {
     }
   }
 
-  const fetchAccessToken = async (account, code = null) => {
+  const fetchAccessToken = async (code = null) => {
+    const account = await ensureClient()
+
     if (!code) code = account.accessToken
     setDomain(account.domain)
-    await ensureClient()
+
     try {
       const res = await client.value.fetchAccessToken(account.clientId, account.clientSecret, code, redirect)
       accessToken.value = res.accessToken
@@ -282,6 +294,7 @@ export function useMegalodon () {
     getBookmarks,
     getFavourites,
     getInstanceTrends,
+    getSuggestions,
     getTimeline,
     generateClient,
     reblogStatus,

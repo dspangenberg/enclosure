@@ -46,7 +46,7 @@
           >
             <stormy-icon
               :name="visibilityIcon"
-              class="w-4 h-4  ml-1 text-gray-700 flex-shrink-0"
+              class="w-4 h-4  ml-1 text-gray-500 flex-shrink-0"
               :stroke-width="2"
             />
           </span>
