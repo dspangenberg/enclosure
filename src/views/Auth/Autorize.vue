@@ -62,8 +62,10 @@ onMounted(async () => {
       account.accountId = acc.id
       account.avatar = acc.avatar
       account.url = acc.url
+      account.acct = acc.acct
       account.accessToken = token.accessToken
       account.refreshToken = token.refreshToken || ''
+
 
       const updatedAccount = upsertAccount(account)
 
