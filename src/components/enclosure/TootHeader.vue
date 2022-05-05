@@ -59,10 +59,6 @@
 import { useProp } from '@/composables/useProp.js'
 import { useTemplateFilter } from '@/composables/useTemplateFilter'
 import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
-
-const { t: $t } = useI18n({ useScope: 'global' })
-const actionText = computed(() => $t(props.action))
 
 const { formatDate } = useTemplateFilter()
 

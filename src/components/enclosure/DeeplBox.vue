@@ -70,9 +70,7 @@ lngDetector.setLanguageType('iso2')
 
 const props = defineProps({
   toot: useProp(Object),
-  index: useProp(Number),
-  lang: useProp(String),
-  deepLimit: useProp(Number, 0)
+  index: useProp(Number)
 })
 
 const limit = computedAsync(
