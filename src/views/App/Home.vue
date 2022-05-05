@@ -1,18 +1,33 @@
 <template>
-  <enclosure-timeline
-    :timeline="timeline"
-    label="Startseite"
-  />
+  <enclosure-container>
+    <template #default>
+      <enclosure-timeline
+        :type="timelineType"
+      />
+    </template>
+    <template #aside>
+      <enclosure-trends />
+      <enclosure-suggestions />
+    </template>
+  </enclosure-container>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue'
-import { useMegalodon } from '@/composables/useMegalodon.js'
+import { watch, computed } from 'vue'
+import { useRoute } from 'vue-router'
+import { useToots } from '@/stores/toots'
+import { useProp } from '@/composables/useProp.js'
 
-const { getTimeline } = useMegalodon()
-const timeline = ref(null)
+const store = useToots()
+const route = useRoute()
 
-onMounted(async () => {
-  timeline.value = await getTimeline('home')
-  console.log(timeline.value)
+defineProps({
+  title: useProp(String, 'Timeline ohne Name')
 })
+
+watch(route, async (route) => {
+  await store.getTootsforTimeline(route?.params?.type || 'home', {}, null, route?.params?.tag || null)
+}, { immediate: true })
+
+const timelineType = computed(() => route?.params?.type || 'home')
+
 </script>

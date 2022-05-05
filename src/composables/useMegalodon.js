@@ -201,11 +201,7 @@ export function useMegalodon () {
     }
   }
 
-  const generateClient = async (account = null) => {
-    if (account) {
-      setDomain(account.domain)
-      accessToken.value = account.accessToken
-    }
+  const generateClient = async () => {
     if (!sns.value) await detectSns()
     try {
       client.value = generator(sns.value, baseUrl.value, accessToken.value, 'enclosure')
@@ -217,7 +213,8 @@ export function useMegalodon () {
 
   const ensureClient = async (account = null) => {
     const store = useStore()
-    if (account === null) account = store.ensureAccount()
+    account = await store.getAccount()
+    client.value = await store.getClient()
     if (!client.value) {
       try {
         await generateClient(account)
@@ -256,6 +253,7 @@ export function useMegalodon () {
   }
 
   const verifyAccountCredentials = async (account) => {
+    console.log('useOld')
     await ensureClient(account)
     try {
       const res = await client.value.verifyAccountCredentials()

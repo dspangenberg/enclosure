@@ -1,10 +1,10 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { useMegalodon } from '@/composables/useMegalodon.js'
-import { useCookies } from '@vueuse/integrations/useCookies'
-import { accountById, firstAccount } from '@/utils/db.js'
 import { useStorage } from '@vueuse/core'
+import Account from '@/models/Account'
+import DeepL from '@/utils/DeepL'
 
-const { verifyAccountCredentials } = useMegalodon()
+import { useTemplateFilter } from '@/composables/useTemplateFilter'
+const { formatInt } = useTemplateFilter()
 
 export const useStore = defineStore({
   id: 'global',
@@ -12,28 +12,38 @@ export const useStore = defineStore({
     client: null,
     account: null,
     accountId: null,
-    isLoadingStatus: false
+    isLoadingStatus: false,
+    deepLimit: null
   }),
   getters: {
     getMastodonHandle: (state) => state.account ? `@${state.account.username}@${state.account.domain}` : '',
     isLoading: (state) => state.isLoadingStatus,
-    instance: (state) => state.account?.domain || 'Fick Dich!'
+    instance: (state) => state.account?.domain || ''
   },
   actions: {
-    ensureAccount () {
+    async ensureAccount () {
       if (this.account) {
         return this.account
       }
-      const account = accountById(this.getAccountId())
-      if (!account) {
-        this.account = firstAccount()
+      const id = this.getAccountId()
+      const account = await Account.db().get(id)
+      if (account) {
+        this.setAccount(account)
       }
       return this.account
     },
     async reconnect () {
+      if (this.client) {
+        return this.client
+      }
       try {
-        await verifyAccountCredentials()
-        return Promise.resolve(this.account)
+        const globAccount = await this.ensureAccount()
+        if (globAccount) {
+          await Account.verifyAccountCredentials(globAccount)
+          return Promise.resolve()
+        } else {
+          return Promise.reject(new Error('Keinen Account gefunden'))
+        }
       } catch (error) {
         return Promise.reject(error)
       }
@@ -43,18 +53,38 @@ export const useStore = defineStore({
     },
     setAccountId (accountId) {
       useStorage('current-account-id', accountId)
+      return useStorage('current-account-id')
     },
     setIsLoading (value) {
       this.isLoadingStatus = value
     },
     getAccountId () {
-      return useStorage('current-account-id')
+      const storage = useStorage('current-account-id')
+      return storage ? storage.value : null
     },
     setClient (client) {
       this.client = client
     },
+    async getClient () {
+      if (this.client) {
+        return this.client
+      }
+    },
+    async getDeepLimit () {
+      if (!this.deepLimit) {
+        await DeepL.usage()
+      }
+      return formatInt(this.deepLimit)
+    },
+    setDeepLimit (value) {
+      this.deepLimit = value
+    },
     setAccount (account) {
       this.account = account
+      this.setAccountId(account.id)
+    },
+    genEnvVar (key) {
+      return import.meta.env[key]
     }
   }
 })

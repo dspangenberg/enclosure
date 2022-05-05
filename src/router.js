@@ -28,13 +28,14 @@ const routes = [
       {
         path: 'timeline/:type/:tag?',
         name: 'bookmarks',
-        component: () => import(/* webpackChunkName: "timeline-view" */ '@/views/App/TimelineView.vue')
+        component: () => import(/* webpackChunkName: "home" */ '@/views/App/Home.vue')
       }
     ]
   },
   {
     path: '/:pathMatch(.*)*',
-    redirect: '/app/timeline/home'
+    redirect: '/app/timeline/home',
+    meta: { requiresAuth: false }
   }
 ]
 

@@ -55,19 +55,18 @@
 </template>
 <script setup>
 import { useProp } from '@/composables/useProp.js'
-import { computed, ref, onMounted, popScopeId } from 'vue'
-import { useTemplateFilter } from '@/composables/useTemplateFilter'
-import axios from 'axios'
+import { computed, ref } from 'vue'
+import { useStore } from '@/stores/global'
 import { sortBy, reverse } from 'lodash'
 import { stri } from 'stristri'
-
 import LanguageDetect from 'languagedetect'
+import DeepL from '@/utils/DeepL'
+import { computedAsync } from '@vueuse/core'
+
+const store = useStore()
 
 const lngDetector = new LanguageDetect()
 lngDetector.setLanguageType('iso2')
-
-const { formatInt } = useTemplateFilter()
-const emit = defineEmits(['translated'])
 
 const props = defineProps({
   toot: useProp(Object),
@@ -76,35 +75,12 @@ const props = defineProps({
   deepLimit: useProp(Number, 0)
 })
 
-const translating = ref(false)
-const translation = ref('')
-const langugage = ref('')
-const limit = computed(() => formatInt(props.deepLimit))
-
-const translate = async () => {
-  const authKey = 'bfca006a-9a83-b5cd-786c-cbf877d89b26:fx' // Replace with your key
-  translating.value = true
-  try {
-    const response = await axios
-      .get('https://api-free.deepl.com/v2/translate', {
-        params: {
-          auth_key: authKey,
-          text: props.toot.content,
-          target_lang: 'de'
-        },
-        proxy: {
-          host: 'localhost',
-          port: 8080
-        }
-      })
-    console.log(response)
-    translation.value = response.data.translations[0].text
-    langugage.value = response.data.translations[0].detected_source_language
-  } catch (error) {
-    console.log(error)
-  }
-  translating.value = false
-}
+const limit = computedAsync(
+  async () => {
+    return await store.getDeepLimit()
+  },
+  null
+)
 
 const lang = computed(() => {
   const text = stri(props.toot.content)
@@ -118,5 +94,18 @@ const lang = computed(() => {
 
   return props.toot.language
 })
+
+const translating = ref(false)
+const translation = ref('')
+const langugage = ref('')
+
+const translate = async () => {
+  translating.value = true
+  const response = await DeepL.translate(props.toot.content)
+  const { translatedText, sourceLang } = response
+  translation.value = translatedText
+  langugage.value = sourceLang
+  translating.value = false
+}
 
 </script>

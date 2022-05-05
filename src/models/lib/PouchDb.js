@@ -1,6 +1,6 @@
-import { toHash } from 'ajv/dist/compile/util'
 import PouchDB from 'pouchdb'
 import PouchFind from 'pouchdb-find'
+import { sortBy } from 'lodash'
 
 PouchDB.plugin(PouchFind)
 
@@ -15,6 +15,15 @@ const PouchDb = class PouchDb {
     return instance
   }
 
+  async compact () {
+    try {
+      const info = await this.$pouch.compact()
+      return Promise.resolve(info)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
   async info () {
     try {
       const info = await this.$pouch.info()
@@ -24,10 +33,10 @@ const PouchDb = class PouchDb {
     }
   }
 
-  async getIndexes () {
+  async getIndices () {
     try {
-      const indexes = await this.$pouch.getIndexes()
-      return Promise.resolve(indexes)
+      const indices = await this.$pouch.getIndexes()
+      return Promise.resolve(indices.indexes)
     } catch (error) {
       return Promise.reject(error)
     }
@@ -43,13 +52,13 @@ const PouchDb = class PouchDb {
     }
   }
 
-  async ensureIndexes () {
-    let existingIndexes = await this.getIndexes()
-    if (existingIndexes) {
-      existingIndexes = existingIndexes.indexes.map(item => item.name)
+  async ensureIndices (indices = null) {
+    let existingIndices = await this.getIndices()
+    if (existingIndices) {
+      existingIndices = existingIndices.map(item => item.name)
     }
 
-    const neededIndexes = [
+    const neededIndices = [
       { fields: ['_id'] },
       { fields: ['id'] },
       { fields: ['docType'] },
@@ -57,10 +66,16 @@ const PouchDb = class PouchDb {
       { fields: ['docType', 'id'] }
     ]
 
-    for (const index of neededIndexes) {
+    if (indices) {
+      for (const index of indices) {
+        neededIndices.push(index)
+      }
+    }
+
+    for (const index of neededIndices) {
       try {
         const name = index.fields.join('.')
-        if (!existingIndexes.includes(name)) {
+        if (!existingIndices.includes(name)) {
           await this.createIndex(index.fields)
         }
       } catch (error) {
@@ -130,7 +145,7 @@ const PouchDb = class PouchDb {
     }
   }
 
-  async bulkRemoveByDocType (docType = null) {
+  async truncate (docType = null) {
     try {
       const ids = await this.getAllIds(true, docType)
       if (ids && ids.length) {
@@ -162,8 +177,14 @@ const PouchDb = class PouchDb {
       selectors.docType = docType
     }
 
+    let _sort
+    if (options._sort) {
+      _sort = options._sort
+      delete options._sort
+    }
+
     try {
-      await this.ensureIndexes()
+      await this.ensureIndices()
     } catch (error) {
       return Promise.reject(error)
     }
@@ -174,6 +195,9 @@ const PouchDb = class PouchDb {
     let records
     try {
       records = await this.$pouch.find(query)
+      if (_sort) {
+        records = sortBy(records, _sort)
+      }
     } catch (error) {
       return Promise.reject(error)
     }
@@ -235,7 +259,7 @@ const PouchDb = class PouchDb {
   }
 
   async save (record) {
-    await this.ensureIndexes()
+    await this.ensureIndices()
 
     const data = record
     let result

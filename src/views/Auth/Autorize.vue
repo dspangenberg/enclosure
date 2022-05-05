@@ -27,10 +27,9 @@
 import { onMounted, ref } from 'vue'
 import { useRouteQuery } from '@vueuse/router'
 import { useRouter } from 'vue-router'
-import { useMegalodon } from '@/composables/useMegalodon.js'
 import { useStore } from '@/stores/global'
-import { accountById, upsertAccount } from '@/utils/db.js'
 import { useCookies } from '@vueuse/integrations/useCookies'
+import Account from '@/models/Account'
 
 const { get, remove } = useCookies(['enclusure'], { doNotParse: false, autoUpdateDependencies: false })
 
@@ -44,37 +43,18 @@ const errorDescription = useRouteQuery('error_description')
 const errorObj = ref(null)
 
 onMounted(async () => {
-  const { fetchAccessToken, verifyAccountCredentials, client } = await useMegalodon()
-
   const accoutId = get('accountId')
-  remove('accountId')
-
-  const account = accountById(accoutId)
-
-  let token = null
-  let acc = null
 
   if (code?.value) {
     try {
-      token = await fetchAccessToken(code.value)
-      acc = await verifyAccountCredentials()
-      account.username = acc.username
-      account.accountId = acc.id
-      account.avatar = acc.avatar
-      account.url = acc.url
-      account.acct = acc.acct
-      account.accessToken = token.accessToken
-      account.refreshToken = token.refreshToken || ''
-
-      const updatedAccount = upsertAccount(account)
-
-      store.setAccountId(updatedAccount.id)
-      store.setClient(client)
+      const account = await Account.autorize(accoutId, code.value)
+      store.setAccount(account)
+      remove('accountId')
+      router.push('/app/timeline/home')
     } catch (error) {
       errorObj.value = error.response
       return Promise.reject(error)
     }
-    router.push('/app/timeline/home')
   }
 })
 

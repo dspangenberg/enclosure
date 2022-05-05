@@ -7,7 +7,7 @@
         </div>
       </div>
     </div>
-    <template v-if="!store.isLoading">
+    <template v-if="!storeToots.isLoading">
       <transition
         enter-active-class="transition ease-out duration-100"
         enter-from-class="transform opacity-0 scale-95"
@@ -27,7 +27,6 @@
             <enclosure-toot
               v-for="(toot, index) in filteredToots"
               :key="toot.id"
-              :deep-limit="deeplLimit"
               :index="index"
               :toot="toot"
             />
@@ -68,26 +67,20 @@
 <script setup>
 import { useProp } from '@/composables/useProp.js'
 import { useToots } from '@/stores/toots'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
-import { useTemplateFilter } from '@/composables/useTemplateFilter'
-import axios from 'axios'
-
-const { formatInt } = useTemplateFilter()
 
 const route = useRoute()
-const store = useToots()
-
-const deeplLimit = ref(0)
+const storeToots = useToots()
 
 const { t: $t } = useI18n({ useScope: 'global' })
 
 const filteredToots = computed(() => {
-  if (['local'].includes(props.type)) {
-    return store.toots.filter(item => ['de', 'en'].includes(item.language))
+  if (['local', 'federation'].includes(props.type)) {
+    return storeToots.toots.filter(item => ['de', 'en'].includes(item.language))
   }
-  return store.toots
+  return storeToots.toots
 })
 
 const props = defineProps({
@@ -108,22 +101,6 @@ const getTitle = computed(() => {
 })
 
 onMounted(async () => {
-  const authKey = 'bfca006a-9a83-b5cd-786c-cbf877d89b26:fx' // Replace with your key
-  try {
-    const response2 = await axios
-      .get('https://api-free.deepl.com/v2/usage', {
-        params: {
-          auth_key: authKey
-        },
-        proxy: {
-          host: 'localhost',
-          port: 8080
-        }
-      })
-    deeplLimit.value = response2.data.character_limit - response2.data.character_count
-  } catch (error) {
-    console.log(error)
-  }
 })
 
 </script>

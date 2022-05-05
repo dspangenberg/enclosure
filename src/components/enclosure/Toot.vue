@@ -26,7 +26,6 @@
             action="toots.toot.actions.boost"
           />
           <enclosure-toot-content
-            :deep-limit="deepLimit"
             :toot="item"
           />
           <enclosure-toot-footer :toot="item" />
@@ -41,8 +40,7 @@ import { computed, toRefs } from 'vue'
 
 const props = defineProps({
   toot: useProp(Object),
-  index: useProp(Number),
-  deepLimit: useProp(Number, 0)
+  index: useProp(Number)
 })
 
 const { toot } = toRefs(props)
