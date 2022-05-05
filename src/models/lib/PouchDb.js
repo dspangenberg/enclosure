@@ -1,11 +1,8 @@
+import { toHash } from 'ajv/dist/compile/util'
 import PouchDB from 'pouchdb'
-import PouchDbFind from 'pouchdb-find'
-import { sortBy } from 'lodash'
-import sortKeys from 'sort-keys'
+import PouchFind from 'pouchdb-find'
 
-PouchDB.plugin(PouchDbFind)
-
-const views = {}
+PouchDB.plugin(PouchFind)
 
 const PouchDb = class PouchDb {
   constructor (db = 'enclosure') {
@@ -13,16 +10,9 @@ const PouchDb = class PouchDb {
   }
 
   static db (db = 'enclosure') {
-    const instance = new PouchDb()
+    const instance = new this()
     instance.$pouch = new PouchDB(db)
     return instance
-  }
-
-  static cb () {
-    if (!this.db) {
-      this.db()
-    }
-    return this.db
   }
 
   async info () {
@@ -34,57 +24,22 @@ const PouchDb = class PouchDb {
     }
   }
 
-  static async dbs () {
-    const dbs = await this.db.list()
-    return dbs
-  }
-
-  static async compact (dbName) {
-    const result = await this.db.compact(dbName)
-    return result
-  }
-
-  static async dbExists (db) {
-    const dbs = await this.db
-    return dbs.includes(db)
-  }
-
-  static async dbCreate (db) {
-    const result = await this.cb().db.create(db)
-    return result.ok
-  }
-
-  static async createNotExistingDb (db) {
-    const exists = await this.dbExists(db)
-    if (!exists) {
-      const result = await this.dbCreate(db)
-      return result
-    }
-    return true
-  }
-
-  checkConnection () {
-    if (!this.db) {
-      throw new Error({ error: 'Keine Datenbank ausgewählt' })
-    }
-  }
-
-  static async importViews () {
-    const db = await this.connection()
-    const entities = Object.keys(views.default)
-    for (const entity of entities) {
-      const doc = views.default[entity]
-      const design = await db.design(doc)
-      await design.save()
-    }
-  }
-
   async getIndexes () {
     try {
       const indexes = await this.$pouch.getIndexes()
       return Promise.resolve(indexes)
     } catch (error) {
       return Promise.reject(error)
+    }
+  }
+
+  async getIndex (name) {
+    const allDocs = await this.$pouch.allDocs({ include_docs: true })
+    const indizies = allDocs.rows.filter(item => item.id.startsWith('_design'))
+    for (const index of indizies) {
+      if (Object.keys(index.doc.views)[0] === name) {
+        return '**' + index.id
+      }
     }
   }
 
@@ -98,6 +53,7 @@ const PouchDb = class PouchDb {
       { fields: ['_id'] },
       { fields: ['id'] },
       { fields: ['docType'] },
+      { fields: ['docType', 'createdAt'] },
       { fields: ['docType', 'id'] }
     ]
 
@@ -117,7 +73,6 @@ const PouchDb = class PouchDb {
 
   async createIndex (fields) {
     const name = fields.join('.')
-    console.log('createIndex', name)
     try {
       await this.$pouch.createIndex({
         index: {
@@ -134,7 +89,7 @@ const PouchDb = class PouchDb {
   async get (id, options = {}) {
     let record
     try {
-      record = await this.db.get(id, options)
+      record = await this.$pouch.get(id, options)
     } catch (error) {
       if (error.statusCode === 404) {
         return Promise.resolve(null)
@@ -144,22 +99,10 @@ const PouchDb = class PouchDb {
     return Promise.resolve(record)
   }
 
-  async list (options = {}) {
+  async findOne (docType, selectors = {}, options = {}) {
     let records
     try {
-      records = await this.db.list(options)
-    } catch (error) {
-      Promise.reject(error)
-    }
-
-    const data = records.rows.map(item => item.doc)
-    return Promise.resolve(data)
-  }
-
-  async find (docType, selectors = {}, options = {}) {
-    let records
-    try {
-      records = await this.findAll(docType, selectors, options)
+      records = await this.find(docType, selectors, options)
     } catch (error) {
       Promise.reject(error)
     }
@@ -167,83 +110,54 @@ const PouchDb = class PouchDb {
     return records[0]
   }
 
-  async query (designName, viewName, keys, includeDocs = true) {
-    if (!Array.isArray(keys)) {
-      keys = [keys]
+  async remove (doc) {
+    try {
+      await this.$pouch.remove(doc)
+      return Promise.resolve()
+    } catch (error) {
+      return Promise.reject(error)
     }
-
-    const options = {
-      keys: keys,
-      include_docs: includeDocs,
-      reduce: false
-    }
-
-    const result = await this.db.view(designName, viewName, options)
-    return result
   }
 
-  async rawQuery (designName, viewName, keys, includeDocs = true, reduce = false, groupLevel = 1) {
-    const options = {
-      include_docs: includeDocs,
-      reduce: reduce
-    }
-
-    if (reduce) {
-      options.group_level = groupLevel
-    }
-
-    if (keys) {
-      if (!Array.isArray(keys)) {
-        keys = [keys]
+  async bulkRemove (docs) {
+    try {
+      for (const doc of docs) {
+        await this.$pouch.remove(doc)
       }
-      options.keys = keys
+      return Promise.resolve()
+    } catch (error) {
+      return Promise.reject(error)
     }
-
-    const result = await this.db.view(designName, viewName, options)
-    return result
   }
 
-  async rawQueryBetween (designName, viewName, startKey, endKey, includeDocs = true, reduce = false, groupLevel = 1, inclusiveEnd = true) {
-    const options = {
-      include_docs: includeDocs,
-      reduce: reduce,
-      start_key: startKey,
-      end_key: endKey,
-      inclusive_end: inclusiveEnd
+  async bulkRemoveByDocType (docType = null) {
+    try {
+      const ids = await this.getAllIds(true, docType)
+      if (ids && ids.length) {
+        const docs = await this.getAllByIds(ids)
+        if (docs && docs.length) {
+          await this.bulkRemove(docs)
+        }
+        return Promise.resolve(docs.length)
+      }
+    } catch (error) {
+      return Promise.reject(error)
     }
+  }
 
-    if (reduce) {
-      options.group_level = groupLevel
+  async deleteBy (_id) {
+    try {
+      const doc = await this.$pouch.get(_id)
+      if (doc) {
+        await this.$pouch.remove(doc)
+        return Promise.resolve()
+      }
+    } catch (error) {
+      return Promise.reject(error)
     }
-
-    const result = await this.db.view(designName, viewName, options)
-    return result
   }
 
-  async queryBetween (designName, viewName, startKey, endKey, includeDocs = true) {
-    const options = {
-      startKey: startKey,
-      endKey: endKey,
-      include_docs: includeDocs,
-      reduce: false
-    }
-
-    const result = await this.db.view(designName, viewName, options)
-    return result
-  }
-
-  async fetchRevs (docNames) {
-    const result = await this.db.fetchRevs(docNames)
-    return result
-  }
-
-  async destroy (id, rev) {
-    const result = await this.db.destroy(id, rev)
-    return result
-  }
-
-  async findAll (docType, selectors = {}, options = {}) {
-    console.log(docType)
+  async find (docType = null, selectors = {}, options = {}) {
     if (docType !== null) {
       selectors.docType = docType
     }
@@ -251,37 +165,52 @@ const PouchDb = class PouchDb {
     try {
       await this.ensureIndexes()
     } catch (error) {
-      console.error(error)
+      return Promise.reject(error)
     }
-
-    options.limit = options.limit ? options.limit : 10000
 
     const query = Object.assign({}, options)
     query.selector = selectors
-
-    console.log(query)
 
     let records
     try {
       records = await this.$pouch.find(query)
     } catch (error) {
-      console.error(error)
       return Promise.reject(error)
     }
     return Promise.resolve(records.docs)
   }
 
-  static async getAllIds (selector, field) {
+  async getAllIds (withRev = false, docType = null) {
+    let allDocs
+    try {
+      allDocs = await this.$pouch.allDocs()
+    } catch (error) {
+      return Promise.resolve(error)
+    }
+
+    if (!allDocs && !allDocs.rows.length) {
+      return null
+    }
+
+    let maped = allDocs.rows.map(item => {
+      return { id: item.id, rev: item.value.rev }
+    })
+
+    if (docType) {
+      maped = maped.filter(item => item.id.startsWith(`${docType}--`))
+    } else {
+      maped = maped.filter(item => !item.id.startsWith('_design'))
+    }
+
+    return withRev ? maped : maped.map(item => item.id)
   }
 
-  async getAllByIds (ids, options) {
+  async getAllByIds (docs) {
     try {
-      const result = await this.db.fetch(
-        {
-          keys: ids
-        }
-      )
-      return Promise.resolve(result)
+      const result = await this.$pouch.bulkGet({ docs: docs })
+      const resultDocs = result.results.map(item => item.docs[0].ok)
+
+      return Promise.resolve(resultDocs)
     } catch (error) {
       return Promise.reject(error)
     }
@@ -289,7 +218,7 @@ const PouchDb = class PouchDb {
 
   async bulk (docs) {
     try {
-      await this.db.bulk({ docs: docs })
+      await this.$pouch.bulk({ docs: docs })
     } catch (error) {
       Promise.reject(error)
     }
@@ -298,7 +227,7 @@ const PouchDb = class PouchDb {
 
   async insert (doc) {
     try {
-      await this.db.insert(doc)
+      await this.$pouch.insert(doc)
     } catch (error) {
       Promise.reject(error)
     }
@@ -306,19 +235,17 @@ const PouchDb = class PouchDb {
   }
 
   async save (record) {
-    const data = sortKeys(record, { deep: true })
+    await this.ensureIndexes()
 
+    const data = record
     let result
 
     try {
-      result = await this.db.put(data)
-      Promise.resolve(result)
+      result = await this.$pouch.put(data)
+      return Promise.resolve(result)
     } catch (error) {
-      console.error(error)
       return Promise.reject(error)
     }
-
-    return Promise.resolve(result)
   }
 }
 

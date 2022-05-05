@@ -2,8 +2,12 @@
 import BaseModel from './lib/BaseModel'
 
 const Account = class extends BaseModel {
-  static get getDocType () {
+  static getDocType () {
     return 'account'
+  }
+
+  eigeneFUnktion () {
+    return 'test'
   }
 
   static get schema () {

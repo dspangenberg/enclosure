@@ -66,7 +66,6 @@ onMounted(async () => {
       account.accessToken = token.accessToken
       account.refreshToken = token.refreshToken || ''
 
-
       const updatedAccount = upsertAccount(account)
 
       store.setAccountId(updatedAccount.id)

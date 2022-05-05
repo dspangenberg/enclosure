@@ -3,40 +3,26 @@
 import PouchDb from './PouchDb'
 import baseSchema, { prop } from './BaseSchema'
 import { kebabCase } from 'lodash'
-import { DateTime } from 'luxon'
-import { uuid } from 'uuidv4'
-import { createSharedComposable } from '@vueuse/core'
+import { customAlphabet } from 'nanoid/async'
+import { splitArrayIntoChunksOfLen } from '@/utils/StringHelper.js'
 
-const BaseModel = class BaseModel {
+const nanoid = customAlphabet('1234567890abcdef', 20)
+
+class BaseModel {
   constructor (data = null, docType = null, docId = null) {
-    if (docType === null) {
-      docType = this.getIdocType
-      console.log(docType)
-    }
-
-    /*
-
+    this.docType = kebabCase(docType) || kebabCase(this.constructor.getDocType())
+    this.$pouch = PouchDb.db()
     if (data === null) {
-      const id = (docId === null) ? uuid() : docId
-      Object.assign(this, {
-        docType: docType,
-        id: id,
-        _id: docType + '--' + id
-      })
-      return this
+      data = {
+        docType: this.docType
+      }
+    } else {
+      data.docType = data.docType || this.docType
     }
-
-
-    if (data instanceof Object) {
-      if (!data.docType) data.docType = docType
-      if (!data.id) data.id = (docId === null) ? uuid() : data.id
-      if (!data._id) data._id = docType + '--' + data.id
-    }
-
 
     let result
     try {
-      result = this.constructor.schematize(data)
+      result = this.schematize(data)
     } catch (error) {
       Promise.reject(error)
     }
@@ -46,22 +32,43 @@ const BaseModel = class BaseModel {
     }
 
     Object.assign(this, result)
-    */
-  }
-
-  db (db) {
-    this.$database = db
-    return this
-  }
-
-  static db () {
-    const instance = new BaseModel()
-    instance.$pouch = PouchDb.db()
-    return instance
   }
 
   static prop (value) {
     return prop(value)
+  }
+
+  static db () {
+    const instance = new this()
+    instance.$pouch = PouchDb.db()
+    return instance
+  }
+
+  static resultFactory (result) {
+    if (Object.prototype.toString.call(result) === '[object Array]') {
+      result.forEach((item, index) => {
+        result[index] = new this.constructor(this.db, item)
+      })
+    }
+
+    if (Object.prototype.toString.call(result) === '[object Object]') {
+      if (result.hasOwnProperty('value') && !result.hasOwnProperty('_id')) {
+        if (result.value) {
+          result = new this.constructor(this.db, result.value)
+        } else {
+          result = undefined
+        }
+      } else if (result.hasOwnProperty('ops')) {
+        result.ops.forEach((item, index) => {
+          result.ops[index] = new this.constructor(this.db, item)
+        })
+
+        result = result.ops
+      } else if (result.hasOwnProperty('_id')) {
+        result = new this.constructor(this.db, result)
+      }
+    }
+    return result
   }
 
   static transforms (name) {
@@ -92,39 +99,24 @@ const BaseModel = class BaseModel {
     return array
   }
 
-  static create (data, transform = true, docId) {
-    const docType = this.getDocType
-
-    if (transform) {
-      data.docType = docType
-      data.id = (docId === null) ? uuid() : docId
-      data._id = docType + '--' + (docId === null) ? uuid() : docId
-    }
-
-    const result = this.schematize(data)
-    return result
-  }
-
-  static init (object = {}, toObject = false) {
-    const instance = new this(null)
-    const schemObject = this.schematize(object)
-    const result = instance.resultFactory(schemObject)
-    if (result === undefined) {
-      return {}
-    }
-    if (toObject === true) {
-      return result.toObject()
-    }
-    return result
-  }
-
   async beforeSave (data) {
     return Promise.resolve(data)
   }
 
+  async makeId () {
+    const id = splitArrayIntoChunksOfLen(await nanoid(), 4).join('-')
+    const _id = `${this.docType}--${id}`
+    return { id, _id }
+  }
+
   async save (options = {}) {
-    const now = new Date() // moment().format('YYYY-MM-DD HH:mm_ss')
     const data = Object.assign({}, JSON.parse(JSON.stringify(this)))
+
+    if (!data._id) {
+      const { id, _id } = await this.makeId()
+      data.id = id
+      data._id = _id
+    }
 
     if (data._rev && data._id) {
       try {
@@ -138,17 +130,9 @@ const BaseModel = class BaseModel {
       }
     }
 
-    const record = await this.beforeSave(data)
+    let record = await this.beforeSave(data)
 
-    const schema = this.constructor.schema
-    const fields = Object.keys(schema)
-    const relations = fields.filter(item => item.includes('$'))
-
-    for (const relation of relations) {
-      const field = relation.replace('$', '')
-      delete record[field]
-    }
-
+    const now = new Date()
     if (!record.createdAt && !this._rev) {
       record.createdAt = now
     }
@@ -158,8 +142,12 @@ const BaseModel = class BaseModel {
     let result
     let savedRecord
 
+    record = this.schematize(record)
+
+    console.log(record)
+
     try {
-      result = await PouchDb.db(this.$database).save(record)
+      result = await this.$pouch.save(record)
     } catch (error) {
       console.error(error)
       return Promise.reject(error)
@@ -167,87 +155,31 @@ const BaseModel = class BaseModel {
 
     if (result.ok) {
       try {
-        savedRecord = await PouchDb.db(this.$database).get(result.id)
+        savedRecord = await this.$pouch.get(result.id)
       } catch (error) {
         Promise.reject(error)
       }
     }
 
-    return Promise.resolve(savedRecord)
+    Object.assign(this, savedRecord)
+    return Promise.resolve(this)
   }
 
-  async updateField (key, value) {
-    this[key] = value
-    this.updatedAt = new Date()
-    const result = await this.save()
-    Promise.resolve(result)
-  }
-
-  async destroy (doc = false) {
-    if (doc) {
-      await PouchDb.db(this.$database).destroy(doc[0]._id, doc[0]._rev)
-    } else {
-      await PouchDb.db(this.$database).destroy(this._id, this._rev)
-    }
-  }
-
-  async trash (id) {
+  async find (selectors = {}, options = {}) {
+    console.log(selectors, options)
     try {
-      const record = await this.get(id)
-      record.deletedAt = DateTime().now().toFormat('YYYY-MM-DD HH:mm:ss')
-      const result = await record.save()
-      Promise.resolve(result)
+      const records = await this.$pouch.find(this.docType, selectors, options)
+      return Promise.resolve(records)
     } catch (error) {
-      Promise.reject(error)
+      console.error(error)
+      return Promise.reject(error)
     }
   }
 
-  static fieldsAdapter (fields) {
-    if (Object.prototype.toString.call(fields) === '[object String]') {
-      const document = {}
-
-      fields = fields.split(/\s+/)
-      fields.forEach((field) => {
-        if (field) {
-          const include = field[0] !== '-'
-          if (!include) {
-            field = field.slice(1)
-          }
-          document[field] = include
-        }
-      })
-
-      fields = document
-    }
-
-    return fields
-  }
-
-  static get schema () {
-    return {}
-  }
-
-  static schematize (data) {
-    const Schema = baseSchema(this.schema)
-    return Schema(data)
-  }
-
-  static get getDocType () {
-    return kebabCase(this.name)
-  }
-
-  get getIdocType () {
-    return kebabCase(this.constructor.getDocType)
-  }
-
-  set getIdocType (name) {
-  }
-
-
-  static async findAll (selectors = {}, options = {}) {
+  static async findOne (selectors = {}, options = {}) {
     let records
     try {
-      records = await PouchDb.db().findAll(this.getDocType, { deletedAt: { $eq: null } }, options)
+      records = await this.$pouch.findOne(this.getDocType, selectors, options)
     } catch (error) {
       console.error(error)
       return Promise.reject(error)
@@ -255,84 +187,24 @@ const BaseModel = class BaseModel {
     return this.resultFactory(records)
   }
 
-  async findAll (selectors = {}, options = {}, deleted = false) {
-    let records
+  static async get (id, options = {}) {
+    const _id = `${this.docType}--${id}`
     try {
-      if (deleted === false) {
-        selectors.deletedAt = { $eq: null }
-      }
-
-      console.log(this.constructor.getDocType)
-
-      records = await this.$pouch.findAll(this.getIdocType, selectors, options)
+      const record = await this.$pouch.get(_id, options)
+      return this.resultFactory(record)
     } catch (error) {
       console.error(error)
       return Promise.reject(error)
     }
-    const results = this.resultFactory(records)
-    return results
-  }
-
-  async get (id, options = {}) {
-    let record
-    try {
-      record = await this.couch.get(id)
-    } catch (error) {
-      return Promise.reject(error)
-    }
-
-    if (record === null) {
-      return Promise.resolve(null)
-    }
-    const results = this.resultFactory(record)
-    return Promise.resolve(results)
-  }
-
-  static async getDefault () {
-    let records
-    try {
-      records = await PouchDb.findOne(this.getDocType, {
-        isDefault: true
-      })
-    } catch (error) {
-      console.error(error)
-      return Promise.reject(error)
-    }
-    return records._id
-  }
-
-  async find (selectors = {}, options = {}, deleted = false) {
-    let records
-    try {
-      if (deleted === false) {
-        // selectors.deletedAt = {$eq: null}
-      }
-      records = await this.couch.find(this.getIdocType, selectors, options)
-    } catch (error) {
-      console.error(error)
-      return Promise.reject(error)
-    }
-    const results = this.resultFactory(records)
-    return results
-  }
-
-  async getByLid (lid) {
-    let results
-    try {
-      results = await this.find({
-        lid: {
-          $eq: lid
-        }
-      })
-    } catch (error) {
-      console.log(error)
-    }
-
-    return results
   }
 
   static instance () {
     return new this(this)
+  }
+
+  schematize (data) {
+    const Schema = baseSchema(this.constructor.schema)
+    return Schema(data)
   }
 
   static toClassObject (object) {
@@ -367,93 +239,68 @@ const BaseModel = class BaseModel {
     return payload
   }
 
-  async query (designName, viewName, keys, includeDocs = true) {
-    const result = await this.couch.query(designName, viewName, keys, includeDocs)
+  fabric (data) {
+    if (data instanceof Object) {
+      console.log(data)
+      const doc = new this.constructor(this.schematize(data))
+      return doc
+    }
 
-    const rows = result.rows.map(item => item.doc)
-    const records = this.resultFactory(rows)
-    return records
+    if (Object.prototype.toString.call(data) === '[object Array]') {
+      data.forEach((item, index) => {
+        console.log('****', index)
+        data[index] = this.fabric(item)
+      })
+      return data
+    }
+    console.log('*****')
   }
 
-  async rawQuery (designName, viewName, keys, includeDocs = true, reduce = false, groupLevel = 1) {
-    const result = await this.couch.rawQuery(designName, viewName, keys, includeDocs, reduce)
-    return result
-  }
-
-  async rawQueryBetween (designName, viewName, startKey, endKey, includeDocs = true, reduce = false, groupLevel = 1, inclusiveEnd = true) {
-    const result = await this.couch.rawQueryBetween(designName, viewName, startKey, endKey, includeDocs, reduce, groupLevel, inclusiveEnd)
-    return result
-  }
-
-  async queryBetween (designName, viewName, startKey, endKey, includeDocs = true) {
-    const result = await this.couch.queryBetween(designName, viewName, startKey, endKey, includeDocs)
-    const rows = result.rows.map(item => item.value)
-
-    // const records = this.resultFactory(rows)
-    return rows
-  }
-
-  static async getAllIds (selector, field) {
-    selector.docType = this.getDocType
-    let ids
+  async first (selector = {}) {
+    // const sort = ['createdAt']
+    // const index = await this.$pouch.getIndex('docType.createdAt')
+    //  sort: [sort], use_index: index
     try {
-      ids = await PouchDb.getAllIds(selector, field)
+      const docs = await this.find(selector, { limit: 1 })
+      if (docs) {
+        const doc = this.fabric(docs[0])
+        return Promise.resolve(doc)
+      }
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
+  static async getAllIds (withRev = false) {
+    try {
+      const ids = await this.$pouch.getAllIds(withRev, this.docType)
+      return Promise.resolve(ids)
     } catch (error) {
       console.error(error)
       return Promise.reject(error)
     }
-    return ids
   }
 
-  async getAllByIds (ids, options) {
-    let records
+  static async getAllByIds (ids) {
     try {
-      const result = await this.couch.getAllByIds(ids, options)
-      const rows = result.rows.map(item => item.doc)
-      records = this.resultFactory(rows)
+      const docs = await this.$pouchdb.getAllByIds(ids)
+      if (docs && docs.length) {
+        return Promise.resolve(this.resultFactory(docs))
+      }
     } catch (error) {
       console.error(error)
       return Promise.reject(error)
     }
-    return records
-  }
-
-  static async getAllByIdsRaw (ids, options) {
-    let records
-    try {
-      records = await PouchDb.getAllByIds(ids, options)
-    } catch (error) {
-      console.error(error)
-      return Promise.reject(error)
-    }
-    return records
+    return Promise.resolve(null)
   }
 
   resultFactory (result) {
-    if (Object.prototype.toString.call(result) === '[object Array]') {
-      result.forEach((item, index) => {
-        result[index] = new this.constructor(this.db, item)
-      })
-    }
-
-    if (Object.prototype.toString.call(result) === '[object Object]') {
-      if (result.hasOwnProperty('value') && !result.hasOwnProperty('_id')) {
-        if (result.value) {
-          result = new this.constructor(this.db, result.value)
-        } else {
-          result = undefined
-        }
-      } else if (result.hasOwnProperty('ops')) {
-        result.ops.forEach((item, index) => {
-          result.ops[index] = new this.constructor(this.db, item)
-        })
-
-        result = result.ops
-      } else if (result.hasOwnProperty('_id')) {
-        result = new this.constructor(this.db, result)
-      }
-    }
     return result
+  }
+
+  static schematize (data) {
+    const Schema = baseSchema(this.schema)
+    return Schema(data)
   }
 }
 

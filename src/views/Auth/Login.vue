@@ -41,6 +41,8 @@ import { upsertAccount, firstAccount } from '@/utils/db.js'
 import { useStore } from '@/stores/global'
 import { useCookies } from '@vueuse/integrations/useCookies'
 
+import Account from '@/models/Account'
+
 const { set } = useCookies(['enclusure'], { doNotParse: false, autoUpdateDependencies: false })
 
 const store = useStore()
@@ -57,7 +59,8 @@ const confirm = async () => {
     const { clientId, clientSecret, url } = data
     mastdonServerUrl = url
 
-    const account = firstAccount() || {}
+    // const account = firstAccount() || {}
+    const account = await Account.db().first()
 
     account.sns = sns.value
     account.baseUrl = baseUrl.value

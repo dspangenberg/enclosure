@@ -7,4 +7,14 @@ const toSnakeCaseWithHyphens = str =>
     .map(x => x.toLowerCase())
     .join('-')
 
-export { toSnakeCaseWithHyphens }
+// https://www.codegrepper.com/code-examples/javascript/split+array+in+4+parts+using+javascript
+
+const splitArrayIntoChunksOfLen = (arr, len) => {
+  const chunks = []; let i = 0; const n = arr.length
+  while (i < n) {
+    chunks.push(arr.slice(i, i += len))
+  }
+  return chunks
+}
+
+export { toSnakeCaseWithHyphens, splitArrayIntoChunksOfLen }

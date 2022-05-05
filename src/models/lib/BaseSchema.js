@@ -1,7 +1,4 @@
 import supermodels from 'supermodels.js'
-import { DateTime } from 'luxon'
-
-const now = DateTime.now().toFormat('YYYY-MM-DD HH:mm:ss')
 
 const prop = supermodels.prop()
 prop.register('required', function () {
@@ -16,8 +13,8 @@ const baseSchema = (schema, isSubDocument = false) => {
   let base
   if (isSubDocument) {
     base = {
-      createdAt: prop(Date).value(now),
-      updatedAt: prop(Date).value(now)
+      createdAt: prop(Date).value(null),
+      updatedAt: prop(Date).value(null)
     }
   } else {
     base = {
@@ -26,8 +23,8 @@ const baseSchema = (schema, isSubDocument = false) => {
       _rev: String,
       _deleted: prop(Boolean).value(false),
       docType: String,
-      createdAt: prop(Date).value(now),
-      updatedAt: prop(Date).value(now)
+      createdAt: prop(Date).value(null),
+      updatedAt: prop(Date).value(null)
     }
   }
 

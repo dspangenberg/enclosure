@@ -34,7 +34,7 @@ const routes = [
   },
   {
     path: '/:pathMatch(.*)*',
-    redirect: '/app/timeline'
+    redirect: '/app/timeline/home'
   }
 ]
 
