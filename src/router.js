@@ -1,10 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useStore } from '@/stores/global'
+import Account from '@/models/Account'
 
 const routes = [
   {
     path: '/auth',
     name: 'auth',
+    meta: { requiresAuth: false },
     component: () => import(/* webpackChunkName: "authLayout" */ '@/layouts/TheAuthLayout.vue'),
     children: [{
       path: 'login',
@@ -13,7 +14,7 @@ const routes = [
       component: () => import(/* webpackChunkName: "login" */ '@/views/Auth/Login.vue')
     },
     {
-      path: 'autorize',
+      path: 'autorize/:id',
       name: 'autorize',
       meta: { requiresAuth: false },
       component: () => import(/* webpackChunkName: "autorize" */ '@/views/Auth/Autorize.vue')
@@ -27,16 +28,18 @@ const routes = [
     children: [
       {
         path: 'timeline/:type/:tag?',
-        name: 'bookmarks',
+        name: 'timeline',
         component: () => import(/* webpackChunkName: "home" */ '@/views/App/Home.vue')
       }
     ]
-  },
+  }
+  /*,
   {
     path: '/:pathMatch(.*)*',
     redirect: '/app/timeline/home',
     meta: { requiresAuth: false }
   }
+  */
 ]
 
 const router = createRouter({
@@ -45,13 +48,13 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  const store = useStore()
-
   if (to.meta.requiresAuth === false) {
+    console.log('OKGuard')
     next()
   } else {
     try {
-      await store.reconnect()
+      console.log('RouterGuard')
+      await Account.verifyAccountCredentials()
       next()
     } catch (error) {
       console.log(error)

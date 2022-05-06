@@ -42,7 +42,7 @@ const PouchDb = class PouchDb {
     }
   }
 
-  async getIndex (name) {
+  async getIndexName (name) {
     const allDocs = await this.$pouch.allDocs({ include_docs: true })
     const indizies = allDocs.rows.filter(item => item.id.startsWith('_design'))
     for (const index of indizies) {
@@ -106,7 +106,7 @@ const PouchDb = class PouchDb {
     try {
       record = await this.$pouch.get(id, options)
     } catch (error) {
-      if (error.statusCode === 404) {
+      if (error.status === 404) {
         return Promise.resolve(null)
       }
       return Promise.reject(error)

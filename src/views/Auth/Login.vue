@@ -35,7 +35,7 @@
   </div>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import Account from '@/models/Account'
 
@@ -47,9 +47,14 @@ const networkError = ref('')
 const confirm = async () => {
   try {
     const { url, id } = await Account.registerApp(form.value.domainName)
+    console.log(url, id)
     set('accountId', id, { path: '/' })
     window.location = url
   } catch (error) {
+    if (Object.prototype.hasOwnProperty.call(error, 'docId')) {
+      console.log('PouchDb-Fehler', error)
+      return Promise.reject(error)
+    }
     if (error.response) {
       errorObj.value = error.response
     } else {
@@ -64,6 +69,11 @@ const confirm = async () => {
 
 const form = ref({
   domainName: 'mastodon.social'
+})
+
+onMounted(async () => {
+  const accounts = await Account.db().find()
+  console.log(accounts)
 })
 
 </script>

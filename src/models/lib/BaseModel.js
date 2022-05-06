@@ -176,7 +176,6 @@ class BaseModel {
       const record = await $pouch.get(_id, options)
       return this.resultFactory(record)
     } catch (error) {
-      console.error(error)
       return Promise.reject(error)
     }
   }
@@ -192,22 +191,6 @@ class BaseModel {
       }
     }
     return object
-  }
-
-  static splitParams (params) {
-    const pair = Object.entries(params)[0]
-    const payload = {
-      field: pair[1],
-      property: pair[0],
-      func: pair[0]
-    }
-
-    if (Array.isArray(pair[1])) {
-      payload.property = pair[1][1]
-      payload.field = pair[1][0]
-    }
-
-    return payload
   }
 
   resultFactory (result) {

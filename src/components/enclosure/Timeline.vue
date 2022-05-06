@@ -7,7 +7,9 @@
         </div>
       </div>
     </div>
-    <template v-if="!storeToots.isLoading">
+    <template
+      v-if="!storeToots.isLoading"
+    >
       <transition
         enter-active-class="transition ease-out duration-100"
         enter-from-class="transform opacity-0 scale-95"
@@ -18,6 +20,7 @@
       >
         <div
           v-if="filteredToots.length"
+          ref="timelineRef"
           class="flex-1 z-10 pt-12  w-full -mt-1"
         >
           <ul
@@ -67,7 +70,7 @@
 <script setup>
 import { useProp } from '@/composables/useProp.js'
 import { useToots } from '@/stores/toots'
-import { computed, onMounted } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -88,6 +91,8 @@ const props = defineProps({
   type: useProp(String, '')
 })
 
+const timelineRef = ref()
+
 const getTitle = computed(() => {
   if (props.title) return props.title
   if (!props.type) return `Oops ${props.type}`
@@ -99,8 +104,4 @@ const getTitle = computed(() => {
 
   return $t(`timelines.titles.${props.type}`)
 })
-
-onMounted(async () => {
-})
-
 </script>

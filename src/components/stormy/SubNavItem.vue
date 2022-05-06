@@ -1,9 +1,11 @@
 <template>
   <div>
-    <a
-      :class="[disabled ? 'text-gray-300 !cursor-not-allowed' : active ? 'font-regular' : 'text-gray-500 hover:underline', 'rounded focus:border-blue-400 focus:ring-1 focus:ring-blue-200 focus:outline-none cursor-pointer group flex items-center px-4 py-2rounded-md']"
+    <component
+      :is="componentIs"
+      :class="[disabled ? 'text-gray-300 !cursor-not-allowed' : active ? 'font-regular' : 'text-gray-500 hover:underline', 'rounded focus:border-blue-400 focus:ring-1 focus:ring-blue-200 focus:outline-none cursor-pointer group flex items-center px-3.5 py-2rounded-md']"
       :aria-current="active ? 'page' : undefined"
       :href="href"
+      @click="onClick"
     >
       <span class="truncate hover:underline">
         {{ label }}
@@ -14,7 +16,7 @@
       >
         {{ badge }}
       </span>
-    </a>
+    </component>
     <div :class="[withSep ? 'space-y-1 border-b border-gray-100 pb-2 ml-3' : '']" />
   </div>
 </template>
@@ -25,6 +27,7 @@ import { useProp } from '@/composables/useProp.js'
 import { useI18n } from 'vue-i18n'
 
 const { t: $t } = useI18n({ useScope: 'global' })
+const emits = defineEmits(['selected'])
 
 const props = defineProps({
   href: useProp(String, '#'),
@@ -40,5 +43,16 @@ const props = defineProps({
   withSep: useProp(Boolean)
 })
 
+const componentIs = computed(() => {
+  return props.href === '#' ? 'span' : 'router-link'
+})
+
 const label = computed(() => props.i18n ? $t(props.name) : props.name)
+
+const onClick = (event) => {
+  if (props.href !== '#') return true
+  event.preventDefault()
+  emits('selected')
+}
+
 </script>

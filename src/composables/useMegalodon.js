@@ -201,10 +201,9 @@ export function useMegalodon () {
     }
   }
 
-  const generateClient = async () => {
-    if (!sns.value) await detectSns()
+  const generateClient = async (account) => {
     try {
-      client.value = generator(sns.value, baseUrl.value, accessToken.value, 'enclosure')
+      client.value = generator(account.sns, account.baseUrl, account.accessToken, 'enclosure')
       return Promise.resolve()
     } catch (error) {
       return Promise.reject(error)
@@ -213,8 +212,9 @@ export function useMegalodon () {
 
   const ensureClient = async (account = null) => {
     const store = useStore()
-    account = await store.getAccount()
-    client.value = await store.getClient()
+    if (!account) {
+      account = await store.ensureAccount()
+    }
     if (!client.value) {
       try {
         await generateClient(account)
@@ -236,16 +236,15 @@ export function useMegalodon () {
     }
   }
 
-  const fetchAccessToken = async (code = null) => {
-    const account = await ensureClient()
+  const fetchAccessToken = async (domain, clientId, clientSecret, code, redirect, sns, baseUrl) => {
+    setDomain(domain)
 
-    if (!code) code = account.accessToken
-    setDomain(account.domain)
+    if (!sns.value) await detectSns()
+    const fClient = generator(sns, baseUrl)
 
     try {
-      const res = await client.value.fetchAccessToken(account.clientId, account.clientSecret, code, redirect)
-      accessToken.value = res.accessToken
-      client.value = null
+      const res = await fClient.fetchAccessToken(clientId, clientSecret, code, redirect)
+      accessToken.value = res.access_token
       return Promise.resolve(res)
     } catch (error) {
       return Promise.reject(error)
@@ -253,8 +252,8 @@ export function useMegalodon () {
   }
 
   const verifyAccountCredentials = async (account) => {
-    console.log('useOld')
     await ensureClient(account)
+
     try {
       const res = await client.value.verifyAccountCredentials()
       return Promise.resolve(res.data)
@@ -263,15 +262,20 @@ export function useMegalodon () {
     }
   }
 
-  const registerApp = async (domain) => {
+  const registerApp = async (domain, id) => {
     setDomain(domain)
-    await ensureClient()
+    if (!sns.value) await detectSns()
+
+    const fClient = generator(sns.value, baseUrl.value)
+    const redirectRoute = redirect + '/' + id
+
     try {
-      const res = await client.value.registerApp(appName, {
+      const res = await fClient.registerApp(appName, {
         website: appUrl,
-        redirect_uris: redirect,
+        redirect_uris: redirectRoute,
         scopes: scopes
       })
+      res.redirect = redirectRoute
       return Promise.resolve(res)
     } catch (error) {
       return Promise.reject(error)

@@ -36,13 +36,15 @@
 </template>
 <script setup>
 import { useProp } from '@/composables/useProp.js'
-import { computed, toRefs } from 'vue'
+import { computed, toRefs, onMounted } from 'vue'
+import { useMegaLinks } from '@/composables/useMegaLinks.js'
 
 const props = defineProps({
   toot: useProp(Object),
   index: useProp(Number)
 })
 
+const { addHandlerToHashTagsAndMentions } = useMegaLinks()
 const { toot } = toRefs(props)
 
 const isReblog = computed(() => toot.value.reblog instanceof Object)
@@ -50,4 +52,9 @@ const item = computed(() => isReblog.value ? toot.value.reblog : toot.value)
 const account = computed(() => isReblog.value ? toot.value.reblog.account : toot.value.account)
 const createdAt = computed(() => isReblog.value ? toot.value.reblog.created_at : toot.value.created_at)
 const otherAccount = computed(() => isReblog.value ? toot.value.account : null)
+
+onMounted(async () => {
+  addHandlerToHashTagsAndMentions()
+})
+
 </script>

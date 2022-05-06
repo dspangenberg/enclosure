@@ -1,5 +1,4 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { useStorage } from '@vueuse/core'
 import Account from '@/models/Account'
 import DeepL from '@/utils/DeepL'
 
@@ -9,7 +8,6 @@ const { formatInt } = useTemplateFilter()
 export const useStore = defineStore({
   id: 'global',
   state: () => ({
-    client: null,
     account: null,
     accountId: null,
     isLoadingStatus: false,
@@ -23,52 +21,31 @@ export const useStore = defineStore({
   actions: {
     async ensureAccount () {
       if (this.account) {
-        return this.account
+        return Promise.resolve(this.account)
       }
       const id = this.getAccountId()
-      const account = await Account.db().get(id)
-      if (account) {
-        this.setAccount(account)
-      }
-      return this.account
-    },
-    async reconnect () {
-      if (this.client) {
-        return this.client
-      }
-      try {
-        const globAccount = await this.ensureAccount()
-        if (globAccount) {
-          await Account.verifyAccountCredentials(globAccount)
-          return Promise.resolve()
-        } else {
-          return Promise.reject(new Error('Keinen Account gefunden'))
+      if (id) {
+        const account = await Account.db().get(id)
+        if (account) {
+          this.setAccount(account)
         }
-      } catch (error) {
-        return Promise.reject(error)
+        return Promise.resolve(account)
       }
+      return Promise.reject(new Error('Keinen Account gefunden'))
     },
     getAccount () {
       return this.account
     },
     setAccountId (accountId) {
-      useStorage('current-account-id', accountId)
-      return useStorage('current-account-id')
+      sessionStorage.setItem('current-account-id', accountId)
+      this.accountId = accountId
+      return accountId
     },
     setIsLoading (value) {
       this.isLoadingStatus = value
     },
     getAccountId () {
-      const storage = useStorage('current-account-id')
-      return storage ? storage.value : null
-    },
-    setClient (client) {
-      this.client = client
-    },
-    async getClient () {
-      if (this.client) {
-        return this.client
-      }
+      return sessionStorage.getItem('current-account-id')
     },
     async getDeepLimit () {
       if (!this.deepLimit) {
@@ -81,7 +58,11 @@ export const useStore = defineStore({
     },
     setAccount (account) {
       this.account = account
-      this.setAccountId(account.id)
+      if (account === null) {
+        this.setAccountId(null)
+      } else {
+        this.setAccountId(account.id)
+      }
     },
     genEnvVar (key) {
       return import.meta.env[key]

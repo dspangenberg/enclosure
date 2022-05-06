@@ -1,8 +1,11 @@
 <template>
   <div>
-    <router-link
+    <component
+      :is="componentIs"
       :to="href"
-      :class="[disabled ? 'text-gray-300 cursor-not-allowed' : isActive ? 'bg-stone-100 hover:bg-blue-50 text-gray-600' : 'text-gray-500 hover:bg-stone-200/50 hover:text-gray-600', 'cursor-pointer group flex items-center px-2 py-1.5 text-sm font-semibold  rounded-md']"
+      class="flex items-center"
+      :class="[disabled ? 'text-gray-300 cursor-not-allowed' : isActive ? 'bg-stone-100 hover:bg-blue-50 text-gray-600' : 'text-gray-500 hover:bg-stone-200/50 hover:text-gray-600', 'cursor-pointer group  px-2 py-1.5 text-sm font-semibold  rounded-md']"
+      @click="onClick"
     >
       <stormy-icon
         :name="icon"
@@ -21,7 +24,7 @@
           class="ml-auto text-right mr-4"
         />
       </template>
-    </router-link>
+    </component>
 
     <div
       v-if="!disabled && (active || open)"
@@ -58,9 +61,22 @@ const props = defineProps({
   checked: useProp(Boolean)
 })
 
+const emits = defineEmits(['selected', 'navigate'])
+
 const label = computed(() => props.i18n ? $t(props.name) : props.name)
+
+const componentIs = computed(() => {
+  return props.href === '#' ? 'span' : 'router-link'
+})
 
 const isActive = computed(() => {
   return (props.href === route.path)
 })
+
+const onClick = (event) => {
+  if (props.href !== '#') return true
+  event.preventDefault()
+  emits('selected')
+}
+
 </script>

@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <div
+    class="cursor-pointer"
+    @click="open"
+  >
     <div class="flex flex-1 flex-col border rounded-md">
       <div
         v-if="card.image"
@@ -54,6 +57,10 @@ import { computed } from 'vue'
 const props = defineProps({
   card: useProp(Object)
 })
+
+const open = () => {
+  window.open(props.card.url, '_blank')
+}
 
 const styles = computed(() => {
   return {

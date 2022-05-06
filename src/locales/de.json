@@ -42,7 +42,8 @@
       "federation": "Förderation",
       "conversations": "Unterhaltungen",
       "notifications": "Benachrichtigungen",
-      "bubble": "Meine Bubble"
+      "bubble": "Meine Bubble",
+      "app": "TrötApp"
     },
     "placeholder": {
       "search": "Suchen..."

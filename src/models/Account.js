@@ -1,30 +1,37 @@
 import BaseModel from '@/models/lib/BaseModel'
 import PouchDb from '@/models/lib/PouchDb'
-import Megalodon from '@/utils/Megalodon'
 import { useStore } from '@/stores/global'
+import { useMegalodon } from '@/composables/useMegalodon.js'
+
+const { registerApp, sns, baseUrl, domain, fetchAccessToken, verifyAccountCredentials } = useMegalodon()
 
 const Account = class extends BaseModel {
   static getDocType () {
     return 'account'
   }
 
-  static async registerApp (domain) {
+  static async registerApp (mDomain) {
     let mastdonServerUrl = null
 
+    const account = new Account()
+    account.isTemp = true
+    account.domain = mDomain
+    await account.save()
+
     try {
-      const data = await Megalodon.registerApp(domain)
-      const { clientId, clientSecret, url, sns, baseUrl, vapid_key: vapidKey } = data
+      const data = await registerApp(mDomain, account.id)
+      const { clientId, clientSecret, vapid_key: vapidKey, url, redirect } = data
 
       mastdonServerUrl = url
 
-      const account = new Account()
-
-      account.sns = sns
-      account.baseUrl = baseUrl
-      account.domain = domain
+      account.sns = sns.value
+      account.baseUrl = baseUrl.value
+      account.domain = domain.value
       account.clientId = clientId
       account.clientSecret = clientSecret
       account.vapidKey = vapidKey
+      account.isTemp = true
+      account.redirect = redirect
 
       await account.save()
       return Promise.resolve({ url: mastdonServerUrl, id: account.id })
@@ -33,79 +40,86 @@ const Account = class extends BaseModel {
     }
   }
 
-  async getClient (account = null, code = null) {
-    const store = useStore()
-    let $client = await store.getClient()
-    if ($client) {
-      return $client
-    }
-    $client = await Megalodon.client(account, code)
-    store.setClient($client)
-    return $client
-  }
-
   static async ensureIndices () {
     PouchDb.db().ensureIndices([
-      { fields: ['docType', 'baseURL', 'domain', 'clientId', 'clientSecret'] }
+      { fields: ['docType', 'accountId'] }
     ])
   }
 
-  static async updateMastodonAccountData (id, mastodonAccount = null, token = null) {
-    const account = await Account.db().get(id)
-    if (account && (mastodonAccount || token)) {
-      if (mastodonAccount) {
-        account.username = mastodonAccount.username
-        account.accountId = mastodonAccount.id
-        account.avatar = mastodonAccount.avatar
-        account.url = mastodonAccount.url
-        account.acct = mastodonAccount.acct
-      }
+  static async verifyAccountCredentials (account = null) {
+    const store = useStore()
 
-      if (token) {
-        account.accessToken = token.accessToken
-        account.refreshToken = token.refreshToken || ''
+    if (!account) {
+      const accountId = store.getAccountId()
+      if (accountId) {
+        account = await Account.db().get(accountId)
+        if (!account) {
+          return Promise.reject(new Error('Keinen aktiven Account gefunden'))
+        }
+      } else {
+        return Promise.reject(new Error('Keinen aktiven Account gefunden'))
       }
-
-      await account.save()
-      const store = useStore()
-      store.setAccount(account)
-      return Promise.resolve(account)
     }
-  }
 
-  static async verifyAccountCredentials (acc) {
-    const instance = new this()
-    const $client = await instance.getClient(acc, acc.accessToken)
-    const res = await $client.verifyAccountCredentials()
-    const account = await this.updateMastodonAccountData(acc.id, res.data)
-    return { account, $client }
+    let mastodonAccount
+    try {
+      mastodonAccount = await verifyAccountCredentials(account)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+
+    if (account.isTemp) {
+      const tmpAccountId = account._id
+      const accessToken = account.accessToken
+      const refreshToken = account.refreshToken
+      const lastLoginAt = account.lastLoginAt
+      const existingAccount = await Account.db().findOne({
+        accountId: mastodonAccount.id
+      })
+      if (existingAccount) {
+        account = existingAccount
+        account.accessToken = accessToken
+        account.refreshToken = refreshToken
+        account.lastLoginAt = lastLoginAt
+        await PouchDb.db().deleteBy(tmpAccountId)
+      } else {
+        account.isTemp = false
+      }
+    }
+
+    account.username = mastodonAccount.username
+    account.accountId = mastodonAccount.id
+    account.avatar = mastodonAccount.avatar
+    account.url = mastodonAccount.url
+    account.acct = mastodonAccount.acct
+
+    await account.save()
+
+    store.setAccount(account)
+    return Promise.resolve(account)
   }
 
   static async autorize (id, code) {
+    const store = useStore()
     await Account.ensureIndices()
 
     const tempAccount = await Account.db().get(id)
-    const token = await Megalodon.fetchAccessToken(code, tempAccount)
 
-    const account = await Account.db().findOne({
-      baseURL: tempAccount.baseURL,
-      domain: tempAccount.domain,
-      clientId: tempAccount.clientId,
-      clientSecret: tempAccount.clientSecret
-    })
+    tempAccount.accessToken = code
+    tempAccount.save()
 
-    const currentAccount = account || tempAccount
+    const { domain, clientId, clientSecret, redirect, sns, baseUrl } = tempAccount
+    const token = await fetchAccessToken(domain, clientId, clientSecret, code, redirect, sns, baseUrl)
 
-    const instance = new this()
-    const $client = await instance.getClient(currentAccount, token.accessToken)
-    const res = await $client.verifyAccountCredentials()
+    tempAccount.accessToken = token.access_token
+    tempAccount.refreshToken = token.refresh_token || ''
+    tempAccount.lastLoginAt = new Date()
+    await tempAccount.save()
 
-    if (currentAccount._id !== tempAccount._id) {
-      await tempAccount.remove(tempAccount)
-    }
+    store.setAccount(tempAccount)
 
-    const acc = await this.updateMastodonAccountData(currentAccount.id, res.data, token)
-    return Promise.resolve(acc)
+    const account = await this.verifyAccountCredentials(tempAccount)
+    return Promise.resolve(account)
   }
 
   static get schema () {
@@ -125,8 +139,10 @@ const Account = class extends BaseModel {
       acct: prop(String),
       url: prop(String),
       avatar: prop(String),
+      redirect: prop(String),
       data: Object,
-      lastLogin: prop(Date).value(null)
+      isTemp: prop(Boolean).value(false),
+      lastLoginAt: prop(Date).value(null)
     }
   }
 }
