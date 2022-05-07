@@ -32,14 +32,12 @@ const routes = [
         component: () => import(/* webpackChunkName: "home" */ '@/views/App/Home.vue')
       }
     ]
-  }
-  /*,
+  },
   {
     path: '/:pathMatch(.*)*',
     redirect: '/app/timeline/home',
     meta: { requiresAuth: false }
   }
-  */
 ]
 
 const router = createRouter({
@@ -49,7 +47,6 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   if (to.meta.requiresAuth === false) {
-    console.log('OKGuard')
     next()
   } else {
     try {

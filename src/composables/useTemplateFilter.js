@@ -20,7 +20,12 @@ export function useTemplateFilter () {
   }
   */
 
-  const formatDate = (value, ff = 'Pp') => {
+  const formatDate = (value) => {
+    if (!value) return ''
+    return DateTime.fromISO(value).toFormat('dd.MM.yyyy')
+  }
+
+  const formatDateTime = (value) => {
     if (!value) return ''
     return DateTime.fromISO(value).toFormat('dd.MM.yyyy HH:mm')
   }
@@ -56,5 +61,5 @@ export function useTemplateFilter () {
     })
   }
 
-  return { formatAccounId, formatCurrency, formatDate, getImageUrl, formatFloat, formatBytes, formatMarkdown, formatInt }
+  return { formatAccounId, formatCurrency, formatDate, getImageUrl, formatFloat, formatBytes, formatMarkdown, formatInt, formatDateTime }
 }

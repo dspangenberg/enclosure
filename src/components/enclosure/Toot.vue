@@ -1,6 +1,7 @@
 <template>
   <li
-    v-if="toot"
+    v-if="toot && isReady"
+    ref="tootRef"
     class="hover:bg-gray-50"
   >
     <enclosure-toot-reblog-info
@@ -25,10 +26,15 @@
             :type="isReblog ? 'reblog' : 'toot'"
             action="toots.toot.actions.boost"
           />
-          <enclosure-toot-content
+          <div>
+            <enclosure-toot-content
+              :toot="item"
+            />
+          </div>
+          <enclosure-toot-footer
             :toot="item"
+            @log="log"
           />
-          <enclosure-toot-footer :toot="item" />
         </div>
       </div>
     </div>
@@ -36,15 +42,14 @@
 </template>
 <script setup>
 import { useProp } from '@/composables/useProp.js'
-import { computed, toRefs, onMounted } from 'vue'
-import { useMegaLinks } from '@/composables/useMegaLinks.js'
+import { computed, toRefs, ref, onMounted, nextTick } from 'vue'
 
 const props = defineProps({
   toot: useProp(Object),
   index: useProp(Number)
 })
 
-const { addHandlerToHashTagsAndMentions } = useMegaLinks()
+const isReady = ref(false)
 const { toot } = toRefs(props)
 
 const isReblog = computed(() => toot.value.reblog instanceof Object)
@@ -54,7 +59,12 @@ const createdAt = computed(() => isReblog.value ? toot.value.reblog.created_at :
 const otherAccount = computed(() => isReblog.value ? toot.value.account : null)
 
 onMounted(async () => {
-  addHandlerToHashTagsAndMentions()
+  await nextTick
+  isReady.value = true
 })
+
+const log = () => {
+  console.log(toot.value)
+}
 
 </script>

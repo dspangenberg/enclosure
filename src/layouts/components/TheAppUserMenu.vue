@@ -1,23 +1,35 @@
 <template>
   <stormy-menu
     v-if="account"
+    items-class="origin-bottom-left  bottom-12 left-0 z-50 w-56 "
+    button-class="flex flex-1 hover:border-gray-200 border border-transparent my-1 mx-1  mr-0 rounded-md active:bg-gray-100"
+    menu-class="flex-1 flex mr-3"
     :button="false"
   >
     <template #button>
-      <span class="sr-only">Open user menu</span>
-      <span class="rounded-full border border-gray-100">
-        <img
-          class="h-8 w-8 rounded-full border-white border-2 "
-          :src="account.avatar"
-          alt=""
-        >
-      </span>
-      <span class="text-sm text-gray-600 ml-2 truncate font-semibold">
-        {{ account.username }}@{{ account.domain }}
-
-      </span>
+      <div class="flex items-center flex-1">
+        <span class="flex-shrink-0 flex items-center">
+          <span class="rounded-full  border-gray-100">
+            <img
+              class="h-8 w-8 rounded-full border-white border-2 "
+              :src="account.avatar"
+              alt=""
+            >
+          </span>
+        </span>
+        <span class="flex-1 text-sm text-gray-600  text-left truncate font-semibold pl-2">
+          {{ account.username }}@{{ account.domain }}
+        </span>
+        <span class="pr-2 flex-shrink-0">
+          <stormy-icon
+            name="chevron-down"
+            class="w-4 h-4 text-gray-400 "
+            :stroke-width="2"
+          />
+        </span>
+      </div>
     </template>
-    <div class="px-3 py-3 bg-gray-50 -mt-0.5 rounded-t-l-md rounded-t-r-md hover:bg-gray-100">
+    <div class="px-3 py-3 bg-gray-50 -left-10 -mt-0.5 rounded-t-l-md rounded-t-r-md hover:bg-gray-100">
       <div class="text-sm text-gray-900 truncate pt-0.5 font-semibold flex items-center">
         <div class="truncate flex-1">
           {{ account.username }}
@@ -77,6 +89,20 @@
         i18n
         icon="a-b-off"
         label="user-menu.muted-words"
+      />
+    </div>
+    <div class="flex flex-col">
+      <stormy-menu-item
+        disabled
+        i18n
+        icon="settings"
+        label="user-menu.settings"
+      />
+      <stormy-menu-item
+        disabled
+        i18n
+        icon="app-window"
+        label="user-menu.app"
       />
     </div>
     <div class="flex flex-col">

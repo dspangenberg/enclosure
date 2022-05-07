@@ -21,6 +21,23 @@ export function useMegalodon () {
     baseUrl.value = `${protocol}://${domain.value}`
   }
 
+  const getRoute = (link, mentions) => {
+    const href = link.split('?')
+    const parts = href[0].split('/')
+    const tagOrMention = parts.pop()
+
+    if (tagOrMention.startsWith('@')) {
+      const mention = mentions.find(item => item.username === tagOrMention.substr(1))
+      if (mention) {
+        return `/app/timeline/profile/${mention.id}`
+      } else {
+        return null
+      }
+    } else {
+      return `/app/timeline/tags/${tagOrMention}`
+    }
+  }
+
   const setLoading = (value = false) => {
     const store = useStore()
     store.setIsLoading(value)
@@ -103,7 +120,8 @@ export function useMegalodon () {
       id = account?.accountId
     }
     try {
-      let res
+      let res = []
+      let account = null
       switch (type) {
         case 'home':
           res = await client.value.getHomeTimeline(options)
@@ -115,7 +133,8 @@ export function useMegalodon () {
           res = await client.value.getBookmarks(options)
           break
         case 'profile':
-          res = await client.value.getAccountStatuses(id, options)
+          res = await client.value.getAccountStatuses(tag || id, options)
+          account = await getAccount(tag || id)
           break
         case 'local':
           res = await client.value.getLocalTimeline(options)
@@ -134,7 +153,10 @@ export function useMegalodon () {
           break
       }
       setLoading()
-      return Promise.resolve(res.data)
+      return Promise.resolve({
+        statuses: res?.data || [],
+        account: account
+      })
     } catch (error) {
       setLoading()
       return Promise.reject(error)
@@ -296,6 +318,7 @@ export function useMegalodon () {
     getBookmarks,
     getFavourites,
     getInstanceTrends,
+    getRoute,
     getSuggestions,
     getTimeline,
     generateClient,

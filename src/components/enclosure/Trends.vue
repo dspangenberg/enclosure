@@ -34,8 +34,6 @@ const limitetedTrends = computed(() => trends.value && isLimited.value ? trends.
 
 onMounted(async () => {
   let items = await getInstanceTrends(20)
-  console.log(items)
-
   items = items.map(item => {
     item.history = item.history.map(item => {
       item.accounts = parseInt(item.accounts)

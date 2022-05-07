@@ -11,28 +11,25 @@
       </div>
       <div class="flex flex-1 flex-col text-xs">
         <div class="text-sm flex-1 items-center  fle">
-          <a
-            :href="account.url"
-            target="_blank"
+          <router-link
+            :to="route(account)"
             class="text-text-600 flex-1 flex items-center hover:underline"
           >
             <span class="flex-1 text-base font-semibold mr-1 truncate flex">
 
               {{ account.display_name || account.username }}
             </span>
-
-          </a>
+          </router-link>
         </div>
         <div class="flex items-center mt-0.5">
-          <a
-            :href="account.url"
-            target="_blank"
+          <router-link
+            :to="route(account)"
             class="text-text-600 flex-1 flex items-center  hover:underline"
           >
             <span class="flex-1 text-gray-400 text-sm font-semibold">
               @{{ account.acct }}
             </span>
-          </a>
+          </router-link>
           <span
             v-tooltip.tooltip="createdAtFormated"
             class="text-gray-400 text-sm font-semibold select-none"
@@ -98,5 +95,9 @@ const visibilityText = computed(() => {
       return 'Öffentlich'
   }
 })
+
+const route = (account) => {
+  return `/app/timeline/profile/${account.id}`
+}
 
 </script>

@@ -42,7 +42,7 @@ const Account = class extends BaseModel {
 
   static async ensureIndices () {
     PouchDb.db().ensureIndices([
-      { fields: ['docType', 'accountId'] }
+      { fields: ['docType', 'accountId', 'domain', 'sns'] }
     ])
   }
 
@@ -74,7 +74,9 @@ const Account = class extends BaseModel {
       const refreshToken = account.refreshToken
       const lastLoginAt = account.lastLoginAt
       const existingAccount = await Account.db().findOne({
-        accountId: mastodonAccount.id
+        accountId: mastodonAccount.id,
+        sns: mastodonAccount.sns,
+        domain: mastodonAccount.domain
       })
       if (existingAccount) {
         account = existingAccount

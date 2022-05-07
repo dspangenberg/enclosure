@@ -1,11 +1,12 @@
 <template>
   <Menu
     as="div"
-    class="relative inline-block text-left z-10"
+    class="relative text-left z-10"
+    :class="menuClass"
   >
     <MenuButton
       :class="getButtonClass"
-      class="inline-flex items-center "
+      class=" items-center"
     >
       <slot name="button">
         <stormy-icon
@@ -27,7 +28,10 @@
       leave-from-class="transform opacity-100 scale-100"
       leave-to-class="transform opacity-0 scale-95"
     >
-      <MenuItems class="origin-bottom-left absolute bottom-12 left-12 z-50 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5  focus:outline-none">
+      <MenuItems
+        class="rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5  focus:outline-none absolute"
+        :class="itemsClass"
+      >
         <div class="my-0.5 divide-y divide-gray-100 ">
           <slot />
         </div>
@@ -50,7 +54,10 @@ const props = defineProps({
   iconSize: useProp(String, 'md'),
   iconVariant: useProp(String, 'ghost'),
   iconColor: useProp(String, 'text-gray-500'),
-  shortcut: useProp(String, '')
+  shortcut: useProp(String, ''),
+  menuClass: useProp(String, 'inline-block '),
+  buttonClass: useProp(String, 'inline-flex'),
+  itemsClass: useProp(String, 'origin-bottom-right  bottom-12 left-12 z-50 w-56')
 })
 
 const { getIconSize, getClasses } = useButton({
@@ -58,6 +65,6 @@ const { getIconSize, getClasses } = useButton({
   size: props.iconSize
 })
 
-const getButtonClass = computed(() => props.button ? getClasses : '')
+const getButtonClass = computed(() => props.button ? getClasses : props.buttonClass)
 
 </script>

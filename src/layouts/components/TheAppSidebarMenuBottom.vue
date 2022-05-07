@@ -24,38 +24,22 @@
         name="sidebar.nav.federation"
         icon="rocket"
       />
-    </stormy-nav-group>
-    <stormy-nav-group>
-      <stormy-nav-item
-        :open="isAppMenuOpen"
-        name="TrötGezwischer"
-        icon="app-window"
-        @selected="isAppMenuOpen =! isAppMenuOpen"
-      >
-        <stormy-sub-nav-item
-          name="Accounts"
-        />
-        <stormy-sub-nav-item
-          name="App zurücksetzen"
-          @selected="onResetApp"
-        />
-      </stormy-nav-item>
-    </stormy-nav-group>
-    <!--
+      <!--
             // $t('sidebar.nav.discover')
             // $t('sidebar.nav.favs')
             // $t('sidebar.nav.local')
             // $t('sidebar.nav.federation')
             -->
-    <stormy-confirmation-modul
-      :show="isRevealed"
-      button="Zurücksetzen bestätigen"
-      title="Webanwendung zurücksetzen"
-      @confirm="confirm"
-      @cancel="cancel"
-    >
-      Möchtest Du die Einstellungen und PouchDb-Datenbank löschen?
-    </stormy-confirmation-modul>
+      <stormy-confirmation-modul
+        :show="isRevealed"
+        button="Zurücksetzen bestätigen"
+        title="Webanwendung zurücksetzen"
+        @confirm="confirm"
+        @cancel="cancel"
+      >
+        Möchtest Du die Einstellungen und PouchDb-Datenbank löschen?
+      </stormy-confirmation-modul>
+    </stormy-nav-group>
   </div>
 </template>
 <script setup>

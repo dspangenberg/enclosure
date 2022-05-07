@@ -1,11 +1,11 @@
 <template>
   <li class="text-base pt-2 flex items-center">
-    <a
-      :href="href"
+    <router-link
+      :to="href"
       class="font-semibold text-blue-600 flex-1 truncate"
     >
       #{{ trend.name }}
-    </a>
+    </router-link>
     <span class="text-xs text-gray-500 mr-0.5">
       {{ trend.uses }}
     </span>

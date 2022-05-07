@@ -35,6 +35,6 @@ onMounted(async () => {
   const itemsa = reverse(sortBy([item1, item2, item3, item4, item5], 'username'))
   suggestions.value = itemsa
 
-  console.log(reverse(sortBy(suggestions.value, 'username')))
+  // console.log(reverse(sortBy(suggestions.value, 'username')))
 })
 </script>

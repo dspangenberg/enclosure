@@ -13,8 +13,8 @@
           :stroke-width="2"
         />
         <span class="text-gray-500 mr-0.5">{{ actionText }}</span>
-        <a
-          :href="otherAccount.url"
+        <router-link
+          :to="route(otherAccount)"
           class="hover:underline text-gray-500 flex items-center"
         >
           <img
@@ -23,21 +23,18 @@
             alt=""
           >
           <span>{{ otherAccount.display_name }}</span>
-        </a>
+        </router-link>
       </div>
     </div>
   </div>
 </template>
 <script setup>
 import { useProp } from '@/composables/useProp.js'
-import { useTemplateFilter } from '@/composables/useTemplateFilter'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const { t: $t } = useI18n({ useScope: 'global' })
 const actionText = computed(() => $t(props.action))
-
-const { formatDate } = useTemplateFilter()
 
 const props = defineProps({
   account: useProp(Object),
@@ -47,6 +44,8 @@ const props = defineProps({
   action: useProp(String, 'toots.toot.actions.boost')
 })
 
-const createdAtFormated = computed(() => formatDate(props.createdAt))
+const route = (account) => {
+  return `/app/timeline/profile/${account.id}`
+}
 
 </script>

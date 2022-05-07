@@ -46,7 +46,7 @@
         >
           <slot name="bottom" />
         </nav>
-        <div class="ml-1 mt-6">
+        <div class="ml-1 mt-6 flex">
           <TheAppUserMenu />
         </div>
       </div>

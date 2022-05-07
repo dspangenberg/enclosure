@@ -935,10 +935,10 @@
   resolved "https://registry.yarnpkg.com/@fontsource/clear-sans/-/clear-sans-4.5.3.tgz#226abbb3c3b89c7ad679e57bc7ea0dc85b487f6f"
   integrity sha512-092h3D/WVUPVyGPFxdAqr4KwFsAxzxB1o01YY3qQGA3vB9zATYiCsXWGKXiztDzggIgJmC4TdUq+gEVZPZuXuA==
 
-"@headlessui/vue@^1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@headlessui/vue/-/vue-1.6.0.tgz#e8242a0fb43fa2f7a0a82f1673c2ca221575a48d"
-  integrity sha512-oB3R1G8BDDcTwaLqkr9G2swJlu62IaC6900fzsFglLVKG25jKOwOrlWKwjFNOMzmSQe/vCvoWJENWfeH10D4AA==
+"@headlessui/vue@^1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@headlessui/vue/-/vue-1.6.1.tgz#772dde92ec3a3a494c827b1643a6d5538baabd29"
+  integrity sha512-fccGN1hsFvS0P73NplZoOdX1rhyaH5jIQE9IUKNaaJC72mQjR3lVvZldo+iiLF5X1bqgl6pDixWdqS2kMGfFxA==
 
 "@heroicons/vue@^1.0.6":
   version "1.0.6"
@@ -1758,6 +1758,16 @@ bluebird@^3.5.0:
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.2.tgz#9f229c15be272454ffa973ace0dbee79a1b0c36f"
   integrity sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==
+
+blueimp-load-image@^5.16.0:
+  version "5.16.0"
+  resolved "https://registry.yarnpkg.com/blueimp-load-image/-/blueimp-load-image-5.16.0.tgz#16b763f57e6725f8865517bca8eb7c3dc7d41e09"
+  integrity sha512-3DUSVdOtlfNRk7moRZuTwDmA3NnG8KIJuLcq3c0J7/BIr6X3Vb/EpX3kUH1joxUhmoVF4uCpDfz7wHkz8pQajA==
+
+blurhash@^1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/blurhash/-/blurhash-1.1.5.tgz#3034104cd5dce5a3e5caa871ae2f0f1f2d0ab566"
+  integrity sha512-a+LO3A2DfxTaTztsmkbLYmUzUeApi0LZuKalwbNmqAHR6HhJGMt1qSV/R3wc+w4DL28holjqO3Bg74aUGavGjg==
 
 bn.js@^4.0.0, bn.js@^4.1.0, bn.js@^4.11.9:
   version "4.12.0"
@@ -4502,6 +4512,11 @@ minimist@^1.1.0, minimist@^1.1.1, minimist@^1.2.0, minimist@^1.2.6:
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.6.tgz#8637a5b759ea0d6e98702cfb3a9283323c93af44"
   integrity sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q==
 
+mitt@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/mitt/-/mitt-3.0.0.tgz#69ef9bd5c80ff6f57473e8d89326d01c414be0bd"
+  integrity sha512-7dX2/10ITVyqh4aOSVI9gdape+t9l2/8QxHrFmUXu4EEUpdlxl6RudZUPZoc+zuY2hk1j7XxVroIVIan/pD/SQ==
+
 mixin-deep@^1.2.0:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/mixin-deep/-/mixin-deep-1.3.2.tgz#1120b43dc359a785dce65b55b82e257ccf479566"
@@ -6437,6 +6452,10 @@ vue-i18n@9.1.10:
     "@intlify/shared" "9.1.10"
     "@intlify/vue-devtools" "9.1.10"
     "@vue/devtools-api" "^6.0.0-beta.7"
+
+"vue-lazyload@https://github.com/hilongjw/vue-lazyload.git#next":
+  version "3.0.0-alpha.0"
+  resolved "https://github.com/hilongjw/vue-lazyload.git#d0e3c038d801fb2ac086fbd4e914d8a9ae8472c4"
 
 vue-router@4.0.15:
   version "4.0.15"

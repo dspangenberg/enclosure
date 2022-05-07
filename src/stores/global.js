@@ -37,7 +37,7 @@ export const useStore = defineStore({
       return this.account
     },
     setAccountId (accountId) {
-      sessionStorage.setItem('current-account-id', accountId)
+      localStorage.setItem('current-account-id', accountId)
       this.accountId = accountId
       return accountId
     },
@@ -45,7 +45,7 @@ export const useStore = defineStore({
       this.isLoadingStatus = value
     },
     getAccountId () {
-      return sessionStorage.getItem('current-account-id')
+      return localStorage.getItem('current-account-id')
     },
     async getDeepLimit () {
       if (!this.deepLimit) {

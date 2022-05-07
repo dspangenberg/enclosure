@@ -46,4 +46,8 @@ const props = defineProps({
 const reblog = computed(() => props.toot.reblog || {})
 const account = computed(() => reblog.value?.account || {})
 
+const route = (account) => {
+  return `/app/timeline/profile/${account.id}`
+}
+
 </script>

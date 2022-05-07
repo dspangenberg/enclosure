@@ -3,7 +3,7 @@
     class=""
     inner-class="!my-0 py-3"
   >
-    <div class="  grid grid-cols-4 mx-auto px-2 select-none">
+    <div class="  grid grid-cols-5 mx-auto px-2 select-none">
       <div class="flex items-center mx-auto">
         <stormy-icon
           name="messages"
@@ -47,6 +47,13 @@
           @click="store.bookmark(toot.id)"
         />
       </div>
+      <div class="flex items-center mx-auto">
+        <stormy-icon
+          name="terminal"
+          class="w-5 h-5 mr-2.5 hover:text-gray-900 cursor-pointer text-gray-500"
+          @click="$emit('log')"
+        />
+      </div>
     </div>
   </enclosure-toot-container>
 </template>
@@ -55,6 +62,8 @@ import { useProp } from '@/composables/useProp.js'
 import { useToots } from '@/stores/toots'
 
 const store = useToots()
+
+defineEmits(['log'])
 
 defineProps({
   toot: useProp(Object)

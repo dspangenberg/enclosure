@@ -75,7 +75,7 @@ const props = defineProps({
 
 const limit = computedAsync(
   async () => {
-    return await store.getDeepLimit()
+    // return await store.getDeepLimit()
   },
   null
 )

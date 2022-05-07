@@ -19,7 +19,7 @@
         class="block border rounded-md aspect-w-10 aspect-h-7"
       >
         <img
-          :src="medium.url"
+          v-lazy="medium.url"
           class="object-cover border rounded-md border-white w-full cursor-pointer"
           @click="showLigtbox(index)"
         >

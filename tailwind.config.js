@@ -58,8 +58,8 @@ module.exports = {
         xs: ['0.74rem', '0.9rem'],
         sm: ['0.8rem', '1.0rem'],
         base: ['0.9rem', '1.10rem'],
-        lg: ['1.0rem', '1.20rem'],
-        xl: ['24px', '32px']
+        lg: ['1.0rem', '1.30rem'],
+        xl: ['1.1rem', '1.40rem'],
       },
       fill: (theme) => theme('colors')
     },

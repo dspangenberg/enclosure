@@ -137,9 +137,9 @@ class BaseModel {
     return Promise.resolve(this)
   }
 
-  async first (selector = {}, _sort = ['createdAt']) {
+  async first (selector = {}, sort = ['createdAt']) {
     try {
-      const docs = await this.find(selector, { _sort })
+      const docs = await this.find(selector, { sort })
       if (docs) {
         const doc = this.resultFactory(docs[0])
         return Promise.resolve(doc)

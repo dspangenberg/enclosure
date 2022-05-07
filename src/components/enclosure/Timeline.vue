@@ -1,12 +1,5 @@
 <template>
   <div class="overflow-hidden flex flex-1 max-w-xl h-full items-center relative w-full">
-    <div class="fixed flex-shrink-0 top-0 max-w-xl bg-white z-20 w-[574px]">
-      <div class=" text-lg font-bold text-gray-900 flex items-center  border-b border-gray-100">
-        <div class="flex-1 my-3 mx-4 ">
-          {{ getTitle }}
-        </div>
-      </div>
-    </div>
     <template
       v-if="!storeToots.isLoading"
     >
@@ -27,12 +20,28 @@
             role="list"
             class="divide-y divide-gray-200/75"
           >
+            <li><slot name="header" /></li>
             <enclosure-toot
               v-for="(toot, index) in filteredToots"
               :key="toot.id"
               :index="index"
               :toot="toot"
             />
+            <li
+              v-if="storeToots.isLoadingMore"
+              class="flex items-center flex-col"
+            >
+              <div class="text-sm text-gray-400 py-2 px-auto flex items-center">
+                <stormy-icon
+                  name="refresh"
+                  class="w-5 h-5 mr-2 animate-spin-slow"
+                  :stroke-width="1"
+                />
+                <span class="">
+                  Weitere Tröts werden geladen
+                </span>
+              </div>
+            </li>
           </ul>
         </div>
         <div
@@ -71,13 +80,8 @@
 import { useProp } from '@/composables/useProp.js'
 import { useToots } from '@/stores/toots'
 import { computed, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { useRoute } from 'vue-router'
 
-const route = useRoute()
 const storeToots = useToots()
-
-const { t: $t } = useI18n({ useScope: 'global' })
 
 const filteredToots = computed(() => {
   if (['local', 'federation'].includes(props.type)) {
@@ -87,21 +91,9 @@ const filteredToots = computed(() => {
 })
 
 const props = defineProps({
-  title: useProp(String, ''),
   type: useProp(String, '')
 })
 
 const timelineRef = ref()
 
-const getTitle = computed(() => {
-  if (props.title) return props.title
-  if (!props.type) return `Oops ${props.type}`
-
-  if (props.type === 'tags') {
-    const i18 = $t(`timelines.titles.${props.type}`)
-    return `${i18} #${route.params.tag}`
-  }
-
-  return $t(`timelines.titles.${props.type}`)
-})
 </script>

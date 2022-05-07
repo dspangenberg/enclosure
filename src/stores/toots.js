@@ -1,5 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { useMegalodon } from '@/composables/useMegalodon.js'
+import { intersection } from 'lodash'
 
 const {
   getTimeline,
@@ -15,12 +16,16 @@ export const useToots = defineStore({
   id: 'toots',
   state: () => ({
     toots: [],
+    account: null,
     toot: {},
-    loadingStatus: false
+    loadingStatus: false,
+    loadingMore: false
   }),
   getters: {
     isLoading: (state) => state.loadingStatus,
-    getToots: (state) => state.toots
+    isLoadingMore: (state) => state.loadingMore,
+    getToots: (state) => state.toots,
+    lastToot: (state) => state.toots.pop()
   },
   actions: {
     update (toot) {
@@ -35,11 +40,29 @@ export const useToots = defineStore({
     byId (id) {
       return this.toots.find(item => parseInt(item.id) === parseInt(id) || parseInt(item.reblog?.id) === parseInt(id))
     },
+    async loadMore (timeline = 'home', options = {}, id = null, tag = null) {
+      if (!this.toots.length) return
+      this.loadingMore = true
+      options.max_id = this.toots.pop().id
+      options.limit = 20
+      const oldIds = this.toots.map(item => item.id)
+      const payload = await getTimeline(timeline, options, id, tag)
+      for (const toot of payload.statuses) {
+        if (!oldIds.includes(toot.id)) {
+          this.toots.push(toot)
+        }
+      }
+      this.loadingMore = false
+    },
     async getTootsforTimeline (timeline = 'home', options = {}, id = null, tag = null) {
+      options.limit = 40
       this.toots = []
       this.loadingStatus = true
       try {
-        this.toots = await getTimeline(timeline, options, id, tag)
+        const payload = await getTimeline(timeline, options, id, tag)
+        console.log(payload)
+        this.toots = payload.statuses
+        this.account = payload.account
       } catch (error) {
         Promise.reject(error)
       }

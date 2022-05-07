@@ -12,6 +12,8 @@ import { createPinia } from 'pinia'
 import Vue3Sanitize from 'vue-3-sanitize'
 import directives from '@/directives'
 import Tooltip from '@/components/Tooltip.vue'
+import VueLazyload from 'vue-lazyload'
+import mittAsync from '@/utils/mittAsync'
 
 const i18n = createI18n({
   locale: 'de',
@@ -37,11 +39,13 @@ Object.entries(components).forEach(([path, component]) => {
 directives(app)
 
 app.use(createPinia())
+app.config.globalProperties.emitter = mittAsync()
 
 app
   .use(i18n)
   .component('Tooltip', Tooltip)
   .use(router)
+  .use(VueLazyload)
   .use(Vue3Sanitize, {
     allowedTags: ['a', 'p', 'ul', 'li', 'ol', 'img']
   })

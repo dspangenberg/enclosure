@@ -11,7 +11,7 @@
   "dependencies": {
     "@be/http-status": "^1.0.2",
     "@fontsource/clear-sans": "^4.5.3",
-    "@headlessui/vue": "^1.6.0",
+    "@headlessui/vue": "^1.6.1",
     "@heroicons/vue": "^1.0.6",
     "@tabler/icons": "^1.68.0",
     "@vuelidate/core": "^2.0.0-alpha.41",
@@ -21,11 +21,14 @@
     "@vueuse/integrations": "^8.4.2",
     "@vueuse/router": "^8.4.2",
     "axios": "^0.27.2",
+    "blueimp-load-image": "^5.16.0",
+    "blurhash": "^1.1.5",
     "languagedetect": "^2.0.0",
     "lodash": "^4.17.21",
     "luxon": "^2.3.2",
     "marked": "^4.0.15",
     "megalodon": "^4.0.1",
+    "mitt": "^3.0.0",
     "nanoid": "^3.3.4",
     "numbro": "^2.3.6",
     "pinia": "^2.0.14",
@@ -40,6 +43,7 @@
     "vue-advanced-cropper": "^1.10.1",
     "vue-easy-lightbox": "^1.4.1",
     "vue-i18n": "9.1.10",
+    "vue-lazyload": "https://github.com/hilongjw/vue-lazyload.git#next",
     "vue-router": "4.0.15"
   },
   "devDependencies": {
