@@ -13,11 +13,19 @@
         <div class="text-sm flex-1 items-center  fle">
           <router-link
             :to="route(account)"
-            class="text-text-600 flex-1 flex items-center hover:underline"
+            class="text-text-600 flex-1 flex items-center "
           >
             <span class="flex-1 text-base font-semibold mr-1 truncate flex">
-
-              {{ account.display_name || account.username }}
+              <span
+                v-if="displayName"
+                v-html="displayName"
+              />
+              <span
+                v-else
+                class="hover:underline"
+              >
+                {{ account.username }}
+              </span>
             </span>
           </router-link>
         </div>
@@ -56,6 +64,7 @@
 import { useProp } from '@/composables/useProp.js'
 import { useTemplateFilter } from '@/composables/useTemplateFilter'
 import { computed } from 'vue'
+import emojify from '@/utils/Emoji'
 
 const { formatDate } = useTemplateFilter()
 
@@ -70,7 +79,13 @@ const props = defineProps({
 
 const createdAtFormated = computed(() => formatDate(props.createdAt))
 
+const displayName = computed(() => {
+  const emos = emojify(props.account.display_name, props.account.emojis)
+  return emos
+})
+
 const visibilityIcon = computed(() => {
+  console.log(props.toot)
   switch (props.toot.visibility) {
     case 'unlisted':
       return 'lock-open'

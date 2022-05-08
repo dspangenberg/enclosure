@@ -22,7 +22,7 @@
             :src="otherAccount.avatar"
             alt=""
           >
-          <span>{{ otherAccount.display_name }}</span>
+          <span>{{ displayName || otherAccount.username }}</span>
         </router-link>
       </div>
     </div>
@@ -32,9 +32,11 @@
 import { useProp } from '@/composables/useProp.js'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-
+import emoji from 'node-emoji'
 const { t: $t } = useI18n({ useScope: 'global' })
 const actionText = computed(() => $t(props.action))
+
+const displayName = computed(() => emoji.strip(props.otherAccount.display_name))
 
 const props = defineProps({
   account: useProp(Object),

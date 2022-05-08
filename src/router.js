@@ -27,7 +27,17 @@ const routes = [
     component: () => import(/* webpackChunkName: "appLayout" */ '@/layouts/TheAppLayout.vue'),
     children: [
       {
-        path: 'timeline/:type/:tag?',
+        path: 'notifications',
+        name: 'notifications',
+        component: () => import(/* webpackChunkName: "notifications" */ '@/views/App/Notifications.vue')
+      },
+      {
+        path: 'timeline/bubble/:p/:type',
+        name: 'following',
+        component: () => import(/* webpackChunkName: "profile-bubble" */ '@/views/App/ProfileBubble.vue')
+      },
+      {
+        path: 'timeline/:type/:p?',
         name: 'timeline',
         component: () => import(/* webpackChunkName: "home" */ '@/views/App/Home.vue')
       }

@@ -40,13 +40,13 @@ export const useToots = defineStore({
     byId (id) {
       return this.toots.find(item => parseInt(item.id) === parseInt(id) || parseInt(item.reblog?.id) === parseInt(id))
     },
-    async loadMore (timeline = 'home', options = {}, id = null, tag = null) {
+    async loadMore (timeline = 'home', options = {}, p = null, withBubble = false) {
       if (!this.toots.length) return
       this.loadingMore = true
       options.max_id = this.toots.pop().id
       options.limit = 20
       const oldIds = this.toots.map(item => item.id)
-      const payload = await getTimeline(timeline, options, id, tag)
+      const payload = await getTimeline(timeline, options, p, withBubble)
       for (const toot of payload.statuses) {
         if (!oldIds.includes(toot.id)) {
           this.toots.push(toot)
@@ -54,12 +54,12 @@ export const useToots = defineStore({
       }
       this.loadingMore = false
     },
-    async getTootsforTimeline (timeline = 'home', options = {}, id = null, tag = null) {
+    async getTootsforTimeline (timeline = 'home', options = {}, p, withBubble = false) {
       options.limit = 40
       this.toots = []
       this.loadingStatus = true
       try {
-        const payload = await getTimeline(timeline, options, id, tag)
+        const payload = await getTimeline(timeline, options, p, withBubble)
         console.log(payload)
         this.toots = payload.statuses
         this.account = payload.account

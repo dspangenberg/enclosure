@@ -31,7 +31,7 @@ import { useProp } from '@/composables/useProp.js'
 import { useMegalodon } from '@/composables/useMegalodon.js'
 import { computed, onMounted, ref, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
-
+import emojify from '@/utils/Emoji'
 const router = useRouter()
 const { getRoute } = useMegalodon()
 
@@ -39,7 +39,10 @@ const props = defineProps({
   toot: useProp(Object)
 })
 
-const content = computed(() => props.toot.content)
+const content = computed(() => {
+  const emos = emojify(props.toot.content, props.toot.emojis)
+  return emos
+})
 const tootRef = ref()
 const visible = ref(true)
 

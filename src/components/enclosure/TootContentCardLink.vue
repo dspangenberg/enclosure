@@ -3,7 +3,9 @@
     class="cursor-pointer"
     @click="open"
   >
-    <div class="flex flex-1 flex-col border rounded-md">
+    <div
+      class="flex flex-1 flex-col border rounded-md cursor-pointer"
+    >
       <div
         v-if="card.image"
         class="aspect-w-8 aspect-h-4 w-full block"
@@ -13,12 +15,14 @@
           class="object-cover absolute w-full rounded-tl-md rounded-tr-md border-b"
         >
       </div>
-      <div class="flex-1 overflow-hidden p-4 my-auto">
-        <div class="mb-2">
+      <div
+        class="flex-1 overflow-hidden p-4 my-auto space-y-2"
+      >
+        <div class="">
           <h1 class="text-base font-bold truncate text-blue-700">
             <a
               :href="card.url"
-              class="hover:underline"
+              class="h pt-2"
               target="_blank"
             >
               {{ card.title }}

@@ -35,7 +35,7 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useCookies } from '@vueuse/integrations/useCookies'
 import Account from '@/models/Account'
 
@@ -47,7 +47,6 @@ const networkError = ref('')
 const confirm = async () => {
   try {
     const { url, id } = await Account.registerApp(form.value.domainName)
-    console.log(url, id)
     set('accountId', id, { path: '/' })
     window.location = url
   } catch (error) {
@@ -69,11 +68,6 @@ const confirm = async () => {
 
 const form = ref({
   domainName: 'mastodon.social'
-})
-
-onMounted(async () => {
-  const accounts = await Account.db().find()
-  console.log(accounts)
 })
 
 </script>

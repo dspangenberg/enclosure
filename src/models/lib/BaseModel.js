@@ -152,7 +152,6 @@ class BaseModel {
   async find (selectors = {}, options = {}) {
     try {
       const records = await $pouch.find(this.docType, selectors, options)
-      console.log(records)
       return Promise.resolve(this.resultFactory(records))
     } catch (error) {
       console.error(error)

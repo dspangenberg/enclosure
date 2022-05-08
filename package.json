@@ -23,6 +23,10 @@
     "axios": "^0.27.2",
     "blueimp-load-image": "^5.16.0",
     "blurhash": "^1.1.5",
+    "emoji-data-ts": "^1.0.1",
+    "emoji-datasource-apple": "^14.0.0",
+    "emoji-datasource-twitter": "^14.0.0",
+    "emoji-js": "^3.7.0",
     "languagedetect": "^2.0.0",
     "lodash": "^4.17.21",
     "luxon": "^2.3.2",
@@ -30,6 +34,7 @@
     "megalodon": "^4.0.1",
     "mitt": "^3.0.0",
     "nanoid": "^3.3.4",
+    "node-emoji": "^1.11.0",
     "numbro": "^2.3.6",
     "pinia": "^2.0.14",
     "pouchdb": "^7.3.0",
@@ -44,7 +49,8 @@
     "vue-easy-lightbox": "^1.4.1",
     "vue-i18n": "9.1.10",
     "vue-lazyload": "https://github.com/hilongjw/vue-lazyload.git#next",
-    "vue-router": "4.0.15"
+    "vue-router": "4.0.15",
+    "wdt-emoji-bundle": "^0.2.1"
   },
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.1.1",

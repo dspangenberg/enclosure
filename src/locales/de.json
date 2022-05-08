@@ -30,6 +30,15 @@
       "tags": "Timeline für "
     }
   },
+  "notifications": {
+    "types": {
+      "favourite": "hat Deinen Tröt favorisiert",
+      "mention": "hat Dich erwähnt",
+      "repost": "hat Deinen Tröt geboostert",
+      "poll_expired": "hat eine Umfrage beendet",
+      "follow": "folgt Dir jetzt"
+    }
+  },
   "sidebar": {
     "nav": {
       "my-profile": "Mein Profil",

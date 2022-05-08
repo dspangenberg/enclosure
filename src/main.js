@@ -47,6 +47,6 @@ app
   .use(router)
   .use(VueLazyload)
   .use(Vue3Sanitize, {
-    allowedTags: ['a', 'p', 'ul', 'li', 'ol', 'img']
+    allowedTags: ['a', 'p', 'ul', 'li', 'ol', 'img', 'video']
   })
   .mount('#app')

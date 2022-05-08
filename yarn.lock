@@ -2677,6 +2677,46 @@ elliptic@^6.5.3:
     minimalistic-assert "^1.0.1"
     minimalistic-crypto-utils "^1.0.1"
 
+emoji-data-ts@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/emoji-data-ts/-/emoji-data-ts-1.0.1.tgz#dcedc9da5dd84a5a975773bd979c9b4e1a3c1028"
+  integrity sha512-tIBTf+SorMXvSrgXkGod1uS0bsTalxe2Ml3HJF0cnaKk/+QUwU9hnIzCU4Z2K3pCJa/mm8otaDQztQCNJAiQRQ==
+  dependencies:
+    emoji-datasource-apple "7.0.2"
+    emoji-datasource-google "7.0.2"
+
+emoji-datasource-apple@7.0.2:
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/emoji-datasource-apple/-/emoji-datasource-apple-7.0.2.tgz#20ba1788fbfa335147e1fd27bd54e11419964aa6"
+  integrity sha512-m127Ybt10utN5WF+0mehR2siDTh4CcS6N1Xq+0VE387XIZB+DYczrvc7amgAgEtema0lX1GpVzO2wEXKEChfqQ==
+
+emoji-datasource-apple@^14.0.0:
+  version "14.0.0"
+  resolved "https://registry.yarnpkg.com/emoji-datasource-apple/-/emoji-datasource-apple-14.0.0.tgz#ee040d210c07e038eb18f1c64a5a2f03ed977903"
+  integrity sha512-92Q53C44DzSqreHVlajEG24O5sFZjY1E9xRLWWyud7+/hW8S2vs4DiHuNuNZ0CLDCmZMQHc95okN9V8Mk6yBRw==
+
+emoji-datasource-google@7.0.2:
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/emoji-datasource-google/-/emoji-datasource-google-7.0.2.tgz#177eca3316e9dcf1f1350ed748c5679bb5a11a48"
+  integrity sha512-UeBkUeoYdxMnn25AU9zeqkARKLPsKqWpvvVXfM8gzogbwSZtNSoaTn0+Wya1Bs8iiVfZBDXhsBY0J0D06mitOQ==
+
+emoji-datasource-twitter@^14.0.0:
+  version "14.0.0"
+  resolved "https://registry.yarnpkg.com/emoji-datasource-twitter/-/emoji-datasource-twitter-14.0.0.tgz#18c58183cb0b845823a19f3fea7f87bdd4a340cb"
+  integrity sha512-n0HDKNdUM+dtkXhNzSslo9GLFpe25S0HoP/cubuu321yEx0a3k4oLigzgnL1jyZZz8LF2Tt4Wk/4RHpABUO0yQ==
+
+emoji-datasource@7.0.2:
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/emoji-datasource/-/emoji-datasource-7.0.2.tgz#e32b9002c594334ea9ec74e11f21b20c5adcb74d"
+  integrity sha512-F5TTUSktTIfbjHIlaz8tjsQ8EAD0UpJtj1i5O13jQARWTddtFgam3nE1W5WgSQoqU/cuTnF1H9tK/wlCOyzfiA==
+
+emoji-js@^3.7.0:
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/emoji-js/-/emoji-js-3.7.0.tgz#60c479803ebe4cc4bed68ae7c1ef081a5ad31c5b"
+  integrity sha512-YNJCF8DOYI1AZnkSIcJbmIN6rtXtSv5DObqzvHuGAP8VLQc15MMN+DG9rQVSfHPXGFkFub9pGvbiO4FNz5+sjg==
+  dependencies:
+    emoji-datasource "7.0.2"
+
 emojis-list@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/emojis-list/-/emojis-list-3.0.0.tgz#5570662046ad29e2e916e71aae260abdff4f6a78"
@@ -4603,6 +4643,13 @@ natural-compare@^1.4.0:
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=
 
+node-emoji@^1.11.0:
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/node-emoji/-/node-emoji-1.11.0.tgz#69a0150e6946e2f115e9d7ea4df7971e2628301c"
+  integrity sha512-wo2DpQkQp7Sjm2A0cq+sN7EHKO6Sl0ctXeBdFZrL9T9+UywORbufTcTZxom8YqpLQt/FqNMUkOpkZrJVYSKD3A==
+  dependencies:
+    lodash "^4.17.21"
+
 node-fetch@2.6.7:
   version "2.6.7"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.7.tgz#24de9fba827e3b4ae44dc8b20256a379160052ad"
@@ -6479,6 +6526,11 @@ vuvuzela@1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/vuvuzela/-/vuvuzela-1.0.3.tgz#3be145e58271c73ca55279dd851f12a682114b0b"
   integrity sha1-O+FF5YJxxzylUnndhR8SpoIRSws=
+
+wdt-emoji-bundle@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/wdt-emoji-bundle/-/wdt-emoji-bundle-0.2.1.tgz#773cb8f42a246432a0e0b5d26bce64d112bfeb80"
+  integrity sha512-cULiJvzHMCYbz/A3gFfGXB9CcdepMnNSd4m0Slt3+ffCKLcQEGixM1B3GTWyjrGnjcPnWMdd7V8EXkCbszqn4g==
 
 webidl-conversions@^3.0.0:
   version "3.0.1"

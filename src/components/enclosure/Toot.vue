@@ -2,7 +2,7 @@
   <li
     v-if="toot && isReady"
     ref="tootRef"
-    class="hover:bg-gray-50"
+    class="hover:bg-blue-50"
   >
     <enclosure-toot-reblog-info
       :account="account"
@@ -21,6 +21,7 @@
           <enclosure-toot-header
             :account="account"
             :created-at="createdAt"
+            :toot="item"
             :other-account="otherAccount"
             :icon="isReblog ? 'message-2-share' : 'message'"
             :type="isReblog ? 'reblog' : 'toot'"

@@ -53,6 +53,16 @@ export function useMegalodon () {
     }
   }
 
+  const getNotifications = async (options = {}) => {
+    await ensureClient()
+    try {
+      const res = await client.value.getNotifications(options)
+      return Promise.resolve(res.data)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
   const getSuggestions = async (limit = 3) => {
     await ensureClient()
     try {
@@ -113,12 +123,14 @@ export function useMegalodon () {
     }
   }
 
-  const getTimeline = async (type = 'home', options = {}, id = null, tag = null) => {
+  const getTimeline = async (type = 'home', options = {}, p = null, withBubble = false) => {
+    console.log('getTimeline', type, options, p, withBubble)
     setLoading()
-    const account = await ensureClient()
-    if (id === null) {
-      id = account?.accountId
+    const myAccount = await ensureClient()
+    if (p === null) {
+      p = myAccount?.accountId
     }
+    console.log('getTimeline', type, options, p, withBubble)
     try {
       let res = []
       let account = null
@@ -133,8 +145,9 @@ export function useMegalodon () {
           res = await client.value.getBookmarks(options)
           break
         case 'profile':
-          res = await client.value.getAccountStatuses(tag || id, options)
-          account = await getAccount(tag || id)
+          res = await client.value.getAccountStatuses(p, options)
+          account = await getAccount(p, withBubble)
+          res = await client.value.getAccountStatuses(p, options)
           break
         case 'local':
           res = await client.value.getLocalTimeline(options)
@@ -146,9 +159,9 @@ export function useMegalodon () {
           res = await client.value.getConversationTimeline(options)
           break
         case 'tags':
-          console.log('tags', tag)
-          if (tag) {
-            res = await client.value.getTagTimeline(tag, options)
+          console.log('tags', p)
+          if (p) {
+            res = await client.value.getTagTimeline(p, options)
           }
           break
       }
@@ -181,6 +194,7 @@ export function useMegalodon () {
     if (!accountId && account?.accountId) {
       accountId = account.accountId
     }
+    setLoading(true)
     await ensureClient(account)
     try {
       const res = await client.value.getAccountStatuses(accountId)
@@ -248,11 +262,63 @@ export function useMegalodon () {
     return account
   }
 
-  const getAccount = async (id) => {
+  const enrichDbAccount = async (id) => {
     await ensureClient()
     try {
-      const res = await client.value.getAccount(id)
-      return Promise.resolve(res.data)
+      const follower = await client.value.getAccountFollowers(id, { limit: 100 })
+      const following = await client.value.getAccountFollowing(id, { limit: 100 })
+
+      console.log(following)
+
+      const instance = await client.value.getInstance()
+
+      const result = {}
+
+      result.follower = follower.data.map(item => item.id)
+      result.following = following.data.map(item => item.id)
+      result.instance = instance.data
+
+      return Promise.resolve(result)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
+  const getAccountFollowing = async (id, options) => {
+    await ensureClient()
+    try {
+      const following = await client.value.getAccountFollowing(id)
+      return Promise.resolve(following.data)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
+  const getAccountFollower = async (id, options) => {
+    await ensureClient()
+    try {
+      const follower = await client.value.getAccountFollowers(id)
+      return Promise.resolve(follower.data)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
+  const getAccount = async (id, withBubble = false) => {
+    const myAccount = await ensureClient()
+    try {
+      const account = await client.value.getAccount(id)
+      const result = account.data
+      if (withBubble) {
+        const followers = await client.value.getAccountFollowers(id)
+        const following = await client.value.getAccountFollowing(id)
+        result.follower = followers.data
+        result.following = following.data
+      }
+      result.isFollowedByMe = myAccount.following.includes(account.data.id)
+      result.isFollowing = myAccount.follower.includes(account.data.id)
+      result.isMe = account.data.id === myAccount.accountId
+      return Promise.resolve(result)
     } catch (error) {
       return Promise.reject(error)
     }
@@ -311,13 +377,17 @@ export function useMegalodon () {
     client,
     domain,
     bookmarkStatus,
+    enrichDbAccount,
     favouriteStatus,
     fetchAccessToken,
     getAccount,
+    getAccountFollower,
+    getAccountFollowing,
     getAccountStatuses,
     getBookmarks,
     getFavourites,
     getInstanceTrends,
+    getNotifications,
     getRoute,
     getSuggestions,
     getTimeline,

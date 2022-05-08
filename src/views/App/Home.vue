@@ -22,9 +22,9 @@
             <enclosure-suggestions />
           </div>
         </div>
-        <div class="text-sm text-gray-400 mx-2 my-4 releative">
-          <div class="sticky top-64">
-            Blabla
+        <div class="text-base text-gray-400 mx-2 my-4  sticky top-96">
+          <div class="">
+            bleep
           </div>
         </div>
       </div>
@@ -44,12 +44,14 @@ const emitter = useEmitter()
 const store = useToots()
 const route = useRoute()
 
+console.log(route.params.p)
+
 watch(route, async (route) => {
-  await store.getTootsforTimeline(route?.params?.type || 'home', {}, null, route?.params?.tag || null)
+  await store.getTootsforTimeline(route?.params?.type || 'home', {}, route?.params?.p || null)
 }, { immediate: true })
 
 const loadMore = async (e) => {
-  await store.loadMore(route?.params?.type || 'home', {}, null, route?.params?.tag || null)
+  await store.loadMore(route?.params?.type || 'home', {}, route?.params?.p || null)
 }
 
 const timelineType = computed(() => route?.params?.type || 'home')
@@ -66,7 +68,7 @@ const getTitle = computed(() => {
 
   if (route?.params?.type === 'tags') {
     const i18 = $t(`timelines.titles.${route?.params?.type}`)
-    return `${i18} #${route.params.tag}`
+    return `${i18} #${route.params.p}`
   }
 
   return $t(`timelines.titles.${route?.params?.type}`)

@@ -21,8 +21,7 @@
     />
     <stormy-nav-item
       i18n
-      disabled
-      href="/app/timeline/profile"
+      href="/app/notifications"
       name="sidebar.nav.notifications"
       icon="notification"
     />

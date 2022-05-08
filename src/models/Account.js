@@ -3,7 +3,7 @@ import PouchDb from '@/models/lib/PouchDb'
 import { useStore } from '@/stores/global'
 import { useMegalodon } from '@/composables/useMegalodon.js'
 
-const { registerApp, sns, baseUrl, domain, fetchAccessToken, verifyAccountCredentials } = useMegalodon()
+const { registerApp, sns, baseUrl, domain, fetchAccessToken, verifyAccountCredentials, enrichDbAccount } = useMegalodon()
 
 const Account = class extends BaseModel {
   static getDocType () {
@@ -94,11 +94,45 @@ const Account = class extends BaseModel {
     account.avatar = mastodonAccount.avatar
     account.url = mastodonAccount.url
     account.acct = mastodonAccount.acct
-
+    account.source = mastodonAccount.source
     await account.save()
 
     store.setAccount(account)
     return Promise.resolve(account)
+  }
+
+  static async me () {
+    try {
+      const store = useStore()
+      const accountId = store.getAccountId()
+      const account = await Account.db().get(accountId)
+      return Promise.resolve(account)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
+  static async enrich () {
+    try {
+      const store = useStore()
+      const accountId = store.getAccountId()
+      const account = await Account.db().get(accountId)
+
+      console.log(account)
+
+      if (account) {
+        const data = await enrichDbAccount(account.accountId)
+
+        account.follower = data.follower
+        account.following = data.following
+        account.instance = data.instance
+
+        await account.save()
+        return Promise.resolve(account)
+      }
+    } catch (error) {
+      return Promise.reject(error)
+    }
   }
 
   static async autorize (id, code) {
@@ -143,8 +177,12 @@ const Account = class extends BaseModel {
       avatar: prop(String),
       redirect: prop(String),
       data: Object,
+      source: Object,
       isTemp: prop(Boolean).value(false),
-      lastLoginAt: prop(Date).value(null)
+      lastLoginAt: prop(Date).value(null),
+      follower: [String],
+      following: [String],
+      instance: Object
     }
   }
 }
