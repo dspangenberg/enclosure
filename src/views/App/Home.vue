@@ -1,6 +1,7 @@
 <template>
   <enclosure-container
     ref="refTimeline"
+    :is-loading="store.isLoading"
     :title="getTitle"
   >
     <template #default>

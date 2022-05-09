@@ -1,4 +1,10 @@
 {
+  "info": {
+    "isoCode": "de",
+    "nameDe": "Deutsch",
+    "nameEn": "German",
+    "nameNative": "Deutsch"
+  },
   "user-menu": {
     "profile-change": "Profil bearbeiten",
     "pined-toots": "Angepinnte Tröts",
@@ -18,6 +24,17 @@
       }
     }
   },
+  "common": {
+    "toot": "Tröt",
+    "toots": "Tröts",
+    "is-follower": "Folgt Dir"
+  },
+  "profiles": {
+    "header": {
+      "followers": "Folgen mir",
+      "following": "Folge ich"
+    }
+  },
   "timelines": {
     "titles": {
       "home": "Startseite",
@@ -27,7 +44,9 @@
       "federation": "Förderation",
       "profile": "Mein Profil",
       "conversations": "Unterhaltungen",
-      "tags": "Timeline für "
+      "tags": "Timeline für ",
+      "notifications": "Benachrichtigungen",
+      "bubble": "Meine Bubble"
     }
   },
   "notifications": {

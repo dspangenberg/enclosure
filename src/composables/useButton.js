@@ -6,7 +6,7 @@ export function useButton (props) {
     primary: 'shadow-sm border border-transparent rounded relative text-white bg-blue-600 hover:bg-blue-500  focus:border-white focus:outline-none focus:ring-2 ring-offset-white focus:ring-blue-500 active:bg-blue-700',
     solid: 'shadow-sm border border-neutral-300 rounded relative text-neutral-900 bg-neutral-200 hover:bg-neutral-300 hover:border-neutral-400  focus:border-transparent focus:outline-none focus:ring-2 ring-offset-white focus:ring-blue-500 active:bg-neutral-200',
     light: 'shadow-sm border border-transparent rounded relative text-neutral-900 bg-neutral-100 hover:bg-neutral-200 hover:border-transparent  focus:border-transparent focus:outline-none focus:ring-2 ring-offset-white focus:ring-blue-500 active:bg-neutral-300',
-    ghost: 'border border-transparent rounded text-center text-neutral-900 bg-transparent hover:bg-neutral-100 hover:border-neutral-300 focus:outline-none focus:ring-2 ring-offset-white focus:ring-blue-500 active:bg-neutral-200',
+    ghost: 'border border-transparent rounded text-center text-neutral-900 bg-transparent hover:bg-neutral-100 hover:border-neutral-300 focus:outline-none focus:ring-2 ring-offset-white focus:ring-blue-500 active:bg-neutral-200 flex-1',
     danger: 'border border-transparent rounded text-center text-neutral-900 bg-transparent hover:bg-neutral-100 hover:text-red-600 hover:border-red-300 focus:outline-none focus:ring-2 ring-offset-white focus:ring-red-500 active:bg-neutral-200 focus:text-red-600'
   }
 
@@ -15,13 +15,13 @@ export function useButton (props) {
     md: 'leading-5 h-8 w-8',
     sm: 'leading-5 h-7 w-7',
     full: 'w-full h-8',
-    auto: 'h-8 text-sm'
+    auto: 'h-8 w-auto text-sm'
   }
 
   const iconSizes = {
     lg: 'h-6 w-6 ',
     sm: 'h-5 w-5',
-    md: 'h-5 h-5',
+    md: 'h-5 w-5',
     full: 'h-5 h-5',
     auto: 'h-5 h-5'
   }

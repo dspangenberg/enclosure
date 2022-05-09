@@ -13,6 +13,9 @@
         </TheAppSidebar>
       </div>
       <router-view />
+      <div class="absolute top-3 right-3">
+        <TheAppLanguageSwitcher />
+      </div>
     </div>
   </div>
 </template>
@@ -22,6 +25,7 @@ import { ref } from 'vue'
 import TheAppSidebar from './components/TheAppSidebar.vue'
 import TheAppSidebarMenuTop from './components/TheAppSidebarMenuTop.vue'
 import TheAppSidebarMenuBottom from './components/TheAppSidebarMenuBottom.vue'
+import TheAppLanguageSwitcher from './components/TheAppLanguageSwitcher.vue'
 import { useInfiniteScroll } from '@vueuse/core'
 import useEmitter from '@/composables/useEmitter'
 

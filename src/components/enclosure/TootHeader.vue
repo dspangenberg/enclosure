@@ -85,7 +85,6 @@ const displayName = computed(() => {
 })
 
 const visibilityIcon = computed(() => {
-  console.log(props.toot)
   switch (props.toot.visibility) {
     case 'unlisted':
       return 'lock-open'

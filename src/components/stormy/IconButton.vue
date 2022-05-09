@@ -15,7 +15,9 @@
       :class="getIconSize"
       class="mx-auto"
     />
-    <slot />
+    <div class="flex-1">
+      <slot />
+    </div>
   </component>
 </template>
 <script setup>

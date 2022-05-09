@@ -5,16 +5,21 @@
     :class="menuClass"
   >
     <MenuButton
+      class="items-center flex"
       :class="getButtonClass"
-      class=" items-center"
     >
       <slot name="button">
         <stormy-icon
           :name="icon"
-          class="text-neutral-900"
+          class="text-gray-500 flex-shrink-0 w-5 h-5 ml-2"
           :class="getIconSize"
+          :stroke-width="iconStrokeWidth"
         />
-        <span v-if="label">
+        <span
+          v-if="label"
+          class="flex-1 w-auto ml-0.5 mr-2"
+          :class="labelClass"
+        >
           {{ label }}
         </span>
       </slot>
@@ -57,6 +62,7 @@ const props = defineProps({
   shortcut: useProp(String, ''),
   menuClass: useProp(String, 'inline-block '),
   buttonClass: useProp(String, 'inline-flex'),
+  labelClass: useProp(String, ''),
   itemsClass: useProp(String, 'origin-bottom-right  bottom-12 left-12 z-50 w-56')
 })
 
@@ -65,6 +71,5 @@ const { getIconSize, getClasses } = useButton({
   size: props.iconSize
 })
 
-const getButtonClass = computed(() => props.button ? getClasses : props.buttonClass)
-
+const getButtonClass = computed(() => props.button ? getClasses.value : props.buttonClass)
 </script>

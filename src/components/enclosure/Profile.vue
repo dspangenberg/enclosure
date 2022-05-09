@@ -67,8 +67,9 @@
                 class="mr-6"
                 color="orange"
                 border
-                text="Folgt Dir"
-              />
+              >
+                {{ $t('common.is-follower') }}
+              </stormy-badge>
             </div>
             <div class="space-x-1 flex items-center content-center">
               <template v-if="account.isMe">
@@ -108,16 +109,16 @@
     <div class="text-base font-semibold text-gray-700 grid grid-cols-3 mx-5 text-center my-4">
       <div>
         <router-link :to="`/app/timeline/bubble/${account.id}/follower`">
-          {{ followingCount }} Folge ich
+          {{ followingCount }} {{ $t('profiles.header.following') }}
         </router-link>
       </div>
       <div>
         <router-link :to="`/app/timeline/bubble/${account.id}/follower`">
-          {{ followersCount }} Folgen mir
+          {{ followersCount }} {{ $t('profiles.header.followers') }}
         </router-link>
       </div>
       <div>
-        {{ statusesCount }} Tröts
+        {{ statusesCount }} {{ $t('common.toots') }}
       </div>
     </div>
   </div>
@@ -130,6 +131,8 @@ import emojify from '@/utils/Emoji'
 import { useMegalodon } from '@/composables/useMegalodon.js'
 import { useRouter } from 'vue-router'
 import VueEasyLightbox from 'vue-easy-lightbox'
+import { useI18n } from 'vue-i18n'
+const { t: $t } = useI18n({ useScope: 'global' })
 
 const router = useRouter()
 const { getRoute } = useMegalodon()

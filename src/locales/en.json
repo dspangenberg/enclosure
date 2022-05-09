@@ -1,4 +1,10 @@
 {
+  "info": {
+    "isoCode": "en",
+    "nameDe": "English",
+    "nameEn": "English",
+    "nameNative": "English"
+  },
   "welcome": "",
   "user-menu": {
     "profile-change": "Edit Profile",
