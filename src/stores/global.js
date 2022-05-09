@@ -65,7 +65,7 @@ export const useStore = defineStore({
       }
     },
     genEnvVar (key) {
-      return import.meta.env[key]
+      return import.meta.env[`VITE_APP_${key}`]
     }
   }
 })

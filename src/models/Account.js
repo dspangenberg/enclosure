@@ -1,9 +1,7 @@
 import BaseModel from '@/models/lib/BaseModel'
 import PouchDb from '@/models/lib/PouchDb'
 import { useStore } from '@/stores/global'
-import { useMegalodon } from '@/composables/useMegalodon.js'
-
-const { registerApp, sns, baseUrl, domain, fetchAccessToken, verifyAccountCredentials, enrichDbAccount } = useMegalodon()
+import { mastoApi } from '@/api'
 
 const Account = class extends BaseModel {
   static getDocType () {
@@ -11,6 +9,10 @@ const Account = class extends BaseModel {
   }
 
   static async registerApp (mDomain) {
+    const store = useStore()
+
+    const { registerApp } = mastoApi('https://mastodon.social/api/v1')
+
     let mastdonServerUrl = null
 
     const account = new Account()
@@ -19,19 +21,21 @@ const Account = class extends BaseModel {
     await account.save()
 
     try {
-      const data = await registerApp(mDomain, account.id)
-      const { clientId, clientSecret, vapid_key: vapidKey, url, redirect } = data
+      const redirectUrl = encodeURI(`${store.genEnvVar('REDIRECT_URL')}/${account.id}`)
+      const data = await registerApp('bleep', '', redirectUrl)
 
+      const { clientId, clientSecret, vapidKey, url, redirectUris } = data
       mastdonServerUrl = url
 
-      account.sns = sns.value
-      account.baseUrl = baseUrl.value
-      account.domain = domain.value
+      console.log(data)
+
+      account.baseUrl = 'https://mastodon.social'
+      account.domain = 'https://mastodon.social'
       account.clientId = clientId
       account.clientSecret = clientSecret
       account.vapidKey = vapidKey
       account.isTemp = true
-      account.redirect = redirect
+      account.redirect = redirectUris
 
       await account.save()
       return Promise.resolve({ url: mastdonServerUrl, id: account.id })
@@ -60,6 +64,8 @@ const Account = class extends BaseModel {
         return Promise.reject(new Error('Keinen aktiven Account gefunden'))
       }
     }
+
+    const { verifyAccountCredentials } = mastoApi(`${account.baseUrl}/api/v1`, account.accessToken)
 
     let mastodonAccount
     try {
@@ -113,6 +119,7 @@ const Account = class extends BaseModel {
   }
 
   static async enrich () {
+    /*
     try {
       const store = useStore()
       const accountId = store.getAccountId()
@@ -133,22 +140,24 @@ const Account = class extends BaseModel {
     } catch (error) {
       return Promise.reject(error)
     }
+    */
   }
 
   static async autorize (id, code) {
     const store = useStore()
     await Account.ensureIndices()
 
+    const { fetchAccessToken } = mastoApi('https://mastodon.social')
+
     const tempAccount = await Account.db().get(id)
 
     tempAccount.accessToken = code
     tempAccount.save()
 
-    const { domain, clientId, clientSecret, redirect, sns, baseUrl } = tempAccount
-    const token = await fetchAccessToken(domain, clientId, clientSecret, code, redirect, sns, baseUrl)
-
-    tempAccount.accessToken = token.access_token
-    tempAccount.refreshToken = token.refresh_token || ''
+    const { clientId, clientSecret, redirect } = tempAccount
+    const token = await fetchAccessToken(code, clientId, clientSecret, redirect)
+    tempAccount.accessToken = token.accessToken
+    // tempAccount.refreshToken = token.refresh_token || ''
     tempAccount.lastLoginAt = new Date()
     await tempAccount.save()
 

@@ -36,20 +36,18 @@
 </template>
 <script setup>
 import { ref } from 'vue'
-import { useCookies } from '@vueuse/integrations/useCookies'
 import Account from '@/models/Account'
-
-const { set } = useCookies(['enclusure'], { doNotParse: false, autoUpdateDependencies: false })
 
 const errorObj = ref(null)
 const networkError = ref('')
 
 const confirm = async () => {
   try {
-    const { url, id } = await Account.registerApp(form.value.domainName)
-    set('accountId', id, { path: '/' })
+    const { url } = await Account.registerApp(form.value.domainName)
+    console.log(url)
     window.location = url
   } catch (error) {
+    console.log(error)
     if (Object.prototype.hasOwnProperty.call(error, 'docId')) {
       console.log('PouchDb-Fehler', error)
       return Promise.reject(error)
