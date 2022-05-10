@@ -20,6 +20,23 @@ export function useTemplateFilter () {
   }
   */
 
+  const getRoute = (link, mentions) => {
+    const href = link.split('?')
+    const parts = href[0].split('/')
+    const tagOrMention = parts.pop()
+
+    if (tagOrMention.startsWith('@')) {
+      const mention = mentions.find(item => item.username === tagOrMention.substr(1))
+      if (mention) {
+        return `/app/timeline/profile/${mention.id}`
+      } else {
+        return null
+      }
+    } else {
+      return `/app/timeline/tags/${tagOrMention}`
+    }
+  }
+
   const formatDate = (value) => {
     if (!value) return ''
     return DateTime.fromISO(value).toFormat('dd.MM.yyyy')
@@ -61,5 +78,5 @@ export function useTemplateFilter () {
     })
   }
 
-  return { formatAccounId, formatCurrency, formatDate, getImageUrl, formatFloat, formatBytes, formatMarkdown, formatInt, formatDateTime }
+  return { getRoute, formatAccounId, formatCurrency, formatDate, getImageUrl, formatFloat, formatBytes, formatMarkdown, formatInt, formatDateTime }
 }

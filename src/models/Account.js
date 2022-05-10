@@ -27,8 +27,6 @@ const Account = class extends BaseModel {
       const { clientId, clientSecret, vapidKey, url, redirectUris } = data
       mastdonServerUrl = url
 
-      console.log(data)
-
       account.baseUrl = 'https://mastodon.social'
       account.domain = 'https://mastodon.social'
       account.clientId = clientId
@@ -65,7 +63,7 @@ const Account = class extends BaseModel {
       }
     }
 
-    const { verifyAccountCredentials } = mastoApi(`${account.baseUrl}/api/v1`, account.accessToken)
+    const { verifyAccountCredentials, timelineHome } = mastoApi(`${account.baseUrl}/api/v1`, account.accessToken)
 
     let mastodonAccount
     try {

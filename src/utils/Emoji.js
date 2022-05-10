@@ -4,13 +4,18 @@
 
 import EmojiConvertor from 'emoji-js'
 import emoji from 'node-emoji'
+import { useStore } from '@/stores/global'
 
 const converter = new EmojiConvertor()
 
 converter.replace_mode = 'img'
-converter.img_sets.apple.path = 'http://localhost:3000/twitter/'
 
 const standardEmojis = (str) => {
+  const store = useStore()
+  const key = store.genEnvVar('ASSETS')
+  const assets = key + '/twitter/'
+  console.log(assets)
+  converter.img_sets.apple.path = assets
   // console.log(str)
   str = emoji.unemojify(str)
   // console.log(str)

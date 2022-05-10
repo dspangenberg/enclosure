@@ -2,10 +2,6 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
 
-import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
-import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill'
-import rollupNodePolyFill from 'rollup-plugin-node-polyfills'
-
 import { VitePWA } from 'vite-plugin-pwa'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import vueI18n from '@intlify/vite-plugin-vue-i18n'
@@ -18,30 +14,7 @@ export default defineConfig({
     }
   },
   build: {
-    rollupOptions: {
-      plugins: [
-        rollupNodePolyFill()
-      ]
-    }
-  },
-  optimizeDeps: {
-    esbuildOptions: {
-      // Node.js global to browser globalThis
-      define: {
-        global: 'globalThis'
-      },
-      // Enable esbuild polyfill plugins
-      plugins: [
-        NodeGlobalsPolyfillPlugin({
-          tls: true,
-          dns: true,
-          buffer: true,
-          fs: null,
-          net: true
-        }),
-        NodeModulesPolyfillPlugin()
-      ]
-    }
+    outDir: 'public/dist'
   },
   plugins: [
     vue(),

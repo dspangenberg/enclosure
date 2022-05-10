@@ -28,15 +28,12 @@ import { useToots } from '@/stores/toots'
 import useEmitter from '@/composables/useEmitter'
 import { useI18n } from 'vue-i18n'
 import Account from '@/models/Account'
-import { useMegalodon } from '@/composables/useMegalodon.js'
 import { intersection } from 'lodash'
 
 const route = useRoute()
 const type = route?.params?.type
 const account = ref({})
 const me = ref({})
-
-const { getAccount } = useMegalodon()
 
 const { t: $t } = useI18n({ useScope: 'global' })
 const emitter = useEmitter()
@@ -48,9 +45,9 @@ const getTitle = computed(() => account?.value.username)
 const accountId = computed(() => route?.params?.p)
 
 onMounted(async () => {
-  me.value = await Account.me()
-  account.value = await getAccount(accountId.value, true)
-  console.log(account.value)
+  // me.value = await Account.me()
+  // account.value = await getAccount(accountId.value, true)
+  // console.log(account.value)
 })
 
 </script>

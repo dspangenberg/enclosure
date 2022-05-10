@@ -1,16 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { useMegalodon } from '@/composables/useMegalodon.js'
-import { intersection } from 'lodash'
-
-const {
-  getTimeline,
-  bookmarkStatus,
-  favouriteStatus,
-  reblogStatus,
-  unbookmarkStatus,
-  unfavouriteStatus,
-  unreblogStatus
-} = useMegalodon()
+import { mastoApi } from '@/api'
+import { useStore } from '@/stores/global'
 
 export const useToots = defineStore({
   id: 'toots',
@@ -28,6 +18,17 @@ export const useToots = defineStore({
     lastToot: (state) => state.toots.pop()
   },
   actions: {
+    async getApi () {
+      const store = useStore()
+      let acc = null
+      try {
+        acc = await store.ensureAccount()
+      } catch (error) {
+        return Promise.reject(error)
+      }
+
+      return mastoApi(acc.baseUrl + '/api/v1', acc.accessToken)
+    },
     update (toot) {
       const index = this.toots.findIndex(item => parseInt(item.id) === parseInt(toot.id) || parseInt(item.reblog?.id) === parseInt(toot.id))
       if (index > -1) {
@@ -40,13 +41,89 @@ export const useToots = defineStore({
     byId (id) {
       return this.toots.find(item => parseInt(item.id) === parseInt(id) || parseInt(item.reblog?.id) === parseInt(id))
     },
+    async getTootsFor (type, options, p, withBubble) {
+      const {
+        account,
+        accountBookmarks,
+        accountFavourites,
+        accountFollowers,
+        accountFollowing,
+        accountStatuses,
+        timelineConversations,
+        timelineFederation,
+        timelineHashtag,
+        timelineHome,
+        timelineList,
+        timelineLocal
+      } = await this.getApi()
+
+      let res = []
+      let acc = null
+
+      const store = useStore()
+
+      switch (type) {
+        case 'home':
+          res = await timelineHome(options)
+          break
+        case 'favorites':
+          res = await accountFavourites(options)
+          break
+        case 'bookmarks':
+          res = await accountBookmarks(options)
+          break
+        case 'profile':
+          if (p === null) {
+            p = await store.getMastodonId()
+          }
+          acc = await account(p)
+          if (withBubble) {
+            acc.followers = await accountFollowers()
+            acc.following = await accountFollowing()
+          }
+          res = await accountStatuses(p, options)
+          break
+        case 'local':
+          res = await timelineLocal(options)
+          break
+        case 'federation':
+          res = await timelineFederation(options)
+          break
+        case 'conversations':
+          res = await timelineConversations(options)
+          break
+        case 'tags':
+          res = await timelineHashtag(p, options)
+          break
+        case 'list':
+          res = await timelineList(p, options)
+          break
+      }
+      return {
+        account: acc,
+        toots: res
+      }
+    },
+    async getTootsforTimeline (timeline = 'home', options = {}, p, withBubble = false) {
+      options.limit = 40
+      this.toots = []
+      this.loadingStatus = true
+      try {
+        const payload = await this.getTootsFor(timeline, options, p, withBubble)
+        this.toots = payload.toots
+        this.account = payload.account
+      } catch (error) {
+        Promise.reject(error)
+      }
+      this.loadingStatus = false
+    },
     async loadMore (timeline = 'home', options = {}, p = null, withBubble = false) {
       if (!this.toots.length) return
       this.loadingMore = true
       options.max_id = this.toots.pop().id
       options.limit = 20
       const oldIds = this.toots.map(item => item.id)
-      const payload = await getTimeline(timeline, options, p, withBubble)
+      const payload = await this.getTootsFor(timeline, options, p, withBubble)
       for (const toot of payload.statuses) {
         if (!oldIds.includes(toot.id)) {
           this.toots.push(toot)
@@ -54,57 +131,11 @@ export const useToots = defineStore({
       }
       this.loadingMore = false
     },
-    async getTootsforTimeline (timeline = 'home', options = {}, p, withBubble = false) {
-      options.limit = 40
-      this.toots = []
-      this.loadingStatus = true
-      try {
-        const payload = await getTimeline(timeline, options, p, withBubble)
-        console.log(payload)
-        this.toots = payload.statuses
-        this.account = payload.account
-      } catch (error) {
-        Promise.reject(error)
-      }
-      this.loadingStatus = false
-    },
     async favorite (id) {
-      const toot = this.byId(id)
-      if (toot) {
-        try {
-          const result = toot.favourited ? await unfavouriteStatus(id) : await favouriteStatus(id)
-          this.update(result)
-          return result
-        } catch (error) {
-          Promise.reject(error)
-        }
-      }
     },
     async bookmark (id) {
-      const toot = this.byId(id)
-      console.log('bookmark', id, toot)
-      if (toot) {
-        try {
-          const result = toot.bookmarked ? await unbookmarkStatus(id) : await bookmarkStatus(id)
-          this.update(result)
-          return result
-        } catch (error) {
-          Promise.reject(error)
-        }
-      }
     },
     async reblog (id) {
-      const toot = this.byId(id)
-      if (toot) {
-        try {
-          console.log('reblog', toot)
-          const result = toot.reblogged ? await unreblogStatus(id) : await reblogStatus(id)
-          this.update(result)
-          return result
-        } catch (error) {
-          Promise.reject(error)
-        }
-      }
     }
   }
 })

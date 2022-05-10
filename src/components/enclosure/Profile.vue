@@ -128,15 +128,13 @@ import { useProp } from '@/composables/useProp.js'
 import { useTemplateFilter } from '@/composables/useTemplateFilter.js'
 import { computed, onMounted, ref, nextTick } from 'vue'
 import emojify from '@/utils/Emoji'
-import { useMegalodon } from '@/composables/useMegalodon.js'
 import { useRouter } from 'vue-router'
 import VueEasyLightbox from 'vue-easy-lightbox'
 import { useI18n } from 'vue-i18n'
 const { t: $t } = useI18n({ useScope: 'global' })
 
 const router = useRouter()
-const { getRoute } = useMegalodon()
-const { formatDate, formatInt } = useTemplateFilter()
+const { formatDate, formatInt, getRoute } = useTemplateFilter()
 
 const lightboxHeaderVisibile = ref(false)
 const lightboxAvatarVisibile = ref(false)

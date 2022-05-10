@@ -28,12 +28,12 @@
 </template>
 <script setup>
 import { useProp } from '@/composables/useProp.js'
-import { useMegalodon } from '@/composables/useMegalodon.js'
+import { useTemplateFilter } from '@/composables/useTemplateFilter.js'
 import { computed, onMounted, ref, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import emojify from '@/utils/Emoji'
 const router = useRouter()
-const { getRoute } = useMegalodon()
+const { getRoute } = useTemplateFilter()
 
 const props = defineProps({
   toot: useProp(Object)

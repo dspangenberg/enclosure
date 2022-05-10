@@ -44,6 +44,13 @@ export const useStore = defineStore({
     setIsLoading (value) {
       this.isLoadingStatus = value
     },
+    async getMastodonId() {
+      const account = await this.ensureAccount()
+      if (account) {
+        return account.accountId
+      }
+      return null
+    },
     getAccountId () {
       return localStorage.getItem('current-account-id')
     },

@@ -47,20 +47,8 @@
   </enclosure-container>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue'
-import useEmitter from '@/composables/useEmitter'
-import { useMegalodon } from '@/composables/useMegalodon.js'
-
-const notifications = ref([])
+import { ref } from 'vue'
 const isLoading = ref(false)
-const { getNotifications } = useMegalodon()
-const emitter = useEmitter()
-
-onMounted(async () => {
-  isLoading.value = true
-  notifications.value = await getNotifications({ limit: 50 })
-  isLoading.value = false
-  console.log(notifications.value)
-})
-
+const notifications = ref([])
+const refTimeline = ref()
 </script>

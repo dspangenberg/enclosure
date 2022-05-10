@@ -17,14 +17,11 @@
   </ul>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue'
-import { useMegalodon } from '@/composables/useMegalodon.js'
-import { sortBy, reverse, sumBy } from 'lodash'
+import { ref } from 'vue'
 
-const { getSuggestions } = useMegalodon()
+const suggestions = ref([])
 
-const suggestions = ref(null)
-
+/*
 onMounted(async () => {
   const items = await getSuggestions(20)
   const item1 = items[Math.floor(Math.random() * items.length)]
@@ -37,4 +34,5 @@ onMounted(async () => {
 
   // console.log(reverse(sortBy(suggestions.value, 'username')))
 })
+*/
 </script>
