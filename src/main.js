@@ -13,7 +13,7 @@ import Vue3Sanitize from 'vue-3-sanitize'
 import directives from '@/directives'
 import Tooltip from '@/components/Tooltip.vue'
 import VueLazyload from 'vue-lazyload'
-import mittAsync from '@/utils/mittAsync'
+import mittAsync from '@/utils/MittAsync'
 
 const i18n = createI18n({
   locale: 'de',
