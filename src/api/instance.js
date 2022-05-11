@@ -1,4 +1,4 @@
-import { getData, queryString } from '@/api/axios'
+import { getData, queryString } from '@/utils/Axios'
 
 export const apiInstance = (axios) => {
   const activity = async () => {

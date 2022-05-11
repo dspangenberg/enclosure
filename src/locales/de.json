@@ -55,6 +55,7 @@
       "mention": "hat Dich erwähnt",
       "repost": "hat Deinen Tröt geboostert",
       "poll_expired": "hat eine Umfrage beendet",
+      "poll": "hat eine Umfrage beendet",
       "follow": "folgt Dir jetzt"
     }
   },

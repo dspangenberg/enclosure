@@ -17,7 +17,7 @@ const Account = class extends BaseModel {
 
     const account = new Account()
     account.isTemp = true
-    account.domain = mDomain
+    account.domain = 'mastodon.social'
     await account.save()
 
     try {
@@ -28,7 +28,7 @@ const Account = class extends BaseModel {
       mastdonServerUrl = url
 
       account.baseUrl = 'https://mastodon.social'
-      account.domain = 'https://mastodon.social'
+      account.domain = 'mastodon.social'
       account.clientId = clientId
       account.clientSecret = clientSecret
       account.vapidKey = vapidKey
@@ -62,8 +62,7 @@ const Account = class extends BaseModel {
         return Promise.reject(new Error('Keinen aktiven Account gefunden'))
       }
     }
-
-    const { verifyAccountCredentials, timelineHome } = mastoApi(`${account.baseUrl}/api/v1`, account.accessToken)
+    const { verifyAccountCredentials } = mastoApi(`${account.baseUrl}/api/v1`, account.accessToken)
 
     let mastodonAccount
     try {

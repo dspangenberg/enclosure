@@ -5,6 +5,11 @@
         :toot="toot"
       />
     </enclosure-toot-container>
+    <enclosure-toot-container v-if="toot.poll || toot.reblog?.poll">
+      <enclosure-toot-poll
+        :toot="toot.poll ? toot : toot.reblog"
+      />
+    </enclosure-toot-container>
     <enclosure-toot-container>
       <enclosure-toot-content-card
         v-if="toot.card"

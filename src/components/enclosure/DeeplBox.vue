@@ -42,7 +42,7 @@
       <div
         v-if="translation"
         class="mb-2 leading-normal text-gray-900 toot-content overflow-x-hidden"
-        v-html="translation"
+        v-html="$sanitize(translation)"
       />
     </div>
     <span

@@ -1,4 +1,4 @@
-import { getData, setData } from '@/api/axios'
+import { getData, setData } from '@/utils/Axios'
 
 export const apiAuth = (axios) => {
   const fetchAccessToken = async (code, clientId, clientSecret, redirectUri, scope = ['read', 'write', 'follow', 'push']) => {

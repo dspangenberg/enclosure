@@ -14,11 +14,8 @@ const standardEmojis = (str) => {
   const store = useStore()
   const key = store.genEnvVar('ASSETS')
   const assets = key + '/twitter/'
-  console.log(assets)
   converter.img_sets.apple.path = assets
-  // console.log(str)
   str = emoji.unemojify(str)
-  // console.log(str)
   str = converter.replace_colons(str)
   return str
 }
@@ -26,7 +23,6 @@ const standardEmojis = (str) => {
 const emojify = (str, customEmoji = []) => {
   str = standardEmojis(str)
   try {
-    // console.log(str, customEmoji)
     let result = str
 
     customEmoji.map(emoji => {

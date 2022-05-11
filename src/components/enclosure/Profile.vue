@@ -55,7 +55,7 @@
             <div class="text-xl font-bold text-gray-900 truncate -pl-2 flex-1">
               <span
                 class="mr-3 mt-1 truncate"
-                v-html="displayName"
+                v-html="$sanitize(displayName)"
               />
               <div class="text-sm text-gray-400 mt-0.5 truncate">
                 @{{ account.acct }}
@@ -104,7 +104,7 @@
 
     <div
       class="text-base text-gray-800 mx-5 my-6 toot-content"
-      v-html="note"
+      v-html="$sanitize(note)"
     />
     <div class="text-base font-semibold text-gray-700 grid grid-cols-3 mx-5 text-center my-4">
       <div>

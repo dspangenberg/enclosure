@@ -1,6 +1,5 @@
 <template>
   <enclosure-container
-    ref="refTimeline"
     i18n
     :is-loading="isLoading"
     title="timelines.titles.notifications"
@@ -8,7 +7,7 @@
     <template #default>
       <div class="overflow-hidden flex flex-1 max-w-xl h-full items-center relative w-full">
         <div
-          v-if="notifications.length"
+          v-if="notifications?.length"
           ref="timelineRef"
           class="flex-1 z-10 pt-12  w-full -mt-1"
         >
@@ -19,6 +18,9 @@
               v-for="(notification, index) of notifications"
               :key="index"
               :notification="notification"
+            />
+            <infinite-loading
+              @infinite="loadMore"
             />
           </ul>
         </div>
@@ -47,8 +49,31 @@
   </enclosure-container>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useMastodon } from '@/composables/useMastodon'
+import InfiniteLoading from 'v3-infinite-loading'
+
 const isLoading = ref(false)
+const loadMoreOptions = ref({})
 const notifications = ref([])
-const refTimeline = ref()
+
+const loadMore = async ($state) => {
+  console.log('loadMore', $state)
+  const payload = await getNotifications(loadMoreOptions.value)
+  if (payload.data) {
+    notifications.value.push(...payload.data)
+  }
+  loadMoreOptions.value = payload.next
+}
+
+const { getNotifications } = useMastodon()
+
+onMounted(async () => {
+  isLoading.value = true
+  const payload = await getNotifications()
+  notifications.value = payload.data
+  loadMoreOptions.value = payload.next
+  isLoading.value = false
+})
+
 </script>

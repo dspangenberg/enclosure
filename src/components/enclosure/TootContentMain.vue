@@ -22,11 +22,12 @@
       v-if="toot.content && visible"
       ref="tootRef"
       class="container leading-normal text-gray-900 toot-content overflow-x-hidden"
-      v-html="content"
+      v-html="$sanitize(content)"
     />
   </div>
 </template>
 <script setup>
+
 import { useProp } from '@/composables/useProp.js'
 import { useTemplateFilter } from '@/composables/useTemplateFilter.js'
 import { computed, onMounted, ref, nextTick } from 'vue'

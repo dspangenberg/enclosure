@@ -1,4 +1,4 @@
-import { getData, setData, queryString } from '@/api/axios'
+import { getData, setData, queryString } from '@/utils/Axios'
 
 export const apiApp = (axios) => {
   const registerApp = async (clientName, website, redirectUris = null, scopes = ['read', 'write', 'follow', 'push']) => {
@@ -13,7 +13,6 @@ export const apiApp = (axios) => {
     delete params.website
 
     params.response_type = 'code'
-    params.force_login = true
     params.scope = scopes.join(' ')
 
     const qs = queryString.stringify(params)

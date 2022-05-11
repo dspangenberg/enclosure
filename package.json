@@ -45,6 +45,7 @@
     "stristri": "^4.0.20",
     "supermodels.js": "https://github.com/dspangenberg/supermodels.js.git",
     "universal-cookie": "^4.0.4",
+    "v3-infinite-loading": "^1.0.6",
     "vue": "^3.2.33",
     "vue-3-sanitize": "^0.1.4",
     "vue-advanced-cropper": "^1.10.1",
@@ -52,7 +53,8 @@
     "vue-i18n": "9.1.10",
     "vue-lazyload": "https://github.com/hilongjw/vue-lazyload.git#next",
     "vue-router": "4.0.15",
-    "wdt-emoji-bundle": "^0.2.1"
+    "wdt-emoji-bundle": "^0.2.1",
+    "ws": "^8.6.0"
   },
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.1.1",

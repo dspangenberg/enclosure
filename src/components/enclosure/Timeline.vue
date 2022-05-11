@@ -1,36 +1,31 @@
 <template>
   <div class="overflow-hidden flex flex-1 max-w-xl h-full items-center relative w-full">
     <div
-      v-if="filteredToots.length"
+      v-if="storeToots.toots?.length"
       ref="timelineRef"
       class="flex-1 z-10 pt-12  w-full -mt-1"
     >
+      <div
+        v-if="storeToots.newTootsCount"
+        class="text-base text-blue-500 font-semibold text-center p-4 hover:bg-gray-50 border-b"
+      >
+        <span v-if="storeToots.newTootsCount">
+          Neuen Tröt laden
+        </span>
+        <span v-else>
+          {{ storeToots.newTootsCount }} neue Tröts laden
+        </span>
+      </div>
       <ul
         role="list"
         class="divide-y divide-gray-200/75"
       >
-        <li><slot name="header" /></li>
         <enclosure-toot
-          v-for="(toot, index) in filteredToots"
+          v-for="(toot, index) in storeToots.toots"
           :key="toot.id"
           :index="index"
           :toot="toot"
         />
-        <li
-          v-if="storeToots.isLoadingMore"
-          class="flex items-center flex-col"
-        >
-          <div class="text-sm text-gray-400 py-2 px-auto flex items-center">
-            <stormy-icon
-              name="refresh"
-              class="w-5 h-5 mr-2 animate-spin-slow"
-              :stroke-width="1"
-            />
-            <span class="">
-              Weitere Tröts werden geladen
-            </span>
-          </div>
-        </li>
       </ul>
     </div>
     <div

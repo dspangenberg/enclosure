@@ -20,7 +20,7 @@
           class="w-5 h-5 mr-2.5 hover:text-blue-900 cursor-pointer"
           :class="[toot.reblogged ? 'text-blue-500' : 'text-gray-500']"
           :stroke-width="toot.reblogged ? 2 : 1"
-          @click="store.reblog(toot.reblogged ? toot.reblog.id : toot.id)"
+          @click="store.reblog(toot.id)"
         />
         <div class="text-gray-600 text-xs">
           {{ toot.reblogs_count }}

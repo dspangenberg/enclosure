@@ -27,7 +27,7 @@
                   <span class="text-base ml-3 font-semibold">
                     <span v-if="displayName">
                       <span
-                        v-html="displayName"
+                        v-html="$sanitize(displayName)"
                       /></span>
                     <span
                       v-else
@@ -51,7 +51,7 @@
               v-if="content"
               class="border mt-1 rounded-md px-3 py-2 text-gray-900 text-base toot-content"
             >
-              <div v-html="content" />
+              {{ content }}
             </div>
           </div>
         </div>
@@ -64,18 +64,18 @@
 import { useProp } from '@/composables/useProp.js'
 import { computed, ref } from 'vue'
 import emojify from '@/utils/Emoji'
-import { useRouter } from 'vue-router'
 import { useTemplateFilter } from '@/composables/useTemplateFilter.js'
 import { useI18n } from 'vue-i18n'
+import { stri } from 'stristri'
+import emoji from 'node-emoji'
 
 const { t: $t } = useI18n({ useScope: 'global' })
-const router = useRouter()
 
 const props = defineProps({
   notification: useProp(Object)
 })
 
-const { formatDate, formatInt } = useTemplateFilter()
+const { formatDate } = useTemplateFilter()
 const createdAt = computed(() => formatDate(props.notification.created_at))
 
 const displayName = computed(() => {
@@ -84,18 +84,17 @@ const displayName = computed(() => {
 })
 
 const content = computed(() => {
-  const emos = emojify(props.notification?.status?.content, props.notification?.status?.emojis)
-  return emos
+  if (props.notification?.status?.content) {
+    const rawText = stri(props.notification?.status?.content)
+    return emoji.strip(rawText.result)
+  }
+  return ''
 })
 
 const actionName = computed(() => $t(`notifications.types.${props.notification.type}`))
 
 const route = () => {
   return `/app/timeline/profile/${props.notification.account.id}`
-}
-
-const onClick = () => {
-  router.push(`/app/timeline/profile/${props.notification.account.id}`)
 }
 
 </script>

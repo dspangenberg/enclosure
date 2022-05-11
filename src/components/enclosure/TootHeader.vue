@@ -18,7 +18,7 @@
             <span class="flex-1 text-base font-semibold mr-1 truncate flex">
               <span
                 v-if="displayName"
-                v-html="displayName"
+                v-html="$sanitize(displayName)"
               />
               <span
                 v-else

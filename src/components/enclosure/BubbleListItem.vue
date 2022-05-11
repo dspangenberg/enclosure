@@ -17,7 +17,7 @@
         <div class="flex-1">
           <span
             v-if="displayName"
-            v-html="displayName"
+            v-html="$sanitize(displayName)"
           />
           <span v-else>{{ person.username }}</span>
         </div>
@@ -53,7 +53,7 @@
   <!--
     <div
           class="text-sm font-normal text-gray-700 toot-content"
-          v-html="note"
+          v-html="$sanitize(note)"
         />
 
         -->

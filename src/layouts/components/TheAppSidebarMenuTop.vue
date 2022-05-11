@@ -7,7 +7,7 @@
       exact
       icon="home"
       color="green"
-      count="2"
+      :count="store.newTootsCount"
       href="/app/timeline/home"
     />
   </stormy-nav-group>
@@ -76,3 +76,10 @@
     </stormy-nav-item>
   </stormy-nav-group>
 </template>
+<script setup>
+import { useToots } from '@/stores/toots'
+
+const store = useToots()
+
+
+</script>

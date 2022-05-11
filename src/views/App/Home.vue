@@ -7,13 +7,7 @@
     <template #default>
       <enclosure-timeline
         :type="timelineType"
-      >
-        <template
-          #header
-        >
-          <enclosure-profile :account="store.account" />
-        </template>
-      </enclosure-timeline>
+      />
     </template>
     <template #aside>
       <div class="flex flex-1 flex-col relative">
@@ -52,7 +46,9 @@ watch(route, async (route) => {
 }, { immediate: true })
 
 const loadMore = async (e) => {
-  await store.loadMore(route?.params?.type || 'home', {}, route?.params?.p || null)
+  if (store.loadMoreQuery) {
+    await store.loadMore(route?.params?.type || 'home', {}, route?.params?.p || null)
+  }
 }
 
 const timelineType = computed(() => route?.params?.type || 'home')

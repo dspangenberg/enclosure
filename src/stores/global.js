@@ -44,10 +44,28 @@ export const useStore = defineStore({
     setIsLoading (value) {
       this.isLoadingStatus = value
     },
-    async getMastodonId() {
+    async getMastodonId () {
       const account = await this.ensureAccount()
       if (account) {
         return account.accountId
+      }
+      return null
+    },
+    async getAccessToken () {
+      const account = await this.ensureAccount()
+      if (account) {
+        return account.accessToken
+      } else {
+        return null
+      }
+    },
+    async connect () {
+      const account = await this.ensureAccount()
+      if (account) {
+        return {
+          url: account.domain,
+          token: account.accessToken
+        }
       }
       return null
     },
