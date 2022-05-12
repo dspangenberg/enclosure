@@ -4,12 +4,13 @@ import { useStore } from '@/stores/global'
 class DeepL {
   static get authKey () {
     const store = useStore()
-    const key = store.genEnvVar('VITE_KEY_DEEPL')
+    const key = store.genEnvVar('KEY_DEEPL')
     return key
   }
 
   static async translate (content, targetLang = 'de') {
     try {
+      console.log(this.authKey)
       const response = await axios
         .get('https://api-free.deepl.com/v2/translate', {
           params: {

@@ -11,7 +11,7 @@ export const useToots = defineStore({
     toots: [],
     account: null,
     toot: {},
-    newToots: [],
+    newTootsHome: [],
     timeline: null,
     loadingStatus: false,
     loadMoreQuery: {},
@@ -22,7 +22,7 @@ export const useToots = defineStore({
     isLoadingMore: (state) => state.loadingMore,
     getToots: (state) => state.toots,
     lastToot: (state) => state.toots.pop(),
-    newTootsCount: (state) => state.newToots.length
+    newTootsHomeCounter: (state) => state.newTootsHome.length
   },
   actions: {
     async getApi () {
@@ -50,9 +50,7 @@ export const useToots = defineStore({
     },
     tootOverSocket (toot) {
       console.log('tootOverSocket', this.timeline, toot)
-      if (this.timeline === 'home') {
-        this.newToots.push(toot)
-      }
+      this.newTootsHome.unshift(toot)
     },
     async getTootsforTimeline (timeline = 'home', options = {}, p, withBubble = false) {
       this.timeline = timeline
@@ -60,6 +58,9 @@ export const useToots = defineStore({
       options.limit = 20
       this.toots = []
       this.loadingStatus = true
+      if (timeline === 'home') {
+        this.newTootsHome = []
+      }
       try {
         const payload = await getTimeline(timeline, p, options)
         this.loadMoreQuery = payload.next
@@ -80,6 +81,10 @@ export const useToots = defineStore({
           Promise.reject(error)
         }
       }
+    },
+    shiftToots () {
+      this.toots.unshift(...this.newTootsHome)
+      this.newTootsHome = []
     },
     async action (action, id) {
       const toot = this.byId(id)

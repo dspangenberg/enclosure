@@ -8,6 +8,14 @@ const Account = class extends BaseModel {
     return 'account'
   }
 
+  static async revokeAccessToken () {
+    const store = useStore()
+    const account = await store.ensureAccount()
+
+    const { revokeAccessToken } = mastoApi(account.baseUr, account.accessToken)
+    await revokeAccessToken(account)
+  }
+
   static async registerApp (mDomain) {
     const store = useStore()
 
@@ -16,6 +24,7 @@ const Account = class extends BaseModel {
     let mastdonServerUrl = null
 
     const account = new Account()
+    account.baseUrl = 'https://mastodon.social/api/v1/'
     account.isTemp = true
     account.domain = 'mastodon.social'
     await account.save()
@@ -27,7 +36,6 @@ const Account = class extends BaseModel {
       const { clientId, clientSecret, vapidKey, url, redirectUris } = data
       mastdonServerUrl = url
 
-      account.baseUrl = 'https://mastodon.social'
       account.domain = 'mastodon.social'
       account.clientId = clientId
       account.clientSecret = clientSecret
@@ -62,7 +70,7 @@ const Account = class extends BaseModel {
         return Promise.reject(new Error('Keinen aktiven Account gefunden'))
       }
     }
-    const { verifyAccountCredentials } = mastoApi(`${account.baseUrl}/api/v1`, account.accessToken)
+    const { verifyAccountCredentials } = mastoApi(account.baseUrl, account.accessToken)
 
     let mastodonAccount
     try {

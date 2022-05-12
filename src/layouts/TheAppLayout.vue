@@ -1,11 +1,11 @@
 <template>
   <div
     ref="scrollRef"
-    class="h-screen overflow-auto flex flex-col w-full bg-white z-10"
+    class="h-screen overflow-auto flex flex-col w-full  z-10 border-gray-100"
   >
     <div class="flex-1 flex container mx-auto w-auto">
       <div class="flex-shrink-0 relative w-64 ">
-        <TheAppSidebar class="fixed h-full ">
+        <TheAppSidebar class="fixed h-full bg-stone-50/75 border-l border-gray-100 ">
           <TheAppSidebarMenuTop />
           <template #bottom>
             <TheAppSidebarMenuBottom />
@@ -13,8 +13,11 @@
         </TheAppSidebar>
       </div>
       <router-view />
-      <div class="absolute top-3 right-3">
-        <TheAppLanguageSwitcher />
+      <div class="bg-stone-50">
+        <div class="absolute top-3 right-3 space-x-1 ">
+          <TheAppLanguageSwitcher />
+          <TheAppMenu />
+        </div>
       </div>
     </div>
   </div>
@@ -26,6 +29,7 @@ import TheAppSidebar from './components/TheAppSidebar.vue'
 import TheAppSidebarMenuTop from './components/TheAppSidebarMenuTop.vue'
 import TheAppSidebarMenuBottom from './components/TheAppSidebarMenuBottom.vue'
 import TheAppLanguageSwitcher from './components/TheAppLanguageSwitcher.vue'
+import TheAppMenu from './components/TheAppMenu.vue'
 import { useInfiniteScroll } from '@vueuse/core'
 import useEmitter from '@/composables/useEmitter'
 import { useToots } from '@/stores/toots'

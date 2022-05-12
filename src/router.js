@@ -32,6 +32,11 @@ const routes = [
         component: () => import(/* webpackChunkName: "notifications" */ '@/views/App/Notifications.vue')
       },
       {
+        path: 'info',
+        name: 'info',
+        component: () => import(/* webpackChunkName: "notifications" */ '@/views/App/AppInfo.vue')
+      },
+      {
         path: 'timeline/bubble/:p/:type',
         name: 'following',
         component: () => import(/* webpackChunkName: "profile-bubble" */ '@/views/App/ProfileBubble.vue')

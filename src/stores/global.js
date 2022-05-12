@@ -1,9 +1,12 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import Account from '@/models/Account'
 import DeepL from '@/utils/DeepL'
+import { mastoApi } from '@/api'
 
 import { useTemplateFilter } from '@/composables/useTemplateFilter'
 const { formatInt } = useTemplateFilter()
+
+const { connect } = mastoApi()
 
 export const useStore = defineStore({
   id: 'global',
@@ -11,7 +14,8 @@ export const useStore = defineStore({
     account: null,
     accountId: null,
     isLoadingStatus: false,
-    deepLimit: null
+    deepLimit: null,
+    $connection: null
   }),
   getters: {
     getMastodonHandle: (state) => state.account ? `@${state.account.username}@${state.account.domain}` : '',
@@ -60,14 +64,10 @@ export const useStore = defineStore({
       }
     },
     async connect () {
-      const account = await this.ensureAccount()
-      if (account) {
-        return {
-          url: account.domain,
-          token: account.accessToken
-        }
+      return {
+        url: sessionStorage.getItem('baseUrl'),
+        token: sessionStorage.getItem('token')
       }
-      return null
     },
     getAccountId () {
       return localStorage.getItem('current-account-id')
@@ -83,6 +83,8 @@ export const useStore = defineStore({
     },
     setAccount (account) {
       this.account = account
+      sessionStorage.setItem('baseUrl', account.baseUrl)
+      sessionStorage.setItem('token', account.accessToken)
       if (account === null) {
         this.setAccountId(null)
       } else {

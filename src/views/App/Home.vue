@@ -17,11 +17,6 @@
             <enclosure-suggestions />
           </div>
         </div>
-        <div class="text-base text-gray-400 mx-2 my-4  sticky top-96">
-          <div class="">
-            bleep
-          </div>
-        </div>
       </div>
     </template>
   </enclosure-container>
@@ -38,8 +33,6 @@ const emitter = useEmitter()
 
 const store = useToots()
 const route = useRoute()
-
-console.log(route.params.p)
 
 watch(route, async (route) => {
   await store.getTootsforTimeline(route?.params?.type || 'home', {}, route?.params?.p || null)

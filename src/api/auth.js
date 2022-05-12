@@ -1,4 +1,5 @@
 import { getData, setData } from '@/utils/Axios'
+import { useStore } from '@/stores/global'
 
 export const apiAuth = (axios) => {
   const fetchAccessToken = async (code, clientId, clientSecret, redirectUri, scope = ['read', 'write', 'follow', 'push']) => {
@@ -15,6 +16,18 @@ export const apiAuth = (axios) => {
     return data
   }
 
+  const revokeAccessToken = async (account = null) => {
+    const store = useStore()
+    account = account || await store.ensureAccount()
+    const result = await axios.post('/oauth/revoke Revoke', {
+      client_id: account.clientId,
+      client_secret: account.clientSecret,
+      token: account.accessToken
+    })
+    const data = getData(result)
+    return data
+  }
+
   const verifyAccountCredentials = async () => {
     const result = await axios.get('/accounts/verify_credentials')
     const data = getData(result)
@@ -23,6 +36,7 @@ export const apiAuth = (axios) => {
 
   return {
     fetchAccessToken,
+    revokeAccessToken,
     verifyAccountCredentials
   }
 }

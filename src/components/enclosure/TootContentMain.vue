@@ -1,5 +1,5 @@
 <template>
-  <div class="text-base text-gray-700 overflow-x-clip">
+  <div class="text-base text-gray-700 overflow-hidden">
     <enclosure-deepl-box
       :toot="toot"
     />

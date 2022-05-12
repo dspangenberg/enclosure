@@ -1,19 +1,16 @@
 import { useStore } from '@/stores/global'
 import { mastoApi } from '@/api'
 
+const { connect } = mastoApi()
+
 export function useMastodon (connection = null) {
-  const getConnection = async () => {
-    if (!connection) {
-      const store = useStore()
-      const params = await store.connect()
-      connection = mastoApi(params.url + '/api/v1', params.token)
-    }
+  const getConnection = () => {
+    connection = mastoApi()
   }
 
   getConnection()
 
   const getNotifications = async (options) => {
-    await getConnection()
     const result = await connection.notifications(options)
     return result
   }

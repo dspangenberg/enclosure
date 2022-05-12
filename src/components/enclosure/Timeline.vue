@@ -6,19 +6,20 @@
       class="flex-1 z-10 pt-12  w-full -mt-1"
     >
       <div
-        v-if="storeToots.newTootsCount"
-        class="text-base text-blue-500 font-semibold text-center p-4 hover:bg-gray-50 border-b"
+        v-if="storeToots.newTootsHomeCounter && storeToots.timeline === 'home'"
+        class="text-base text-blue-500 font-semibold text-center p-4 hover:bg-gray-50 border-b cursor-pointer"
+        @click="storeToots.shiftToots()"
       >
-        <span v-if="storeToots.newTootsCount">
+        <span v-if="storeToots.newTootsHomeCounter === 1">
           Neuen Tröt laden
         </span>
         <span v-else>
-          {{ storeToots.newTootsCount }} neue Tröts laden
+          {{ storeToots.newTootsHomeCounter }} neue Tröts laden
         </span>
       </div>
       <ul
         role="list"
-        class="divide-y divide-gray-200/75"
+        class="divide-y divide-gray-100"
       >
         <enclosure-toot
           v-for="(toot, index) in storeToots.toots"

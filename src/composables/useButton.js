@@ -12,7 +12,7 @@ export function useButton (props) {
 
   const sizes = {
     lg: 'leading-5 h-10 w-10',
-    md: 'leading-5 h-8 w-8',
+    md: 'leading-5 h-8 w-8 ',
     sm: 'leading-5 h-7 w-7',
     full: 'w-full h-8',
     auto: 'h-8 w-auto text-sm'
@@ -21,7 +21,7 @@ export function useButton (props) {
   const iconSizes = {
     lg: 'h-6 w-6 ',
     sm: 'h-5 w-5',
-    md: 'h-5 w-5',
+    md: 'h-5 w-5 mx-auto',
     full: 'h-5 h-5',
     auto: 'h-5 h-5'
   }

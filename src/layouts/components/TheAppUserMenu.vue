@@ -20,7 +20,7 @@
         <span class="flex-1 text-sm text-gray-600  text-left truncate font-semibold pl-2">
           {{ account.username }}@{{ account.domain }}
         </span>
-        <span class="pr-2 flex-shrink-0">
+        <span class="pr-2 flex-shrink-0 space-x-1">
           <stormy-icon
             name="chevron-down"
             class="w-4 h-4 text-gray-400 "

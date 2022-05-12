@@ -13,9 +13,11 @@
     <stormy-icon
       :name="props.icon"
       :class="getIconSize"
-      class="mx-auto"
     />
-    <div class="flex-1">
+    <div
+      v-if="label"
+      class="flex-1"
+    >
       <slot />
     </div>
   </component>

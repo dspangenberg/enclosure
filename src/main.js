@@ -1,5 +1,5 @@
 import '@/assets/index.css'
-import '@fontsource/clear-sans'
+import '@fontsource/clear-sans/all.css'
 import 'virtual:svg-icons-register'
 
 import { createApp, defineAsyncComponent } from 'vue'

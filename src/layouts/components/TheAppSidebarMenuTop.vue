@@ -7,7 +7,7 @@
       exact
       icon="home"
       color="green"
-      :count="store.newTootsCount"
+      :count="store.newTootsHomeCounter"
       href="/app/timeline/home"
     />
   </stormy-nav-group>

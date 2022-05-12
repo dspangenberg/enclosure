@@ -99,7 +99,8 @@ const langugage = ref('')
 
 const translate = async () => {
   translating.value = true
-  const response = await DeepL.translate(props.toot.content)
+  const rawText = stri(props.toot.content)
+  const response = await DeepL.translate(rawText.result)
   const { translatedText, sourceLang } = response
   translation.value = translatedText
   langugage.value = sourceLang

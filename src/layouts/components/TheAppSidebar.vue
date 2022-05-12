@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-col w-64 select-none ">
+  <div class="flex flex-col w-64 select-none bg-stone-50 border-l border-stone-200 ">
     <div class="flex flex-col h-0 flex-1">
-      <div class="flex-1 flex flex-col overflow-y-auto ">
+      <div class="flex-1 flex flex-col overflow-y-auto">
         <div class="flex-shrink-0 flex  pt-6 pb-2.5 w-full">
           <a
             class="w-full"

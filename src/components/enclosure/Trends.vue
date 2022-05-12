@@ -18,10 +18,17 @@
   </ul>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { mastoApi } from '@/api'
 import { useStore } from '@/stores/global'
 
 const store = useStore()
+
+const { getTrends } = mastoApi()
 const trends = ref([])
+
+onMounted(async () => {
+  trends.value = await getTrends()
+})
 
 </script>

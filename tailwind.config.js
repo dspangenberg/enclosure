@@ -12,6 +12,19 @@ module.exports = {
       fontFamily: {
         sans: ['Clear Sans', ...defaultTheme.fontFamily.sans]
       },
+      fontWeight: {
+        hairline: 100,
+        'extra-light': 100,
+        thin: 200,
+        light: 300,
+        normal: 400,
+        medium: 500,
+        semibold: 500,
+        bold: 700,
+        extrabold: 800,
+        'extra-bold': 800,
+        black: 900
+      },
       gridTemplateColumns: {
         // Simple 16 column grid
         16: 'repeat(16, minmax(0, 1fr))',
@@ -59,7 +72,7 @@ module.exports = {
         sm: ['0.8rem', '1.0rem'],
         base: ['0.9rem', '1.10rem'],
         lg: ['1.0rem', '1.30rem'],
-        xl: ['1.1rem', '1.40rem'],
+        xl: ['1.1rem', '1.40rem']
       },
       fill: (theme) => theme('colors')
     },

@@ -6,9 +6,12 @@
   >
     <div
       :disabled="disabled"
-      :class="[active ? 'bg-gray-100' : '', props.small ? 'text-xs px-2 py-1.5' : 'text-sm px-2 py-2', props.danger && !props.disabled ? 'hover:bg-red-100 hover:text-red-600' : '', disabled ? 'text-gray-300 cursor-not-allowed' : 'text-gray-700 cursor-pointer', 'w-full select-none flex items-center rounded-sm']"
+      :class="[active ? 'bg-stone-200' : '', props.small ? 'text-xs px-2 py-1.5' : 'text-sm px-2 py-2', props.danger && !props.disabled ? 'hover:bg-red-100 hover:text-red-600' : '', disabled ? 'text-gray-300 cursor-not-allowed' : 'text-gray-700 cursor-pointer', 'w-full select-none flex items-center rounded-sm']"
     >
-      <div class="flex-shrink-0 items-center">
+      <div
+        v-if="!noIcon"
+        class="flex-shrink-0 items-center"
+      >
         <div :class="[props.small ? 'w-5' : 'w-7']">
           <stormy-icon
             v-if="props.icon || props.checked"
@@ -17,7 +20,10 @@
           />
         </div>
       </div>
-      <div class="flex-1 text-left font-normal">
+      <div
+        class="flex-1 text-left font-normal"
+        :class="[noIcon ? 'ml-3' : '']"
+      >
         <slot>
           {{ props.label }}
         </slot>
@@ -47,7 +53,8 @@ const props = defineProps({
   disabled: useProp(Boolean),
   danger: useProp(Boolean),
   small: useProp(Boolean),
-  checked: useProp(Boolean, false)
+  checked: useProp(Boolean, false),
+  noIcon: useProp(Boolean, false)
 })
 
 const getIcon = computed(() => {

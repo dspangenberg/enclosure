@@ -2,7 +2,8 @@
   <li
     v-if="toot && isReady"
     ref="tootRef"
-    class="hover:bg-blue-50"
+    class="hover:bg-blue-50/30 overflow-hidden text-base"
+    style="font-size: 16px;line-height: 26px;"
   >
     <enclosure-toot-reblog-info
       :account="account"

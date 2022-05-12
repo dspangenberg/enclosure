@@ -11,8 +11,8 @@
       <slot name="button">
         <stormy-icon
           :name="icon"
-          class="text-gray-500 flex-shrink-0 w-5 h-5 ml-2"
-          :class="getIconSize"
+          class="text-gray-500 flex-shrink-0"
+          :class="[getIconSize, iconSize === 'auto' ? 'w-5 h-5 ml-2' :'mx-auto']"
           :stroke-width="iconStrokeWidth"
         />
         <span

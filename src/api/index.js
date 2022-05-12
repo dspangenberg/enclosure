@@ -14,7 +14,16 @@ export const mastoApi = (baseUrl = null, authToken = null) => {
   }
 
   const connect = (baseUrl, authToken = null) => {
+    if (!baseUrl) {
+      baseUrl = sessionStorage.getItem('baseUrl')
+    }
+
     $axios.setBaseURL(baseUrl)
+
+    if (!authToken) {
+      authToken = authToken = sessionStorage.getItem('token')
+    }
+
     if (authToken) {
       setAuthToken(authToken)
     }
@@ -27,6 +36,7 @@ export const mastoApi = (baseUrl = null, authToken = null) => {
 
   const {
     fetchAccessToken,
+    revokeAccessToken,
     verifyAccountCredentials
   } = apiAuth(axios)
 
@@ -40,12 +50,12 @@ export const mastoApi = (baseUrl = null, authToken = null) => {
   } = apiAccount(axios)
 
   const {
-    activity,
-    customEmojis,
-    directory,
-    instance,
-    peers,
-    trends
+    getActivity,
+    getCustomEmojis,
+    getDirectory,
+    getInstance,
+    getPeers,
+    getTrends
   } = apiInstance(axios)
 
   const {
@@ -77,8 +87,11 @@ export const mastoApi = (baseUrl = null, authToken = null) => {
 
   return {
     connect,
+
     registerApp,
+
     fetchAccessToken,
+    revokeAccessToken,
     verifyAccountCredentials,
 
     account,
@@ -88,12 +101,12 @@ export const mastoApi = (baseUrl = null, authToken = null) => {
     accountFollowing,
     accountStatuses,
 
-    activity,
-    customEmojis,
-    directory,
-    instance,
-    peers,
-    trends,
+    getActivity,
+    getCustomEmojis,
+    getDirectory,
+    getInstance,
+    getPeers,
+    getTrends,
 
     notifications,
 
