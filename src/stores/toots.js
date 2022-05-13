@@ -2,8 +2,7 @@ import { acceptHMRUpdate, defineStore } from 'pinia'
 import { mastoApi } from '@/api'
 import { useStore } from '@/stores/global'
 import { useMastodon } from '@/composables/useMastodon'
-
-const { getTimeline, statusAction } = useMastodon()
+const { getTimeline, getThread, statusAction } = useMastodon()
 
 export const useToots = defineStore({
   id: 'toots',
@@ -12,6 +11,7 @@ export const useToots = defineStore({
     account: null,
     toot: {},
     list: null,
+    thread: null,
     newTootsHome: [],
     timeline: null,
     loadingStatus: false,
@@ -43,17 +43,32 @@ export const useToots = defineStore({
         this.toots[index] = toot
       }
     },
+    updateThread (toot) {
+      const index = this.thread.findIndex(item => parseInt(item.id) === parseInt(toot.id) || parseInt(item.reblog?.id) === parseInt(toot.id))
+      if (index > -1) {
+        this.thread[index] = toot
+      }
+    },
+    async getThread (id) {
+      this.loadingStatus = true
+      this.thread = await getThread(id)
+      this.loadingStatus = false
+    },
     setToot (id) {
       this.toot = this.toots.find(item => item.id === id)
     },
     byId (id) {
       return this.toots.find(item => parseInt(item.id) === parseInt(id) || parseInt(item.reblog?.id) === parseInt(id))
     },
+    threadById (id) {
+      return this.thread.find(item => parseInt(item.id) === parseInt(id) || parseInt(item.reblog?.id) === parseInt(id))
+    },
     tootOverSocket (toot) {
       console.log('tootOverSocket', this.timeline, toot)
       this.newTootsHome.unshift(toot)
     },
     async getTootsforTimeline (timeline = 'home', options = {}, p, withBubble = false) {
+      this.thread = null
       this.timeline = timeline
       this.newToots = []
       options.limit = 20
@@ -89,9 +104,9 @@ export const useToots = defineStore({
       this.newTootsHome = []
     },
     async action (action, id) {
-      const toot = this.byId(id)
+      const toot = this.thread?.length ? this.threadById(id) : this.byId(id)
       const update = await statusAction(toot, action)
-      this.update(update)
+      this.thread?.length ? this.updateThread(update) : this.update(update)
     },
     async favorite (id) {
       await this.action('favourite', id)

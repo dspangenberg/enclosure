@@ -1,5 +1,5 @@
 <template>
-  <div class="flex pl-2">
+  <div class="flex ml-[3.6rem]">
     <div
       v-if="otherAccount"
       class="flex text-xs items-center flex-1"

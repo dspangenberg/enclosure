@@ -40,7 +40,7 @@
                 <div>
                   <span
                     v-tooltip.tooltip="createdAt"
-                    class="text-gray-400 text-sm select-none mr-3"
+                    class="text-gray-400 text-sm select-none mr-3 font-light leading-snug"
                   >
                     <stormy-time-ago :date="notification.created_at" />
                   </span>
@@ -49,7 +49,7 @@
             </div>
             <div
               v-if="content"
-              class="border mt-1 rounded-md px-3 py-2 text-gray-900 text-base toot-content"
+              class="border mt-1 rounded-md px-3 py-2 text-gray-900 text-sm font-light toot-content"
             >
               {{ content }}
             </div>

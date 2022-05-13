@@ -16,13 +16,14 @@
       <div class="bg-stone-50">
         <div class="absolute top-3 right-3 space-x-1 ">
           <TheAppLanguageSwitcher />
+        </div>
+        <div class="absolute bottom-3 right-3 space-x-1 ">
           <TheAppMenu />
         </div>
       </div>
     </div>
   </div>
 </template>
-
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import TheAppSidebar from './components/TheAppSidebar.vue'

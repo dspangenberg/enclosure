@@ -37,6 +37,11 @@ const routes = [
         component: () => import(/* webpackChunkName: "notifications" */ '@/views/App/AppInfo.vue')
       },
       {
+        path: 'status/:id',
+        name: 'thread',
+        component: () => import(/* webpackChunkName: "tread" */ '@/views/App/Thread.vue')
+      },
+      {
         path: 'timeline/:type/:p?',
         name: 'timeline',
         component: () => import(/* webpackChunkName: "home" */ '@/views/App/Home.vue')

@@ -56,6 +56,16 @@ export const apiStatus = (axios) => {
     return processResults(result)
   }
 
+  const getStatus = async (id) => {
+    const result = await axios.get(`/statuses/${id}`)
+    return processResults(result)
+  }
+
+  const getThread = async (id) => {
+    const result = await axios.get(`/statuses/${id}/context`)
+    return processResults(result)
+  }
+
   return {
     bookmark,
     favourite,
@@ -67,6 +77,8 @@ export const apiStatus = (axios) => {
     unfavourite,
     unmute,
     unpin,
-    unreblog
+    unreblog,
+    getStatus,
+    getThread
   }
 }

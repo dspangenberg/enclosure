@@ -1,9 +1,9 @@
 <template>
   <enclosure-toot-container
     class=""
-    inner-class="!my-0 py-3"
+    inner-class="!my-0 py-3 ml-[3.55rem]"
   >
-    <div class="  grid grid-cols-5 mx-auto px-2 select-none">
+    <div class=" grid grid-cols-5 mx-auto px-2 select-none">
       <div class="flex items-center mx-auto">
         <stormy-icon
           name="messages"

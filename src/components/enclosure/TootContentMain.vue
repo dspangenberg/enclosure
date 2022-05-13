@@ -22,6 +22,7 @@
       v-if="toot.content && visible"
       ref="tootRef"
       class="container leading-normal text-gray-900 toot-content overflow-hidden"
+      :class="toot.isKingOfThread ? 'text-lg font-medium' : ''"
       v-html="$sanitize(content)"
     />
   </div>

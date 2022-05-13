@@ -14,14 +14,14 @@
       <div
         class="base font-semibold leading-snug flex flex-1 items-center"
       >
-        <div class="flex-1">
+        <div class="flex-1 items-center">
           <span
             v-if="displayName"
             v-html="$sanitize(displayName)"
           />
           <span v-else>{{ person.username }}</span>
         </div>
-        <div>
+        <div v-if="!person.isMe">
           <stormy-badge
             v-if="person.followed_by"
             class="mr-6"
@@ -31,15 +31,14 @@
           />
         </div>
         <div
-          v-if="person.id !== me.accountId"
           class="flex space-x-3"
         >
           <stormy-icon-button
-            v-if="!isMe"
+            v-if="!person.isMe"
             :icon="person.following ? 'user-x' : 'user-plus'"
             variant="outline"
             size="md"
-          />
+          />&nbsp;
         </div>
       </div>
     </div>
@@ -77,8 +76,6 @@ const note = computed(() => {
   return emos
 })
 */
-
-const isMe = computed(() => props.person.id === props.me.accountId)
 
 const onClick = () => {
   router.push(`/app/timeline/profile/${props.person.id}`)

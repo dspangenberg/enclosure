@@ -11,11 +11,9 @@ export function useMastodon (connection = null) {
   getConnectionParameters()
 
   const getAccount = async (id) => {
-    const store = useStore()
     const result = await connection.getAccount(id)
     const rel = await getRelationships([result.data])
     result.data = rel[0]
-    result.data.isMe = store.getMastodonId() === rel[0].id
     return result.data
   }
 
@@ -32,6 +30,21 @@ export function useMastodon (connection = null) {
   const getNotifications = async (options) => {
     const result = await connection.notifications(options)
     return result
+  }
+
+  const getThread = async (id) => {
+    console.log('getThread', id)
+
+    const thread = []
+    const status = await connection.getStatus(id)
+    const result = await connection.getThread(id)
+
+    status.data.isKingOfThread = true
+
+    thread.push(...result.data.ancestors)
+    thread.push(status.data)
+    thread.push(...result.data.descendants)
+    return thread
   }
 
   const removeSuggestion = async (id) => {
@@ -53,6 +66,8 @@ export function useMastodon (connection = null) {
   }
 
   const getRelationships = async (data) => {
+    const store = useStore()
+
     const ids = data.map(item => item.id)
     const rels = await connection.getRelationships(ids)
     const people = []
@@ -60,6 +75,8 @@ export function useMastodon (connection = null) {
       const rel = rels.data.find(item => item.id === account.id)
       if (rel !== undefined) {
         rel.my_note = rel?.note
+        rel.isMe = store.getMastodonId() === account.id
+
         delete rel.note
         account = Object.assign(account, rel)
       }
@@ -91,7 +108,12 @@ export function useMastodon (connection = null) {
       })
       return item
     })
-    items = items.map(item => { return { name: item.name, accounts: sumBy(item.history, 'accounts'), uses: sumBy(item.history, 'uses') } })
+    items = items.map(item => { return {
+      name: item.name,
+      accounts: item.history[0].accounts + item.history[1].accounts,
+      uses: item.history[0].uses + item.history[1].uses
+    }})
+    // items = items.map(item => { return { name: item.name, accounts: sumBy(item.history, 'accounts'), uses: sumBy(item.history, 'uses') } })
     return reverse(sortBy(items, ['uses']))
   }
 
@@ -213,6 +235,7 @@ export function useMastodon (connection = null) {
     getLists,
     getNotifications,
     getSuggestions,
+    getThread,
     getTimeline,
     getTrends,
     poll,

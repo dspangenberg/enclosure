@@ -104,7 +104,9 @@ export const mastoApi = (baseUrl = null, authToken = null) => {
     unfavourite,
     unmute,
     unpin,
-    unreblog
+    unreblog,
+    getStatus,
+    getThread
   } = apiStatus(axios)
 
   const {
@@ -181,6 +183,8 @@ export const mastoApi = (baseUrl = null, authToken = null) => {
     unmute,
     unpin,
     unreblog,
+    getStatus,
+    getThread,
 
     timelineConversations,
     timelineFederation,

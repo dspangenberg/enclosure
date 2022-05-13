@@ -83,7 +83,8 @@ module.exports = {
   variants: {
     extend: {
       opacity: ['disabled'],
-      fill: ['focus', 'group-hover']
+      fill: ['focus', 'group-hover'],
+      display: ['group-hover']
     }
   },
   plugins: [

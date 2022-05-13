@@ -1,7 +1,10 @@
 <template>
-  <div class="overflow-hidden flex flex-1 max-w-xl h-full items-center relative w-full">
+  <div
+    class="overflow-hidden flex flex-1 max-w-xl h-fullrelative w-full"
+    :class="toots?.length ? 'items-start' : 'items-center  h-screen'"
+  >
     <div
-      v-if="storeToots.toots?.length"
+      v-if="toots?.length"
       ref="timelineRef"
       class="flex-1 z-10 pt-12  w-full -mt-1"
     >
@@ -25,7 +28,7 @@
           <enclosure-profile :account="storeToots.account" />
         </template>
         <enclosure-toot
-          v-for="(toot, index) in storeToots.toots"
+          v-for="(toot, index) in toots"
           :key="toot.id"
           :index="index"
           :toot="toot"
@@ -59,7 +62,8 @@ import { ref } from 'vue'
 const storeToots = useToots()
 
 defineProps({
-  type: useProp(String, '')
+  type: useProp(String, ''),
+  toots: useProp(Array)
 })
 
 const timelineRef = ref()

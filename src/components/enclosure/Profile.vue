@@ -26,8 +26,8 @@
       class=""
     >
       <img
+        v-lazy="account.header"
         class="h-32 w-full object-cover lg:h-48 cursor-pointer"
-        :src="account.header"
         alt=""
         @click="lightboxHeaderVisibile = true"
       >

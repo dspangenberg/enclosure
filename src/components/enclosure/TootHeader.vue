@@ -10,7 +10,7 @@
         />
       </div>
       <div class="flex flex-1 flex-col text-xs">
-        <div class="text-sm flex-1 items-center  fle">
+        <div class="text-sm flex-1 items-center  flex">
           <router-link
             :to="route(account)"
             class="text-text-600 flex-1 flex items-center "

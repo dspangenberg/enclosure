@@ -7,6 +7,7 @@
     <template #default>
       <enclosure-timeline
         :type="timelineType"
+        :toots="store.toots"
       />
     </template>
     <template #aside>
@@ -37,6 +38,7 @@ const route = useRoute()
 watch(route, async (route) => {
   await store.getTootsforTimeline(route?.params?.type || 'home', {}, route?.params?.p || null)
 }, { immediate: true })
+emitter.on('loadMore', async (e) => await loadMore(e))
 
 const loadMore = async (e) => {
   if (store.loadMoreQuery) {

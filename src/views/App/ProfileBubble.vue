@@ -21,7 +21,7 @@
       </enclosure-bubble-list>
     </template>
     <template #aside>
-      {{ route.params }}
+      &nbsp;
     </template>
   </enclosure-container>
 </template>

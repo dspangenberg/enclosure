@@ -8,7 +8,7 @@
             href="/"
           >
             <img
-              class="h-12 w-auto mx-auto my-3 blur-sm rotate-180"
+              class="h-12 w-auto mx-auto my-3 blur-md rotate-180"
               src="https://raw.githubusercontent.com/mastodon/mastodon/main/app/javascript/images/logo.svg "
               alt=""
             >

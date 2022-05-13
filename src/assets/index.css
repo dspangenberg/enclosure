@@ -165,6 +165,7 @@ img.emojione, .emoji {
   width: 1.1rem;
   height: 1.1rem;
   display: inline-block;
+  margin-right: 3px;
 }
 
 
@@ -290,6 +291,6 @@ img.emojione, .emoji {
 }
 
 .temporary-bounce {
-  -webkit-animation-iteration-count: 5;
-  animation-iteration-count: 5;
+  -webkit-animation-iteration-count: 3;
+  animation-iteration-count: 3;
 }

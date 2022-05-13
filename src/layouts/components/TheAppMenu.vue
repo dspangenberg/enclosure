@@ -5,7 +5,7 @@
     icon-size="md"
     :icon-stroke-width="2"
     label-class="text-gray-400"
-    items-class="origin-top-right top-10 right-0 z-50 w-48"
+    items-class="origin-bottom-right bottom-10 right-0 z-50 w-48"
   >
     <stormy-menu-item
       no-icon
