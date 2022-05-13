@@ -1,7 +1,9 @@
 <template>
-  <div class="flex ml-[3.6rem]">
+  <div
+    v-if="action"
+    class="flex ml-[3.6rem] font-medium"
+  >
     <div
-      v-if="otherAccount"
       class="flex text-xs items-center flex-1"
     >
       <div
@@ -9,21 +11,24 @@
       >
         <stormy-icon
           :name="icon"
-          class="w-5 h-5 text-gray-400 mr-2"
+          class="w-5 h-5  mr-2"
           :stroke-width="2"
+          :class="iconColor"
         />
         <span class="text-gray-500 mr-0.5">{{ actionText }}</span>
-        <router-link
-          :to="route(otherAccount)"
-          class="hover:underline text-gray-500 flex items-center"
-        >
-          <img
-            class="h-5 w-5 rounded-full bg-gray-400 flex items-center justify-center border border-white mx-0.5"
-            :src="otherAccount.avatar"
-            alt=""
+        <template v-if="otherAccount && showUser">
+          <router-link
+            :to="route(otherAccount)"
+            class="hover:underline text-gray-500 flex items-center"
           >
-          <span>{{ displayName || otherAccount.username }}</span>
-        </router-link>
+            <img
+              class="h-5 w-5 rounded-full bg-gray-400 flex items-center justify-center border border-white mx-0.5"
+              :src="otherAccount.avatar"
+              alt=""
+            >
+            <span>{{ displayName || otherAccount.username }}</span>
+          </router-link>
+        </template>
       </div>
     </div>
   </div>
@@ -34,16 +39,18 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import emoji from 'node-emoji'
 const { t: $t } = useI18n({ useScope: 'global' })
-const actionText = computed(() => $t(props.action))
+const actionText = computed(() => $t(`toot.actions.${props.action}`))
 
 const displayName = computed(() => emoji.strip(props.otherAccount.display_name))
 
 const props = defineProps({
   account: useProp(Object),
   otherAccount: useProp(Object),
+  showUser: useProp(Boolean),
   createdAt: useProp(String),
-  icon: useProp(String, 'message'),
-  action: useProp(String, 'toots.toot.actions.boost')
+  iconColor: useProp(String),
+  icon: useProp(String),
+  action: useProp(String, '')
 })
 
 const route = (account) => {

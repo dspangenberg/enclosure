@@ -1,6 +1,6 @@
 import { useStore } from '@/stores/global'
 import { mastoApi } from '@/api'
-import { sortBy, reverse, sumBy } from 'lodash'
+import { sortBy, reverse, omit } from 'lodash'
 import uniqueRandom from 'unique-random'
 
 export function useMastodon (connection = null) {
@@ -10,10 +10,17 @@ export function useMastodon (connection = null) {
 
   getConnectionParameters()
 
-  const getAccount = async (id) => {
+  const getAccount = async (id, query) => {
+    query.pinned = false
     const result = await connection.getAccount(id)
     const rel = await getRelationships([result.data])
+    const pinned = await connection.getStatuses(id, { pinned: true })
+    const statuses = await connection.getStatuses(id, query)
     result.data = rel[0]
+    result.data.statuses = []
+    result.data.statuses.push(...pinned.data)
+    result.data.statuses.push(...statuses.data)
+    result.data.statuses.next = statuses.next
     return result.data
   }
 
@@ -33,8 +40,6 @@ export function useMastodon (connection = null) {
   }
 
   const getThread = async (id) => {
-    console.log('getThread', id)
-
     const thread = []
     const status = await connection.getStatus(id)
     const result = await connection.getThread(id)
@@ -108,11 +113,13 @@ export function useMastodon (connection = null) {
       })
       return item
     })
-    items = items.map(item => { return {
-      name: item.name,
-      accounts: item.history[0].accounts + item.history[1].accounts,
-      uses: item.history[0].uses + item.history[1].uses
-    }})
+    items = items.map(item => {
+      return {
+        name: item.name,
+        accounts: item.history[0].accounts + item.history[1].accounts,
+        uses: item.history[0].uses + item.history[1].uses
+      }
+    })
     // items = items.map(item => { return { name: item.name, accounts: sumBy(item.history, 'accounts'), uses: sumBy(item.history, 'uses') } })
     return reverse(sortBy(items, ['uses']))
   }
@@ -159,7 +166,14 @@ export function useMastodon (connection = null) {
               console.log(error)
             }
           }
-          account = await getAccount(param)
+          account = await getAccount(param, options)
+          result = {
+            data: account.statuses,
+            next: account.statuses.next,
+            account: omit(account, ['statuses']),
+            list: list || null
+          }
+          return Promise.resolve(result)
         }
         result = await connection[call](param, options)
       } else {

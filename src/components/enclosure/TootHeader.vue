@@ -66,7 +66,7 @@ import { useTemplateFilter } from '@/composables/useTemplateFilter'
 import { computed } from 'vue'
 import emojify from '@/utils/Emoji'
 
-const { formatDate } = useTemplateFilter()
+const { formatDateTime } = useTemplateFilter()
 
 const props = defineProps({
   account: useProp(Object),
@@ -77,7 +77,7 @@ const props = defineProps({
   action: useProp(String, 'toots.toot.actions.boost')
 })
 
-const createdAtFormated = computed(() => formatDate(props.createdAt))
+const createdAtFormated = computed(() => formatDateTime(props.createdAt))
 
 const displayName = computed(() => {
   const emos = emojify(props.account.display_name, props.account.emojis)

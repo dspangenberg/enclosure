@@ -17,12 +17,13 @@
     "app": "App konfigurieren",
     "sign-out": "Abmelden"
   },
-  "toots": {
-    "toot": {
+  "toot": {
       "actions": {
-        "boost": "Geteilt von"
+        "reblog": "Geteilt von",
+        "my-reblog": "Geteilter Status",
+        "pinned": "Angepinnter Beitrag",
+        "answered": "Antwort"
       }
-    }
   },
   "common": {
     "toot": "Tröt",

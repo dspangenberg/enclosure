@@ -2,7 +2,7 @@
   <li
     v-if="toot && isReady"
     ref="tootRef"
-    class="hover:bg-blue-50/30 overflow-hidden text-base cursor-pointer relative pr-3"
+    class="hover:bg-blue-50/30 overflow-hidden text-base cursor-pointer relative pr-3 "
     :class="isKingOfThread ? 'bg-gray-50' : ''"
   >
     <div
@@ -14,10 +14,11 @@
       :account="account"
       :created-at="createdAt"
       :other-account="otherAccount"
-      :toot="item"
-      :icon="isReblog ? 'message-2-share' : 'message'"
+      :show-user="showUser"
+      :icon="action.icon"
+      :icon-color="action.color"
       :type="isReblog ? 'reblog' : 'toot'"
-      action="toots.toot.actions.boost"
+      :action="action.action"
     />
     <div class="relative flex items-start ">
       <div
@@ -29,9 +30,8 @@
             :created-at="createdAt"
             :toot="item"
             :other-account="otherAccount"
-            :icon="isReblog ? 'message-2-share' : 'message'"
+            :icon="action.icon"
             :type="isReblog ? 'reblog' : 'toot'"
-            action="toots.toot.actions.boost"
           />
           <div>
             <enclosure-toot-content
@@ -53,6 +53,7 @@
 <script setup>
 import { useProp } from '@/composables/useProp.js'
 import { computed, toRefs, ref, onMounted, nextTick } from 'vue'
+import { useStore } from '@/stores/global'
 import { useRoute, useRouter } from 'vue-router'
 
 const props = defineProps({
@@ -60,6 +61,7 @@ const props = defineProps({
   index: useProp(Number)
 })
 
+const store = useStore()
 const router = useRouter()
 const route = useRoute()
 
@@ -67,17 +69,33 @@ const isReady = ref(false)
 const { toot } = toRefs(props)
 
 const isReblog = computed(() => toot.value.reblog instanceof Object)
+const showUser = computed(() => route.params?.type !== 'profile')
 const item = computed(() => isReblog.value ? toot.value.reblog : toot.value)
 const account = computed(() => isReblog.value ? toot.value.reblog.account : toot.value.account)
 const createdAt = computed(() => isReblog.value ? toot.value.reblog.created_at : toot.value.created_at)
 const otherAccount = computed(() => isReblog.value ? toot.value.account : null)
 const isThread = computed(() => route.name === 'thread')
 const isKingOfThread = computed(() => route.name === 'thread' && route.params.id === item.value.id)
-
 const goThread = (toot) => {
   const path = isReblog.value === true ? `/app/status/${toot.reblog.id}` : `/app/status/${toot.id}`
   router.push(path)
 }
+
+const action = computed(() => {
+  if (isReblog.value) {
+    return { action: showUser.value ? 'reblog' : '', icon: 'message-2-share', color: 'text-gray-500' }
+  }
+
+  if (item.value.pinned) {
+    return { action: 'pinned', icon: 'pin', color: 'text-purple-500' }
+  }
+
+  if (item.value.in_reply_to_id) {
+    // return { action: 'answered', icon: 'messages' }
+  }
+
+  return { action: '', icon: 'message' }
+})
 
 onMounted(async () => {
   await nextTick
