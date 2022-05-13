@@ -6,7 +6,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "vue-i18n-extract": "vue-i18n-extract report --add --vueFiles './src/**/*.?(js|vue)' --languageFiles './src/locales/*.json'"
+    "vue-i18n-extract": "vue-i18n-extract report --add --vueFiles './src/**/*.?(js|vue)' --languageFiles './src/locales/*.json'",
+    "lint": "./node_modules/.bin/eslint --ext .js,.vue --ignore-path .gitignore --fix src"
   },
   "dependencies": {
     "@be/http-status": "^1.0.2",
@@ -44,6 +45,7 @@
     "splitpanes": "^3.1.1",
     "stristri": "^4.0.20",
     "supermodels.js": "https://github.com/dspangenberg/supermodels.js.git",
+    "unique-random": "^3.0.0",
     "universal-cookie": "^4.0.4",
     "v3-infinite-loading": "^1.0.6",
     "vue": "^3.2.33",
@@ -64,7 +66,7 @@
     "@tailwindcss/forms": "^0.5.1",
     "@tailwindcss/line-clamp": "^0.4.0",
     "@vitejs/plugin-vue": "^2.3.3",
-    "@vue/eslint-config-standard": "^7.0.0",
+    "@vue/eslint-config-standard": "^6.1.0",
     "autoprefixer": "^10.4.7",
     "eslint": "^8.15.0",
     "eslint-plugin-import": "^2.26.0",

@@ -52,8 +52,25 @@ const Account = class extends BaseModel {
 
   static async ensureIndices () {
     PouchDb.db().ensureIndices([
-      { fields: ['docType', 'accountId', 'domain', 'sns'] }
+      { fields: ['docType', 'mastodonId', 'domain', 'sns'] }
     ])
+  }
+
+  static async sync () {
+    const account = await this.verifyAccountCredentials()
+    const { getFollowers } = mastoApi(account.baseUrl, account.accessToken)
+    const followers = []
+    let next = true
+
+    while (next) {
+      const result = await getFollowers(25)
+      next = result.next
+      followers.push(...result.data)
+    }
+
+    account.followers = followers.map(item => item.id)
+    await account.save()
+    return account
   }
 
   static async verifyAccountCredentials (account = null) {
@@ -85,7 +102,7 @@ const Account = class extends BaseModel {
       const refreshToken = account.refreshToken
       const lastLoginAt = account.lastLoginAt
       const existingAccount = await Account.db().findOne({
-        accountId: mastodonAccount.id,
+        mastodonId: mastodonAccount.id,
         sns: mastodonAccount.sns,
         domain: mastodonAccount.domain
       })
@@ -101,7 +118,7 @@ const Account = class extends BaseModel {
     }
 
     account.username = mastodonAccount.username
-    account.accountId = mastodonAccount.id
+    account.mastodonId = mastodonAccount.id
     account.avatar = mastodonAccount.avatar
     account.url = mastodonAccount.url
     account.acct = mastodonAccount.acct
@@ -112,11 +129,9 @@ const Account = class extends BaseModel {
     return Promise.resolve(account)
   }
 
-  static async me () {
+  static async me (id) {
     try {
-      const store = useStore()
-      const accountId = store.getAccountId()
-      const account = await Account.db().get(accountId)
+      const account = await Account.db().get(id)
       return Promise.resolve(account)
     } catch (error) {
       return Promise.reject(error)
@@ -162,7 +177,6 @@ const Account = class extends BaseModel {
     const { clientId, clientSecret, redirect } = tempAccount
     const token = await fetchAccessToken(code, clientId, clientSecret, redirect)
     tempAccount.accessToken = token.accessToken
-    // tempAccount.refreshToken = token.refresh_token || ''
     tempAccount.lastLoginAt = new Date()
     await tempAccount.save()
 
@@ -181,7 +195,7 @@ const Account = class extends BaseModel {
       clientId: prop(String).required(),
       clientSecret: prop(String).required(),
       sns: prop(String),
-      accountId: prop(String),
+      mastodonId: prop(String),
       vapidKey: prop(String),
       accessToken: prop(String),
       refreshToken: prop(String),

@@ -1,5 +1,5 @@
 <template>
-  <div class="text-base text-gray-700 overflow-hidden">
+  <div class="text-base text-gray-700 !overflow-hidden">
     <enclosure-toot-container>
       <enclosure-toot-content-main
         :toot="toot"

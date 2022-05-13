@@ -1,18 +1,98 @@
 import { useStore } from '@/stores/global'
 import { mastoApi } from '@/api'
-
-const { connect } = mastoApi()
+import { sortBy, reverse, sumBy } from 'lodash'
+import uniqueRandom from 'unique-random'
 
 export function useMastodon (connection = null) {
-  const getConnection = () => {
+  const getConnectionParameters = () => {
     connection = mastoApi()
   }
 
-  getConnection()
+  getConnectionParameters()
+
+  const getAccount = async (id) => {
+    const store = useStore()
+    const result = await connection.getAccount(id)
+    const rel = await getRelationships([result.data])
+    result.data = rel[0]
+    result.data.isMe = store.getMastodonId() === rel[0].id
+    return result.data
+  }
+
+  const follow = async (id) => {
+    const result = await connection.follow(id)
+    return result.data
+  }
+
+  const getLists = async (options) => {
+    const result = await connection.getLists(options)
+    return result.data
+  }
 
   const getNotifications = async (options) => {
     const result = await connection.notifications(options)
     return result
+  }
+
+  const removeSuggestion = async (id) => {
+    await connection.removeSuggestion(id)
+    const suggestion = await getSuggestions(1)
+    return suggestion[0]
+  }
+
+  const getSuggestions = async (limit = 5, options) => {
+    const result = await connection.getSuggestions({ limit: 20 })
+    const random = uniqueRandom(0, result.data.length - 1)
+    const suggestions = []
+    for (let index = 0; index < limit; index++) {
+      const suggestion = result.data[random()]
+      suggestion.blink = false
+      suggestions.push(suggestion)
+    }
+    return suggestions
+  }
+
+  const getRelationships = async (data) => {
+    const ids = data.map(item => item.id)
+    const rels = await connection.getRelationships(ids)
+    const people = []
+    for (let account of data) {
+      const rel = rels.data.find(item => item.id === account.id)
+      if (rel !== undefined) {
+        rel.my_note = rel?.note
+        delete rel.note
+        account = Object.assign(account, rel)
+      }
+      people.push(account)
+    }
+    return people
+  }
+
+  const getFollowers = async (id, options) => {
+    const result = await connection.getFollowers(id, options)
+    result.data = await getRelationships(result.data)
+    return result
+  }
+
+  const getFollowing = async (id, options) => {
+    const result = await connection.getFollowing(id, options)
+    result.data = await getRelationships(result.data)
+    return result
+  }
+
+  const getTrends = async (options) => {
+    const result = await connection.getTrends({ limit: 20 })
+
+    let items = result.data.map(item => {
+      item.history = item.history.map(item => {
+        item.accounts = parseInt(item.accounts)
+        item.uses = parseInt(item.uses)
+        return item
+      })
+      return item
+    })
+    items = items.map(item => { return { name: item.name, accounts: sumBy(item.history, 'accounts'), uses: sumBy(item.history, 'uses') } })
+    return reverse(sortBy(items, ['uses']))
   }
 
   const poll = async (id, choices) => {
@@ -42,14 +122,22 @@ export function useMastodon (connection = null) {
     const store = useStore()
     const call = getTimelineCall(type)
     let result
-    let account
+    let account = null
+    let list = null
     try {
-      if (['accountStatuses', 'timelineHashtag', 'timelineList'].includes(call)) {
-        if (call === 'accountStatuses') {
+      if (['getStatuses', 'timelineHashtag', 'timelineList'].includes(call)) {
+        if (call === 'timelineList') {
+          list = await connection.getList(param)
+        }
+        if (call === 'getStatuses') {
           if (!param) {
-            param = await store.getMastodonId()
+            try {
+              param = store.getMastodonId()
+            } catch (error) {
+              console.log(error)
+            }
           }
-          account = connection.account(param)
+          account = await getAccount(param)
         }
         result = await connection[call](param, options)
       } else {
@@ -58,7 +146,8 @@ export function useMastodon (connection = null) {
     } catch (error) {
       return Promise.reject(error)
     }
-    result.account = account
+    result.account = account || null
+    result.list = list?.data || null
     return Promise.resolve(result)
   }
 
@@ -95,11 +184,11 @@ export function useMastodon (connection = null) {
   const getTimelineCall = (type) => {
     switch (type) {
       case 'favorites':
-        return 'accountFavourites'
+        return 'getFavourites'
       case 'bookmarks':
-        return 'accountBookmarks'
+        return 'getBookmarks'
       case 'profile':
-        return 'accountStatuses'
+        return 'getStatuses'
       case 'local':
         return 'timelineLocal'
       case 'federation':
@@ -117,9 +206,17 @@ export function useMastodon (connection = null) {
   }
 
   return {
+    follow,
+    getAccount,
+    getFollowers,
+    getFollowing,
+    getLists,
     getNotifications,
+    getSuggestions,
     getTimeline,
+    getTrends,
     poll,
+    removeSuggestion,
     statusAction
   }
 }

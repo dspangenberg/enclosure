@@ -13,8 +13,7 @@
 <script setup>
 
 import { useProp } from '@/composables/useProp.js'
-import { computed } from 'vue'
-const props = defineProps({
+defineProps({
   toot: useProp(Object)
 })
 </script>

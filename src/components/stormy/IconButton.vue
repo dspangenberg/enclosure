@@ -18,7 +18,9 @@
       v-if="label"
       class="flex-1"
     >
-      <slot />
+      <slot>
+        {{ label }}
+      </slot>
     </div>
   </component>
 </template>
@@ -46,6 +48,7 @@ const props = defineProps({
   type: useProp(String, 'button'),
   size: useProp(String, 'md'),
   href: useProp(String, ''),
+  label: useProp(String),
   as: useProp(String, '')
 })
 

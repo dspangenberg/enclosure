@@ -44,36 +44,17 @@
 </template>
 <script setup>
 import { ref, watch } from 'vue'
-import PouchDb from '@/models/lib/PouchDb'
-import { useRoute, useRouter } from 'vue-router'
-import { useStore } from '@/stores/global'
-import { useConfirmDialog, onClickOutside } from '@vueuse/core'
-
-const store = useStore()
+import { useRoute } from 'vue-router'
+import { useConfirmDialog } from '@vueuse/core'
 
 const route = useRoute()
-const router = useRouter()
 const isAppMenuOpen = ref(false)
 
 const {
   isRevealed,
-  reveal,
   confirm,
   cancel
 } = useConfirmDialog()
-
-const DatebaseTruncate = async () => {
-  await PouchDb.db().truncate()
-  store.setAccount(null)
-  router.push('/auth/login')
-}
-
-const onResetApp = async () => {
-  const { isCanceled } = await reveal()
-  if (!isCanceled) {
-    await DatebaseTruncate()
-  }
-}
 
 watch(route, async (route) => { isAppMenuOpen.value = false })
 

@@ -56,7 +56,6 @@
 </template>
 <script setup>
 import { useProp } from '@/composables/useProp.js'
-import { computed } from 'vue'
 
 const props = defineProps({
   card: useProp(Object)
@@ -66,12 +65,14 @@ const open = () => {
   window.open(props.card.url, '_blank')
 }
 
+/*
 const styles = computed(() => {
   return {
     width: props.card.width + 'px',
     height: props.card.height + 'px'
   }
 })
+*/
 
 /*
 {

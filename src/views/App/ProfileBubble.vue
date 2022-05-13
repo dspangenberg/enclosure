@@ -2,52 +2,78 @@
   <enclosure-container
     ref="refTimeline"
     :title="getTitle"
+    :is-loading="isLoading"
   >
     <template #default>
       <enclosure-bubble-list
         :me="me"
         :account="account"
-        :bubble="bubble"
+        :bubble="people"
       >
         <template
           #header
         >
-          <enclosure-profile :account="store.account" />
+          <enclosure-profile
+            v-if="account"
+            :account="account"
+          />
         </template>
       </enclosure-bubble-list>
     </template>
     <template #aside>
-      Na, Hi erst einmal
+      {{ route.params }}
     </template>
   </enclosure-container>
 </template>
 <script setup>
 import { watch, computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { useToots } from '@/stores/toots'
-import useEmitter from '@/composables/useEmitter'
-import { useI18n } from 'vue-i18n'
+import { useStore } from '@/stores/global'
 import Account from '@/models/Account'
-import { intersection } from 'lodash'
+import { useMastodon } from '@/composables/useMastodon'
+import useEmitter from '@/composables/useEmitter'
 
 const route = useRoute()
-const type = route?.params?.type
 const account = ref({})
 const me = ref({})
+const people = ref([])
+const isLoading = ref(true)
+const isMounting = ref(true)
+const nextPage = ref(null)
 
-const { t: $t } = useI18n({ useScope: 'global' })
+const { getFollowers, getFollowing, getAccount } = useMastodon()
 const emitter = useEmitter()
 
-const store = useToots()
+const store = useStore()
+const mastodonId = computed(() => route?.params?.p || store.getMastodonId())
 
-const bubble = computed(() => route?.params?.type === 'follower' ? account.value.follower : account.value.following)
 const getTitle = computed(() => account?.value.username)
-const accountId = computed(() => route?.params?.p)
+
+watch(route, async (route) => {
+  if (isMounting.value) {
+    isLoading.value = true
+  }
+  const result = route.name === 'followers' ? await getFollowers(mastodonId.value, { limit: 40 }) : await getFollowing(mastodonId.value, { limit: 40 })
+  people.value = result.data
+  nextPage.value = result.next
+  isLoading.value = false
+  isMounting.value = false
+}, { immediate: true })
+
+emitter.on('loadMore', async (e) => await loadMore(e))
+
+const loadMore = async (e) => {
+  if (nextPage.value) {
+    const result = route.name === 'followers' ? await getFollowers(mastodonId.value, nextPage.value) : await getFollowing(mastodonId.value, nextPage.value)
+    people.value.push(...result.data)
+    nextPage.value = result.next
+  }
+}
 
 onMounted(async () => {
-  // me.value = await Account.me()
-  // account.value = await getAccount(accountId.value, true)
-  // console.log(account.value)
+  account.value = await getAccount(mastodonId.value)
+  console.log(account.value)
+  await Account.sync()
 })
 
 </script>

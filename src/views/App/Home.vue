@@ -45,7 +45,6 @@ const loadMore = async (e) => {
 }
 
 const timelineType = computed(() => route?.params?.type || 'home')
-const isProfile = computed(() => route?.params?.type === 'profile')
 
 emitter.on('loadMore', async (e) => await loadMore(e))
 
@@ -54,6 +53,11 @@ const getTitle = computed(() => {
 
   if (route?.params?.type === 'profile' && store.account) {
     return `@${store.account.acct}`
+  }
+
+  if (route?.params?.type === 'list') {
+    const i18 = $t(`timelines.titles.${route?.params?.type}`)
+    return `${i18} ${store.list?.title}`
   }
 
   if (route?.params?.type === 'tags') {

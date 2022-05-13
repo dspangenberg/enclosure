@@ -62,7 +62,7 @@
 
 <script setup>
 import { useProp } from '@/composables/useProp.js'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import emojify from '@/utils/Emoji'
 import { useTemplateFilter } from '@/composables/useTemplateFilter.js'
 import { useI18n } from 'vue-i18n'

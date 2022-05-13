@@ -56,30 +56,35 @@
     <stormy-nav-item
       open
       i18n
-      disabled
       href="#"
       name="sidebar.nav.lists"
       icon="list"
     >
       <stormy-sub-nav-item
-        :disabled="true"
-        name="Nachrichten"
-      />
-      <stormy-sub-nav-item
-        :disabled="true"
-        name="Webentwicklung"
-      />
-      <stormy-sub-nav-item
-        :disabled="true"
-        name="Klatsch"
+        v-for="list in lists"
+        :key="list.id"
+        :name="list.title"
+        :href="route(list)"
       />
     </stormy-nav-item>
   </stormy-nav-group>
 </template>
 <script setup>
 import { useToots } from '@/stores/toots'
+import { useMastodon } from '@/composables/useMastodon'
+import { ref, onMounted } from 'vue'
 
 const store = useToots()
+const { getLists } = useMastodon()
 
+const lists = ref([])
+
+const route = (list) => {
+  return `/app/timeline/list/${list.id}`
+}
+
+onMounted(async () => {
+  lists.value = await getLists()
+})
 
 </script>

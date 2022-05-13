@@ -1,4 +1,4 @@
-import { getData, queryString } from '@/utils/Axios'
+import { processResults, queryString } from '@/utils/Axios'
 
 export const apiInstance = (axios) => {
   const getActivity = async () => {
@@ -27,9 +27,8 @@ export const apiInstance = (axios) => {
   }
 
   const getTrends = async (options = {}) => {
-    console.log('trends')
     const result = await axios.get('/trends?' + queryString.stringify(options))
-    return result.data
+    return processResults(result)
   }
 
   return {

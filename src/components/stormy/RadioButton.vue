@@ -23,7 +23,7 @@
   </div>
 </template>
 <script setup>
-import { computed, useAttrs, useSlots, nextTick } from 'vue'
+import { computed } from 'vue'
 import { useProp } from '@/composables/useProp.js'
 
 const props = defineProps({
@@ -37,14 +37,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['blur', 'focus', 'change', 'update:modelValue'])
-
-const handleChange = () => {
-  nextTick(() => emit('change', modelValue.value))
-}
-
-const attrs = useAttrs()
-const $slots = useSlots()
-const checked = computed(() => props.modelValue === props.value)
 
 const modelValue = computed({
   get () {

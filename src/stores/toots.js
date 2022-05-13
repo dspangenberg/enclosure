@@ -11,6 +11,7 @@ export const useToots = defineStore({
     toots: [],
     account: null,
     toot: {},
+    list: null,
     newTootsHome: [],
     timeline: null,
     loadingStatus: false,
@@ -65,7 +66,8 @@ export const useToots = defineStore({
         const payload = await getTimeline(timeline, p, options)
         this.loadMoreQuery = payload.next
         this.toots = payload.data
-        // this.account = payload.account
+        this.account = payload.account
+        this.list = payload.list
       } catch (error) {
         Promise.reject(error)
       }

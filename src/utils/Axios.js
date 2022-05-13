@@ -1,4 +1,3 @@
-import { url } from '@vuelidate/validators'
 import axios from 'axios'
 import axiosHelper from 'axios-helpers'
 import { snakeCase, camelCase, pick } from 'lodash'
@@ -6,13 +5,11 @@ import queryString from 'query-string'
 
 const $axios = axiosHelper(axios)
 
-// "<https://mastodon.social/api/v1/timelines/home?limit=40&max_id=108277821215643575>; rel="next",
-// <https://mastodon.social/api/v1/timelines/home?limit=40&min_id=108278667555976629>; rel="prev""
-
 const processResults = (result) => {
   const headers = pick(result.headers, ['x-ratelimit-limit', 'x-ratelimit-remaining', 'x-ratelimit-reset', 'link'])
   let params = null
-  if (headers.link) {
+
+  if (headers.link !== undefined) {
     const regex = /(<(.*?)>)([^,]+)(?<name>next)/g
     const result = regex.exec(headers.link)
     if (result?.length > 1) {

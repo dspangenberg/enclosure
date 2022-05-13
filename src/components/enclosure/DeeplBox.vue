@@ -56,14 +56,11 @@
 <script setup>
 import { useProp } from '@/composables/useProp.js'
 import { computed, ref } from 'vue'
-import { useStore } from '@/stores/global'
 import { sortBy, reverse } from 'lodash'
 import { stri } from 'stristri'
 import LanguageDetect from 'languagedetect'
 import DeepL from '@/utils/DeepL'
 import { computedAsync } from '@vueuse/core'
-
-const store = useStore()
 
 const lngDetector = new LanguageDetect()
 lngDetector.setLanguageType('iso2')

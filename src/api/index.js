@@ -4,6 +4,7 @@ import { apiApp } from '@/api/app'
 
 import { apiAccount } from '@/api/account'
 import { apiInstance } from '@/api/instance'
+import { apiList } from '@/api/list'
 import { apiNotification } from '@/api/notification'
 import { apiStatus } from '@/api/status'
 import { apiTimeline } from '@/api/timeline'
@@ -41,12 +42,38 @@ export const mastoApi = (baseUrl = null, authToken = null) => {
   } = apiAuth(axios)
 
   const {
-    account,
-    accountBookmarks,
-    accountFavourites,
-    accountFollowers,
-    accountFollowing,
-    accountStatuses
+    block,
+    blockDomain,
+    featureTag,
+    follow,
+    muteAccount,
+    note,
+    pinAccount,
+    unblock,
+    unfollow,
+    unmuteAccount,
+    updateCredentials,
+    unpinAccount,
+    getAccount,
+    getBlocks,
+    getBookmarks,
+    getDomainBlocks,
+    getEndorsements,
+    getFavourites,
+    getFeaturedTags,
+    getFeaturedTagsSuggestions,
+    getFollowers,
+    getFollowing,
+    getListsWithAccount,
+    getMutes,
+    getPreferences,
+    getProofs,
+    getRelationships,
+    getStatuses,
+    getSuggestions,
+    removeSuggestion,
+    removeBlockDomain,
+    removeFeaturedTag
   } = apiAccount(axios)
 
   const {
@@ -57,6 +84,11 @@ export const mastoApi = (baseUrl = null, authToken = null) => {
     getPeers,
     getTrends
   } = apiInstance(axios)
+
+  const {
+    getList,
+    getLists
+  } = apiList(axios)
 
   const {
     notifications
@@ -94,12 +126,38 @@ export const mastoApi = (baseUrl = null, authToken = null) => {
     revokeAccessToken,
     verifyAccountCredentials,
 
-    account,
-    accountBookmarks,
-    accountFavourites,
-    accountFollowers,
-    accountFollowing,
-    accountStatuses,
+    block,
+    blockDomain,
+    featureTag,
+    follow,
+    muteAccount,
+    note,
+    pinAccount,
+    unblock,
+    unfollow,
+    unmuteAccount,
+    updateCredentials,
+    unpinAccount,
+    getAccount,
+    getBlocks,
+    getBookmarks,
+    getDomainBlocks,
+    getEndorsements,
+    getFavourites,
+    getFeaturedTags,
+    getFeaturedTagsSuggestions,
+    getFollowers,
+    getFollowing,
+    getListsWithAccount,
+    getMutes,
+    getPreferences,
+    getProofs,
+    getRelationships,
+    getStatuses,
+    getSuggestions,
+    removeSuggestion,
+    removeBlockDomain,
+    removeFeaturedTag,
 
     getActivity,
     getCustomEmojis,
@@ -107,6 +165,9 @@ export const mastoApi = (baseUrl = null, authToken = null) => {
     getInstance,
     getPeers,
     getTrends,
+
+    getList,
+    getLists,
 
     notifications,
 

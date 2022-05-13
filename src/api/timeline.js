@@ -1,4 +1,4 @@
-import { getData, queryString, processResults } from '@/utils/Axios'
+import { queryString, processResults } from '@/utils/Axios'
 
 export const apiTimeline = (axios) => {
   const timelineConversations = async (options = {}) => {

@@ -21,6 +21,9 @@
         role="list"
         class="divide-y divide-gray-100"
       >
+        <template v-if="storeToots.timeline === 'profile'">
+          <enclosure-profile :account="storeToots.account" />
+        </template>
         <enclosure-toot
           v-for="(toot, index) in storeToots.toots"
           :key="toot.id"
@@ -51,18 +54,11 @@
 <script setup>
 import { useProp } from '@/composables/useProp.js'
 import { useToots } from '@/stores/toots'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 
 const storeToots = useToots()
 
-const filteredToots = computed(() => {
-  if (['local', 'federation'].includes(props.type)) {
-    return storeToots.toots.filter(item => ['de', 'en'].includes(item.language))
-  }
-  return storeToots.toots
-})
-
-const props = defineProps({
+defineProps({
   type: useProp(String, '')
 })
 

@@ -37,7 +37,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { RadioGroup, RadioGroupDescription, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
+import { RadioGroup, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
 
 import { useProp } from '@/composables/useProp.js'
 

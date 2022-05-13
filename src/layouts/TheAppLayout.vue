@@ -38,7 +38,6 @@ import { useStore } from '@/stores/global'
 
 const store = useStore()
 const tootStore = useToots()
-const socket = ref()
 const accessToken = ref()
 
 watch(accessToken, (value) => {

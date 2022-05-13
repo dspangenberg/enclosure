@@ -6,7 +6,7 @@
     <div
       v-if="toot.spoiler_text"
     >
-      <div class="font-semibold mb-2 w-full">
+      <div class="font-semibold mb-2 w-full overflow-hidden">
         <div>
           {{ toot.spoiler_text }}
         </div>
@@ -14,14 +14,14 @@
           class="text-xs text-right text-gray-500 border bg-gray-50 px-2 py-1 border-gray-200 my-1.5 rounded-md inline-block cursor-pointer"
           @click="visible = !visible"
         >
-          Zum Anzeigen des ganzen Trötz' klicken
+          Zum Anzeigen des ganzen Tröts klicken
         </div>
       </div>
     </div>
     <div
       v-if="toot.content && visible"
       ref="tootRef"
-      class="container leading-normal text-gray-900 toot-content overflow-x-hidden"
+      class="container leading-normal text-gray-900 toot-content overflow-hidden"
       v-html="$sanitize(content)"
     />
   </div>

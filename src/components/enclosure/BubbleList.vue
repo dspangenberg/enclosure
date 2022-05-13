@@ -50,9 +50,9 @@
 </template>
 <script setup>
 import { useProp } from '@/composables/useProp.js'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 
-const props = defineProps({
+defineProps({
   me: useProp(Object),
   account: useProp(Object),
   bubble: useProp(Array)

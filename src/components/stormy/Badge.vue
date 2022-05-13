@@ -62,8 +62,6 @@ const getClasses = computed(() => {
   }
 
   classes.push(props.rounded)
-  console.log(classes)
-
   return classes
 })
 

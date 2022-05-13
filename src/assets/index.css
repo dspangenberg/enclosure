@@ -289,3 +289,7 @@ img.emojione, .emoji {
    to {transform:rotate(359deg);}
 }
 
+.temporary-bounce {
+  -webkit-animation-iteration-count: 5;
+  animation-iteration-count: 5;
+}

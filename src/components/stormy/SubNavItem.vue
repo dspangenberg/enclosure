@@ -4,7 +4,7 @@
       :is="componentIs"
       :class="[disabled ? 'text-gray-300 !cursor-not-allowed' : active ? 'font-regular' : 'text-gray-500 hover:underline', 'rounded focus:border-blue-400 focus:ring-1 focus:ring-blue-200 focus:outline-none cursor-pointer group flex items-center px-3.5 py-2rounded-md']"
       :aria-current="active ? 'page' : undefined"
-      :href="href"
+      :to="href"
       @click="onClick"
     >
       <span class="truncate hover:underline">

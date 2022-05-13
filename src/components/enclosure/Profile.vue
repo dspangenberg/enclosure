@@ -63,7 +63,7 @@
             </div>
             <div>
               <stormy-badge
-                v-if="!account.isMe && account.isFollowing"
+                v-if="account.followed_by"
                 class="mr-6"
                 color="orange"
                 border
@@ -86,9 +86,18 @@
               </template>
               <template v-else>
                 <stormy-icon-button
-                  :icon="account.isFollowedByMe ? 'user-x' : 'user-plus'"
+                  v-if="isSuggestion"
+                  :class="isSuggestionsRemoved ? 'transition-opacity duration-200 ease-in opacity-100 hover:opacity-0' : ''"
+                  icon="eye-off"
                   variant="outline"
                   size="md"
+                  @click="removeSuggestion"
+                />
+                <stormy-icon-button
+                  :icon="account.following ? 'user-x' : 'user-plus'"
+                  variant="outline"
+                  size="md"
+                  @click="onFollow"
                 />
                 <stormy-icon-button
                   icon="dots-vertical"
@@ -108,17 +117,28 @@
     />
     <div class="text-base font-semibold text-gray-700 grid grid-cols-3 mx-5 text-center my-4">
       <div>
-        <router-link :to="`/app/timeline/bubble/${account.id}/follower`">
+        <router-link
+          :to="`/app/timeline/profile/${account.id}/`"
+          :class="[isProfileActive ? 'text-gray-700' : 'text-blue-600 hover:text-blue-800']"
+        >
+          {{ statusesCount }} {{ $t('common.toots') }}
+        </router-link>
+      </div>
+      <div>
+        <router-link
+          :to="`/app/timeline/profile/${account.id}/following`"
+          :class="[!isProfileActive && !isFollowersActive ? 'text-gray-700' : 'text-blue-600 hover:text-blue-800']"
+        >
           {{ followingCount }} {{ $t('profiles.header.following') }}
         </router-link>
       </div>
       <div>
-        <router-link :to="`/app/timeline/bubble/${account.id}/follower`">
+        <router-link
+          :to="`/app/timeline/profile/${account.id}/followers`"
+          :class="[!isProfileActive && isFollowersActive ? 'text-gray-700' : 'text-blue-600 hover:text-blue-800']"
+        >
           {{ followersCount }} {{ $t('profiles.header.followers') }}
         </router-link>
-      </div>
-      <div>
-        {{ statusesCount }} {{ $t('common.toots') }}
       </div>
     </div>
   </div>
@@ -128,13 +148,20 @@ import { useProp } from '@/composables/useProp.js'
 import { useTemplateFilter } from '@/composables/useTemplateFilter.js'
 import { computed, onMounted, ref, nextTick } from 'vue'
 import emojify from '@/utils/Emoji'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import VueEasyLightbox from 'vue-easy-lightbox'
 import { useI18n } from 'vue-i18n'
+import { useMastodon } from '@/composables/useMastodon'
+import { useStore } from '@/stores/global'
 const { t: $t } = useI18n({ useScope: 'global' })
 
 const router = useRouter()
-const { formatDate, formatInt, getRoute } = useTemplateFilter()
+const route = useRoute()
+const store = useStore()
+
+const { formatInt, getRoute } = useTemplateFilter()
+
+const { follow } = useMastodon()
 
 const lightboxHeaderVisibile = ref(false)
 const lightboxAvatarVisibile = ref(false)
@@ -153,14 +180,32 @@ const note = computed(() => {
   return emos
 })
 
+/*
 const createdAt = computed(() => formatDate(props.account.created_at))
 const lastStatusAt = computed(() => formatDate(props.account.last_status_at))
+*/
 
 const followingCount = computed(() => formatInt(props.account.following_count))
 const followersCount = computed(() => formatInt(props.account.followers_count))
 const statusesCount = computed(() => formatInt(props.account.statuses_count))
 
+const isFollowersActive = computed(() => route.params.view === 'followers')
+const isProfileActive = computed(() => route.params.type === 'profile')
+
+const isSuggestion = computed(() => route.query.suggestion && !isSuggestionsRemoved.value)
 const profileRef = ref()
+const isSuggestionsRemoved = ref(false)
+
+const removeSuggestion = async () => {
+  await store.removeSuggestion(route.params.p)
+  isSuggestionsRemoved.value = true
+}
+
+const onFollow = async () => {
+  if (!props.account.following) {
+    await follow(props.account.id)
+  }
+}
 
 const onMastodonClick = (event) => {
   const el = event.target.closest('a') || event.srcElement.closest('a')

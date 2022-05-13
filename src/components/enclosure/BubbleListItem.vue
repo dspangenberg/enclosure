@@ -23,7 +23,7 @@
         </div>
         <div>
           <stormy-badge
-            v-if="isFollower"
+            v-if="person.followed_by"
             class="mr-6"
             color="orange"
             border
@@ -36,13 +36,7 @@
         >
           <stormy-icon-button
             v-if="!isMe"
-            :icon="isFollowedByMe ? 'user-x' : 'user-plus'"
-            variant="outline"
-            size="md"
-          />
-          <stormy-icon-button
-            v-if="!isMe"
-            icon="dots-vertical"
+            :icon="person.following ? 'user-x' : 'user-plus'"
             variant="outline"
             size="md"
           />
@@ -60,7 +54,7 @@
 </template>
 <script setup>
 import { useProp } from '@/composables/useProp.js'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import emojify from '@/utils/Emoji'
 import { useRouter } from 'vue-router'
 
@@ -77,20 +71,12 @@ const displayName = computed(() => {
   return emos
 })
 
+/*
 const note = computed(() => {
   const emos = emojify(props.person.note, props.person.emojis)
   return emos
 })
-const isFollower = computed(() => {
-  console.log(props.person.id)
-  const follower = props.me.follower.map(item => parseInt(item))
-  return follower.includes(parseInt(props.person.id))
-})
-const isFollowedByMe = computed(() => {
-  console.log(props.person.id)
-  const follower = props.me.following.map(item => parseInt(item))
-  return follower.includes(parseInt(props.person.id))
-})
+*/
 
 const isMe = computed(() => props.person.id === props.me.accountId)
 
