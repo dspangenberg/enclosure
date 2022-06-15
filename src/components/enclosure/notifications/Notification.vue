@@ -20,7 +20,7 @@
           >
             <div class="flex flex-1">
               <router-link
-                :to="route(notification.account)"
+                :to="accountRoute(notification.account)"
                 class="hover:underline text-gray-500 flex items-center flex-1"
               >
                 <div class="flex-1">
@@ -49,7 +49,8 @@
             </div>
             <div
               v-if="content"
-              class="border mt-1 rounded-md px-3 py-2 text-gray-900 text-sm  toot-content"
+              class="border mt-1 rounded-md px-3 py-2 text-gray-900 text-sm  toot-content cursor-pointer"
+              @click="goThread(notification?.status)"
             >
               {{ content }}
             </div>
@@ -68,6 +69,9 @@ import { useTemplateFilter } from '@/composables/useTemplateFilter.js'
 import { useI18n } from 'vue-i18n'
 import { stri } from 'stristri'
 import emoji from 'node-emoji'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const { t: $t } = useI18n({ useScope: 'global' })
 
@@ -91,9 +95,14 @@ const content = computed(() => {
   return ''
 })
 
+const goThread = (toot) => {
+  const path = `/app/status/${toot.id}`
+  router.push(path)
+}
+
 const actionName = computed(() => $t(`notifications.types.${props.notification.type}`))
 
-const route = () => {
+const accountRoute = () => {
   return `/app/timeline/profile/${props.notification.account.id}`
 }
 

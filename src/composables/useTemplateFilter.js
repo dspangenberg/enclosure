@@ -56,6 +56,14 @@ export function useTemplateFilter () {
     return numbro(value).formatCurrency({ mantissa: 2, thousandSeparated: true, spaceSeparated: true })
   }
 
+  const relDate = (date, replacePrefixes = false) => {
+    let value = DateTime.fromISO(date).toRelative({ string: 'narrow', round: true })
+    if (replacePrefixes) {
+      value = value.replaceAll('in', '').replaceAll('vor', '')
+    }
+    return value
+  }
+
   const formatFloat = (value, unit = '') => {
     if (!value) return
     return (numbro(value).format({ mantissa: 2, thousandSeparated: true }) + ' ' + unit).trim()
@@ -78,5 +86,17 @@ export function useTemplateFilter () {
     })
   }
 
-  return { getRoute, formatAccounId, formatCurrency, formatDate, getImageUrl, formatFloat, formatBytes, formatMarkdown, formatInt, formatDateTime }
+  return {
+    getRoute,
+    formatAccounId,
+    formatCurrency,
+    formatDate,
+    getImageUrl,
+    formatFloat,
+    formatBytes,
+    formatMarkdown,
+    formatInt,
+    formatDateTime,
+    relDate
+  }
 }

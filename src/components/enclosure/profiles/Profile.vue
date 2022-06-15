@@ -22,7 +22,7 @@
     />
 
     <div
-      v-if="!account.header.endsWith('missing.png')"
+      v-if="!account?.header?.endsWith('missing.png')"
       class=""
     >
       <img

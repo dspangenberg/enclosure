@@ -13,10 +13,15 @@
     <template #aside>
       <div class="flex flex-1 flex-col relative">
         <div class="flex-1 sticky">
-          <enclosure-trends />
-          <div class="sticky top-24">
-            <enclosure-suggestions />
-          </div>
+          <template v-if="route.params.type === 'profile'">
+            x
+          </template>
+          <template v-else>
+            <enclosure-trends />
+            <div class="sticky top-24">
+              <enclosure-suggestions />
+            </div>
+          </template>
         </div>
       </div>
     </template>

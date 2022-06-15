@@ -21,7 +21,7 @@
         <img
           v-lazy="medium.url"
           class="object-cover border rounded-md border-white w-full cursor-pointer"
-          @click="showLigtbox(index)"
+          @click.stop="showLigtbox(index)"
         >
       </li>
     </ul>

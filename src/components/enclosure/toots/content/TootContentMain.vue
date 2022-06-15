@@ -11,7 +11,7 @@
           {{ toot.spoiler_text }}
         </div>
         <div
-          class="text-xs text-right text-gray-500 border bg-gray-50 px-2 py-1 border-gray-200 my-1.5 rounded-md inline-block cursor-pointer"
+          class="text-xs text-right text-gray-500 border bg-gray-50 mx-auto py-1 border-gray-200 my-1.5 rounded-md inline-block cursor-pointer"
           @click="visible = !visible"
         >
           Zum Anzeigen des ganzen Tröts klicken

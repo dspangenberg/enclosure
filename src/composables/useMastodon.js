@@ -10,17 +10,19 @@ export function useMastodon (connection = null) {
 
   getConnectionParameters()
 
-  const getAccount = async (id, query) => {
+  const getAccount = async (id, query = {}) => {
     query.pinned = false
     const result = await connection.getAccount(id)
     const rel = await getRelationships([result.data])
     const pinned = await connection.getStatuses(id, { pinned: true })
     const statuses = await connection.getStatuses(id, query)
+    const featuredTags = await connection.getFeaturedTags(id)
     result.data = rel[0]
     result.data.statuses = []
     result.data.statuses.push(...pinned.data)
     result.data.statuses.push(...statuses.data)
     result.data.statuses.next = statuses.next
+    result.data.featuredTags = featuredTags
     return result.data
   }
 
