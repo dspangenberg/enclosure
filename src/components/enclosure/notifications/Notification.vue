@@ -7,13 +7,21 @@
           class="flex text-xs items-center flex-1"
         >
           <div class="flex items-center mr-3">
-            <span class="rounded-full border border-gray-200">
+            <div class="relative rounded-full border border-gray-200">
               <img
                 class="h-10 w-10 rounded-full bg-gray-400 flex items-center justify-center border-2 border-white"
                 :src="notification.account.avatar"
                 alt=""
               >
-            </span>
+
+              <div class="flex absolute justify-center items-center ml-6 -mt-4 w-5 h-5 bg-orange-600 rounded-full border border-white dark:border-gray-800">
+                <stormy-icon
+                  name="heart"
+                  :stroke-width="2"
+                  class="w-3 h-3 text-white"
+                />
+              </div>
+            </div>
           </div>
           <div
             class="flex items-left flex-1 flex-col"
@@ -21,7 +29,10 @@
             <div class="flex flex-1">
               <router-link
                 :to="accountRoute(notification.account)"
-                class="hover:underline text-gray-500 flex items-center flex-1"
+                class="hover:underline text-gray-500
+                flex
+                items-center
+                flex-1"
               >
                 <div class="flex-1">
                   <span class="text-base ml-3 font-semibold">

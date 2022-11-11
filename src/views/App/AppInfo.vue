@@ -41,6 +41,7 @@ const pouchDbTruncate = async () => {
 onMounted(async () => {
   isLoading.value = true
   accounts.value = await Account.db().find()
+  await Account.getInstanceInfo()
   isLoading.value = false
 })
 

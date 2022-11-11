@@ -3,6 +3,7 @@
     <enclosure-toot-container>
       <enclosure-toot-content-main
         :toot="toot"
+        :lang="lang"
       />
     </enclosure-toot-container>
     <enclosure-toot-container v-if="toot.poll || toot.reblog?.poll">
@@ -31,7 +32,8 @@ import { computed } from 'vue'
 const images = computed(() => props.toot.media_attachments && props.toot.media_attachments.length ? props.toot.media_attachments.filter(item => item.type === 'image') : null)
 
 const props = defineProps({
-  toot: useProp(Object)
+  toot: useProp(Object),
+  lang: useProp(String, 'de')
 })
 
 </script>

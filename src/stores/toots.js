@@ -2,7 +2,7 @@ import { acceptHMRUpdate, defineStore } from 'pinia'
 import { mastoApi } from '@/api'
 import { useStore } from '@/stores/global'
 import { useMastodon } from '@/composables/useMastodon'
-const { getTimeline, getThread, statusAction } = useMastodon()
+const { getTimeline, getThread, statusAction, translate } = useMastodon()
 
 export const useToots = defineStore({
   id: 'toots',
@@ -42,6 +42,11 @@ export const useToots = defineStore({
       if (index > -1) {
         this.toots[index] = toot
       }
+      const s = useToots()
+      s.$patch((state) => {
+        state.toots = this.toots
+        state.hasChanged = true
+      })
     },
     updateThread (toot) {
       const index = this.thread.findIndex(item => parseInt(item.id) === parseInt(toot.id) || parseInt(item.reblog?.id) === parseInt(toot.id))
@@ -55,6 +60,9 @@ export const useToots = defineStore({
       this.loadingStatus = false
     },
     setToot (id) {
+      this.toot = this.toots.find(item => item.id === id)
+    },
+    translatze (id) {
       this.toot = this.toots.find(item => item.id === id)
     },
     byId (id) {
@@ -113,6 +121,14 @@ export const useToots = defineStore({
     },
     async bookmark (id) {
       await this.action('bookmark', id)
+    },
+    async translate (toot) {
+      const id = toot.reblog?.id ? toot.reblog.id : toot.id
+
+      // const toot = this.thread?.length ? this.threadById(id) : this.byId(id)
+      const update = Object.assign({}, toot)
+      update.translation = await translate(id)
+      this.thread?.length ? this.updateThread(update) : this.update(update)
     },
     async reblog (id) {
       await this.action('reblog', id)

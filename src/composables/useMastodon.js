@@ -134,6 +134,11 @@ export function useMastodon (connection = null) {
     return result.data
   }
 
+  const translate = async (statusId) => {
+    const result = await connection.translate(statusId)
+    return result.data
+  }
+
   const statusAction = async (toot, action) => {
     let { call, key } = getStatusActionCall(action)
 
@@ -256,6 +261,7 @@ export function useMastodon (connection = null) {
     getTrends,
     poll,
     removeSuggestion,
-    statusAction
+    statusAction,
+    translate
   }
 }

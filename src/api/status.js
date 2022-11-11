@@ -31,6 +31,11 @@ export const apiStatus = (axios) => {
     return processResults(result)
   }
 
+  const translate = async (id) => {
+    const result = await axios.post(`/statuses/${id}/translate`)
+    return processResults(result)
+  }
+
   const unbookmark = async (id) => {
     const result = await axios.post(`/statuses/${id}/unbookmark`)
     return processResults(result)
@@ -73,6 +78,7 @@ export const apiStatus = (axios) => {
     pin,
     poll,
     reblog,
+    translate,
     unbookmark,
     unfavourite,
     unmute,

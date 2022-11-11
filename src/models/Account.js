@@ -12,7 +12,7 @@ const Account = class extends BaseModel {
     const store = useStore()
     const account = await store.ensureAccount()
 
-    const { revokeAccessToken } = mastoApi(account.baseUr, account.accessToken)
+    const { revokeAccessToken } = mastoApi(account.baseUrl, account.accessToken)
     await revokeAccessToken(account)
   }
 
@@ -48,6 +48,14 @@ const Account = class extends BaseModel {
     } catch (error) {
       return Promise.reject(error)
     }
+  }
+
+  static async getInstanceInfo () {
+    const store = useStore()
+
+    const account = await store.ensureAccount()
+    const { getInstance } = mastoApi('https://mastodon.social/api/v2', account.accessToken)
+    return await getInstance()
   }
 
   static async ensureIndices () {

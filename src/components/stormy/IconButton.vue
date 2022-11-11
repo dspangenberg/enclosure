@@ -13,15 +13,9 @@
     <stormy-icon
       :name="props.icon"
       :class="getIconSize"
+      class="mx-auto"
     />
-    <div
-      v-if="label"
-      class="flex-1"
-    >
-      <slot>
-        {{ label }}
-      </slot>
-    </div>
+    <slot />
   </component>
 </template>
 <script setup>
@@ -48,11 +42,10 @@ const props = defineProps({
   type: useProp(String, 'button'),
   size: useProp(String, 'md'),
   href: useProp(String, ''),
-  label: useProp(String),
   as: useProp(String, '')
 })
 
-const getAs = computed(() => props.as ? props.as : props.href ? 'Link' : 'Button')
-const getType = computed(() => getAs.value === 'Button' ? 'button' : null)
+const getAs = computed(() => props.as ? props.as : props.href ? 'a' : 'button')
+const getType = computed(() => getAs.value === 'button' ? 'button' : null)
 const { getIconSize, getClasses } = useButton(props)
 </script>

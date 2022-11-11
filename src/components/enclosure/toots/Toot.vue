@@ -38,6 +38,7 @@
               class="ml-[3.4rem]"
               :class="isKingOfThread ? 'text-lg' : ''"
               :toot="item"
+              :lang="lang"
               @click="goThread(toot)"
             />
           </div>
@@ -52,13 +53,34 @@
 </template>
 <script setup>
 import { useProp } from '@/composables/useProp.js'
-import { computed, toRefs, ref, onMounted, nextTick } from 'vue'
+import { computed, toRefs, ref, onMounted, nextTick, watch } from 'vue'
 import { useStore } from '@/stores/global'
 import { useRoute, useRouter } from 'vue-router'
+import LanguageDetect from 'languagedetect'
+import { stri } from 'stristri'
+import { sortBy, reverse } from 'lodash'
+
+const lngDetector = new LanguageDetect()
+lngDetector.setLanguageType('iso2')
 
 const props = defineProps({
   toot: useProp(Object),
   index: useProp(Number)
+})
+
+const { toot } = toRefs(props)
+
+const lang = computed(() => {
+  const text = stri(toot.value.content || toot.value.reblog.content)
+  const languages = lngDetector.detect(text.result)
+  const langsAsObject = languages.map(item => { return { lang: item[0], probability: item[1] } })
+  const sorted = reverse(sortBy(langsAsObject, ['probability']))
+
+  if (sorted && sorted.length) {
+    return sorted[0].lang
+  }
+
+  return props.toot.language
 })
 
 const store = useStore()
@@ -66,7 +88,7 @@ const router = useRouter()
 const route = useRoute()
 
 const isReady = ref(false)
-const { toot } = toRefs(props)
+const currentLang = ref(lang.value)
 
 const isReblog = computed(() => toot.value.reblog instanceof Object)
 const showUser = computed(() => route.params?.type !== 'profile')
